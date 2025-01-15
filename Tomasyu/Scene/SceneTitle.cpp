@@ -6,12 +6,14 @@
 using namespace MyInputInfo;
 
 namespace {
-	constexpr int kTitlePosX = 380;	// タイトルロゴ座標X
-	constexpr int kTitlePosY = 140;	// タイトルロゴ座標Y
+	constexpr int kTitlePosX = 798;	// タイトルロゴ座標X
+	constexpr int kTitlePosY = 82;	// タイトルロゴ座標Y
 
 	constexpr int kTitlePosX_Tentative = 250;
 
+	constexpr int kButtonX = 650;	// Press...画像座標X
 	constexpr int kButtonY = 880;	// Press...画像座標Y
+
 }
 
 SceneTitle::SceneTitle() :
@@ -29,8 +31,8 @@ SceneTitle::~SceneTitle()
 void SceneTitle::Init()
 {
 	// 画像の読み込み
-	m_titleGraph = LoadGraph("Data/Image/SceneTitle/Title.png");
-	m_buttonGraph = LoadGraph("Data/Image/SceneTitle/PressAnyButton.png");
+	m_titleGraph = LoadGraph("Data/Image/SceneTitle/討魔衆.png");
+	m_buttonGraph = LoadGraph("Data/Image/SceneTitle/AButton.png");
 
 	m_pSound->InitBGM();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kTitleBGM);
@@ -73,8 +75,8 @@ std::shared_ptr<SceneBase> SceneTitle::Update(Input& input)
 void SceneTitle::Draw()
 {
 	// タイトルロゴを描画
-	//DrawGraph(kTitlePosX, kTitlePosY, m_titleGraph, true);
-	DrawGraph(kTitlePosX_Tentative, kTitlePosY, m_titleGraph, true);
+	DrawGraph(kTitlePosX, kTitlePosY, m_titleGraph, true);
+	//DrawGraph(kTitlePosX_Tentative, kTitlePosY, m_titleGraph, true);
 
 
 	// PressAnyButton画像を点滅しながら描画させる
@@ -96,7 +98,7 @@ void SceneTitle::Draw()
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_fadeAlpha);	// 半透明で表示開始
-	DrawGraph(0, kButtonY, m_buttonGraph, true);
+	DrawGraph(kButtonX, kButtonY, m_buttonGraph, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);		// 不透明に戻しておく	
 
 
