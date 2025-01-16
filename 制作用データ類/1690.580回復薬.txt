@@ -56,3 +56,42 @@ HPバー 赤/緑	224.28		全長1205
 
 敵HP背景バー	343.1022
 敵HPバー	347.1026	全長1205
+
+
+〇設定画面
+設定画面	800.170
+BGM		390.320
+SE		435.470
+画面サイズ	280.620
+戻る		885.800
+
+Frame1		780.315
+Left		792.333
+Right		1434.333
+Volume7		860.323
+Volume6		945.323
+Volume5		1030.323
+Volume4		1115.323
+Volume3		1200.323
+Volume2		1285.323
+Volume1		1370.323
+
+
+
+Frame2		780.460
+Left		792.480
+Right		1434.480
+Volume7		860.472
+Volume6		945.472
+Volume5		1030.472
+Volume4		1115.472
+Volume3		1200.472
+Volume2		1285.472
+Volume1		1370.472
+
+
+Frame3		780.615
+Left		792.632
+Right		1434.632
+WindowMode	870.625
+FullScreen	910.625
