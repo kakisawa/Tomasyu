@@ -12,24 +12,24 @@ using namespace MyInputInfo;
 
 namespace {
 
-	VECTOR kScenenSelectUIPos[5]{
-		VGet(90.0f,110.0f,0.0f),		// ゲームを始める
-		VGet(110.0f,590,0.0f),			// ランキング
-		VGet(620.0f,590,0.0f),			// 設定
-		VGet(110.0f,770.0f,0.0f),		// 操作説明
-		VGet(620.0f,770.0f,0.0f)		// ゲームを終了する
+	const VECTOR kScenenSelectUIPos[5]{
+			VGet(90.0f,110.0f,0.0f),		// ゲームを始める
+			VGet(110.0f,590,0.0f),			// ランキング
+			VGet(620.0f,590,0.0f),			// 設定
+			VGet(110.0f,770.0f,0.0f),		// 操作説明
+			VGet(620.0f,770.0f,0.0f)		// ゲームを終了する
 	};
 
-	VECTOR kExampleGraph = VGet(975.0f, 75.0f, 0.0f);		// 例画像座標
-	VECTOR kExplanatoryText = VGet(975.0f, 720.0f, 0.0f);	// 説明文座標
-	VECTOR kPressAPos = VGet(700.0f, 1000.0f,0.0f);			// Aボタンを押す座標
+	const VECTOR kExampleGraph = VGet(975.0f, 75.0f, 0.0f);		// 例画像座標
+	const VECTOR kExplanatoryText = VGet(975.0f, 720.0f, 0.0f);	// 説明文座標
+	const VECTOR kPressAPos = VGet(700.0f, 1000.0f, 0.0f);			// Aボタンを押す座標
 
-	VECTOR kCursorUIPos[5]{
-		VGet(kScenenSelectUIPos[0].x - 2,kScenenSelectUIPos[0].y - 2,0.0f),	// ゲームを始める
-		VGet(kScenenSelectUIPos[1].x - 2,kScenenSelectUIPos[1].y - 2,0.0f),	// ランキング
-		VGet(kScenenSelectUIPos[2].x - 2,kScenenSelectUIPos[2].y - 2,0.0f),	// 設定
-		VGet(kScenenSelectUIPos[3].x - 2,kScenenSelectUIPos[3].y - 2,0.0f),	// 操作説明
-		VGet(kScenenSelectUIPos[4].x - 2,kScenenSelectUIPos[4].y - 2,0.0f),	// ゲームを終了する
+	const VECTOR kCursorUIPos[5]{
+			VGet(kScenenSelectUIPos[0].x - 2,kScenenSelectUIPos[0].y - 2,0.0f),	// ゲームを始める
+			VGet(kScenenSelectUIPos[1].x - 2,kScenenSelectUIPos[1].y - 2,0.0f),	// ランキング
+			VGet(kScenenSelectUIPos[2].x - 2,kScenenSelectUIPos[2].y - 2,0.0f),	// 設定
+			VGet(kScenenSelectUIPos[3].x - 2,kScenenSelectUIPos[3].y - 2,0.0f),	// 操作説明
+			VGet(kScenenSelectUIPos[4].x - 2,kScenenSelectUIPos[4].y - 2,0.0f),	// ゲームを終了する
 	};
 
 	const char* const kSceneSelectUI[5]{
@@ -57,7 +57,7 @@ namespace {
 	};
 }
 
-SceneSelect::SceneSelect():
+SceneSelect::SceneSelect() :
 	m_selectGraphX(0),
 	m_selectGraphY(0),
 	m_sceneSelectGraph(-1),
@@ -77,7 +77,7 @@ void SceneSelect::Init()
 {
 	for (int i = 0; i < m_sceneSelectUI.size(); i++)
 	{
-		m_sceneSelectUI[i]= LoadGraph(kSceneSelectUI[i]);
+		m_sceneSelectUI[i] = LoadGraph(kSceneSelectUI[i]);
 	}
 	for (int i = 0; i < m_sceneSelectGtaph.size(); i++)
 	{
@@ -86,7 +86,7 @@ void SceneSelect::Init()
 
 	for (int i = 0; i < m_sceneSelectIntroductionGtaph.size(); i++)
 	{
-		m_sceneSelectIntroductionGtaph[i]= LoadGraph(kSceneSelectIntroductionGtaph[i]);
+		m_sceneSelectIntroductionGtaph[i] = LoadGraph(kSceneSelectIntroductionGtaph[i]);
 	}
 
 
@@ -110,7 +110,7 @@ void SceneSelect::Init()
 std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 {
 	m_pFade->FadeIn(m_pFade->GatFadeInFlag());
-	
+
 	if (input.IsTrigger(InputInfo::OK)) {			// STARTボタン
 		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
 		m_isNextSceneFlag = true;
@@ -119,7 +119,7 @@ std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 
 	if (m_isNextSceneFlag)						// 次のシーン
 	{
-		if (m_nextScene == nextScene::TitleScene) 
+		if (m_nextScene == nextScene::TitleScene)
 		{
 			return std::make_shared<SceneTitle>();
 		}
@@ -147,7 +147,7 @@ std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 		}
 	}
 
-	
+
 	if (m_nextScene == nextScene::GameScene)
 	{
 		m_nextSceneGrapgh = m_sceneSelectGtaph[0];
@@ -171,7 +171,7 @@ std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 
 
 	SwitchingScene(input);
-	
+
 
 #ifdef _DEBUG
 	//if (input.IsTrigger(InputInfo::DebugStart)) {			// STARTボタン
@@ -236,7 +236,7 @@ void SceneSelect::SwitchingScene(Input& input)
 		{
 			m_nextScene = nextScene::RankingScene;
 			m_sceneSelectGraph = m_sceneSelectUI[1];
-			
+
 			ChangeCursorInfo(1);
 		}
 		else if (m_nextScene == nextScene::RankingScene)
@@ -269,7 +269,7 @@ void SceneSelect::SwitchingScene(Input& input)
 
 	// 上キーを押すと次のシーンの変更をする
 	if (input.IsTrigger(InputInfo::Up))
-	{	
+	{
 		m_pSound->PlaySE(SoundManager::SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
 		// 左側
 		if (m_nextScene == nextScene::GameScene)
@@ -307,7 +307,7 @@ void SceneSelect::SwitchingScene(Input& input)
 	}
 
 	// 右キー・左キーを押すと次のシーンの変更をする
-	if (input.IsTrigger(InputInfo::Right)|| input.IsTrigger(InputInfo::Left))
+	if (input.IsTrigger(InputInfo::Right) || input.IsTrigger(InputInfo::Left))
 	{
 		m_pSound->PlaySE(SoundManager::SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
 		if (m_nextScene == nextScene::RankingScene)
@@ -342,5 +342,5 @@ void SceneSelect::ChangeCursorInfo(int num)
 {
 	GetGraphSize(m_sceneSelectGraph, &m_selectGraphX, &m_selectGraphY);
 	c1.m_selectBox1 = kCursorUIPos[num];
-	c1.m_selectBox2 = VGet(kCursorUIPos[num].x + m_selectGraphX+2, kCursorUIPos[num].y + m_selectGraphY+2, 0.0f);
+	c1.m_selectBox2 = VGet(kCursorUIPos[num].x + m_selectGraphX + 2, kCursorUIPos[num].y + m_selectGraphY + 2, 0.0f);
 }

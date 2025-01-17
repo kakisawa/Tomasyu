@@ -98,7 +98,6 @@ Player::~Player()
 {
 	m_pShotHandGun.reset();
 	m_pShotMachineGun.reset();
-
 }
 
 void Player::Init()
