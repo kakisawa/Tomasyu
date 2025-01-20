@@ -4,6 +4,7 @@
 #include "../Manager/Effect.h"
 #include "../Util/Collision.h"
 #include "../Time/IsTime.h"
+#include "../Score.h"
 #include <cassert>
 #include <iostream>
 
@@ -19,9 +20,10 @@ namespace {
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);		// ベクトル初期化用
 }
 
-Shot::Shot(Player* pPlayer, std::shared_ptr<Enemy> pEnemy, int attack, int num) :
+Shot::Shot(Player* pPlayer, std::shared_ptr<Enemy> pEnemy, int attack, int num,int score) :
 	m_baseModel(-1),
 	m_attack(attack),
+	m_score(score),
 	m_maxBullet(num),
 	m_bulletNum(num),
 	m_pPlayer(pPlayer),
@@ -62,8 +64,9 @@ Shot::~Shot()
 {
 }
 
-void Shot::Init()
+void Shot::Init(std::shared_ptr<Score> score)
 {
+	m_pScore = score;
 }
 
 void Shot::Update()
@@ -186,6 +189,9 @@ void Shot::Attack()
 
 			// 敵にダメージを与える
 			m_pEnemy->OnDamage(m_attack);
+
+			m_pScore->AddScore(m_score);
+
 			// 存在を消す
 			bullet.m_isExist = false;
 		}

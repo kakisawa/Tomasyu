@@ -7,17 +7,20 @@
 class Player;
 class Enemy;
 class IsTime;
+class Score;
 class Shot
 {
 public:
+	
 	/// <summary>
-	/// 
+	/// コンストラクタ
 	/// </summary>
 	/// <param name="pPlayer">プレイヤー情報</param>
 	/// <param name="pEnemy"></param>
 	/// <param name="attack">攻撃力</param>
 	/// <param name="num">弾の最大数</param>
-	Shot(Player* pPlayer, std::shared_ptr<Enemy> pEnemy,int attack,int num);
+	/// <param name="score">スコア</param>
+	Shot(Player* pPlayer, std::shared_ptr<Enemy> pEnemy,int attack,int num,int score);
 
 	/// <summary>
 	/// デストラクタ
@@ -27,7 +30,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(std::shared_ptr<Score> score);
 
 	/// <summary>
 	/// 更新
@@ -67,6 +70,7 @@ private:
 	int m_attack;		// 攻撃力
 	int m_maxBullet;	// 弾の最大上限数
 	int m_bulletNum;	// 使用できる残り弾数
+	int m_score;		// 弾を当てた際に獲得できるスコア
 
 	struct Bullet
 	{
@@ -84,4 +88,5 @@ private:
 
 	std::shared_ptr<Player> m_pPlayer;		// プレイヤーポインタ
 	std::shared_ptr<Enemy> m_pEnemy;		// 敵ポインタ
+	std::shared_ptr<Score> m_pScore;		// スコア
 };

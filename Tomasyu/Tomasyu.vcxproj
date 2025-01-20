@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Score.cpp" />
     <ClCompile Include="Util\Collision.cpp" />
     <ClCompile Include="Manager\Effect.cpp" />
     <ClCompile Include="Util\Fade.cpp" />
@@ -48,6 +49,7 @@
     <ClCompile Include="UI\UISceneGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Score.h" />
     <ClInclude Include="Util\Collision.h" />
     <ClInclude Include="Manager\Effect.h" />
     <ClInclude Include="Util\Fade.h" />

@@ -6,6 +6,7 @@
 #include "../Util/Input.h"
 #include "../Manager/SoundManager.h"
 #include "../Manager/Effect.h"
+#include "../Score.h"
 #include <cmath>
 #include <random>
 #include <cassert>
@@ -78,9 +79,9 @@ Player::Player(std::shared_ptr<Enemy> pEnemy) :
 
 	// 銃
 	m_pShotHandGun = std::make_shared<Shot>(this,m_pEnemy, 
-		kAttackHandGun, kHandGunMaxBullet);
+		kAttackHandGun, kHandGunMaxBullet,30);
 	m_pShotMachineGun = std::make_shared<Shot>(this, m_pEnemy, 
-		kAttackMachineGun, kMachineGunMaxBullet);
+		kAttackMachineGun, kMachineGunMaxBullet,10);
 
 	// プレイヤーモデルの座標初期値
 	m_pos = VGet(m_chara.initPosX, m_chara.initPosY, m_chara.initPosZ);
@@ -100,11 +101,18 @@ Player::~Player()
 	m_pShotMachineGun.reset();
 }
 
-void Player::Init()
+void Player::Init(std::shared_ptr<Score> score)
 {
 	ModelBase::Init();
+
+	m_pScore = score;
+
 	m_hp = m_chara.maxHp;		// HPに最大値を入れる
 	m_attack = m_playerData["knife"].attack;	// 攻撃力にナイフの攻撃力を入れる
+
+
+	m_pShotHandGun->Init(m_pScore);
+	m_pShotMachineGun->Init(m_pScore);
 
 	// 初期アニメーションの設定(待機状態)
 	SetAnimation(static_cast<int>(PlayerAnim::Idle), m_animSpeed.Idle, true, false);
@@ -114,8 +122,6 @@ void Player::Init()
 	m_item[1] = Item::ItemKind::NoItem;
 	m_item[2] = Item::ItemKind::NoItem;
 
-
-	//ChangeAnimNo(PlayerAnim::Idle, m_animSpeed.Idle, true, m_animChangeTime.Idle);
 #ifdef _DEBUG
 #endif
 }
@@ -161,6 +167,8 @@ void Player::Update(const Enemy& enemy, const Item& item, const Camera& camera, 
 	if (m_isAttack && m_isAttackToEnemy)
 	{
 		Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kKnife, m_KnifeTipPos);
+
+		m_pScore->AddScore(500);
 
 		m_attackTheEnemy = m_attack;
 		m_isAttack = false;
@@ -208,7 +216,6 @@ void Player::Draw()
 	//DrawFormatString(0, 700, 0xffffff, "Player:m_isAttack=%d", m_isAttack);
 	//DrawFormatString(0, 720, 0xffffff, "Player:m_attackTheEnemy=%d", m_attackTheEnemy);
 	//DrawFormatString(0, 720, 0xffffff, "Player:m_attackTheEnemy=%d", m_attackTheEnemy);
-	
 	//DrawFormatString(0, 520, 0xffffff, "kGun=%d", kGun);
 
 	// 体の当たり判定描画
@@ -236,8 +243,6 @@ void Player::LoadData()
 		assert(m_weapon[i] != -1);
 	}
 
-	m_pShotHandGun->Init();
-	m_pShotMachineGun->Init();
 
 	// SEの初期化・読み込み
 	m_pSound->InitSE();

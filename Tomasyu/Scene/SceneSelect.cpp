@@ -89,7 +89,7 @@ void SceneSelect::Init()
 		m_sceneSelectIntroductionGtaph[i] = LoadGraph(kSceneSelectIntroductionGtaph[i]);
 	}
 
-
+	// 画像の読み込み
 	m_nextSceneIntroduction = LoadGraph("Data/Image/SceneSelect/説明文.png");
 	m_cursorUI = LoadGraph("Data/Image/SceneSelect/Cursor1.png");
 	m_pressAHandle = LoadGraph("Data/Image/SceneGame/PressA.png");

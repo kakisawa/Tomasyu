@@ -10,6 +10,7 @@
 #include "../Manager/Effect.h"
 #include "../Time/Time.h"
 #include "../Util/Fade.h"
+#include "../Score.h"
 #include "DxLib.h"
 
 using namespace MyInputInfo;
@@ -55,7 +56,7 @@ void SceneGame::Init()
 {
 	m_pItem->Init();
 	m_pCamera->Init();
-	m_pPlayer->Init();
+	m_pPlayer->Init(m_pScore);
 	m_pEnemy->Init();
 	m_pMap->Init();
 	m_pUI->Init(*m_pPlayer, *m_pEnemy);
@@ -179,6 +180,8 @@ void SceneGame::Draw()
 	m_pItem->Draw();
 	m_pPlayer->Draw();
 	m_pEnemy->Draw();
+
+	m_pScore->Draw();
 
 	// エフェクト表示
 	Effect::GetInstance().Draw();

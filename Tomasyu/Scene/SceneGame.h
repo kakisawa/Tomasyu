@@ -9,6 +9,7 @@ class Map;
 class UISceneGame;
 class Time;
 class Fade;
+class Score;
 class SceneGame :
     public SceneBase
 {
@@ -47,4 +48,6 @@ private:
     std::shared_ptr<Time> m_pTime = std::make_shared<Time>();
     // フェード
     std::shared_ptr<Fade> m_pFade = std::make_shared<Fade>();
+    // スコア
+    std::shared_ptr<Score> m_pScore = std::make_shared<Score>();
 };

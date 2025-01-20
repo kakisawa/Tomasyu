@@ -10,6 +10,7 @@ class Enemy;
 class Shot;
 class Camera;
 class Input;
+class Score;
 class Player :
 	public ModelBase
 {
@@ -151,7 +152,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init() override;
+	void Init(std::shared_ptr<Score> score);
 
 	/// <summary>
 	/// 更新
@@ -398,6 +399,8 @@ private:
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Shot> m_pShotHandGun;
 	std::shared_ptr<Shot> m_pShotMachineGun;
+
+	std::shared_ptr<Score> m_pScore;
 
 	Item::ItemKind m_setItem;	// 獲得したアイテムをセットするための値
 	WeaponKind m_useWeapon;		// 使用中の武器
