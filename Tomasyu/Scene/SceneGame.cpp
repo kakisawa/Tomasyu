@@ -17,17 +17,16 @@ using namespace MyInputInfo;
 
 namespace
 {
-	constexpr int kGameClearPosX = 450;	// ゲームクリアロゴ画像座標
-	constexpr int kGameClearPosY = 50;
+	const VECTOR  kLogoPos = { 564.0f, 134.0f ,0.0f};	// ゲームクリア・オーバー時ロゴ画像座標
 
-	constexpr int kScorePosX = 475;		// ゲームクリア時スコア画像座標
-	constexpr int kScorePosY = 755;
+	const VECTOR kScorePos = { 560.0f, 730.0f, 0.0f };	// スコア画像座標
 
-	constexpr int kDefeatedTimePosX = 427;	// ゲームクリア時間画像座標
-	constexpr int kDefeatedTimePosY = 870;
+	const VECTOR kDefeatedTimePos = { 493.0f, 850.0f, 0.0f };	// ゲームクリア時間画像座標
 
-	constexpr int kPressAPosX = 700;	// 「Aボタンで進む」画像座標
-	constexpr int kPressAPosY = 1000;
+	const  VECTOR kPressAPos = { 795.0f, 1005.0f, 0.0f };	// 「Aボタンで進む」画像座標
+
+	const VECTOR kLogoBgPos = { 0.0f, 0.0f, 0.0f };	// ゲームクリア・オーバー背景画像座標
+	const VECTOR kScoreBgPos = { 0.0f, 642.0f, 0.0f };	// スコア背景画像座標
 
 	int count = 0;		// ゲームクリア演出時のシーン遷移用カウント
 	// 3回Aボタンがクリックされたらセレクトシーンへ遷移する
@@ -42,6 +41,8 @@ SceneGame::SceneGame() :
 	m_pressAHandle(-1),
 	m_defeatedTimeHandle(-1),
 	m_scoreHandle(-1),
+	m_logoBgHandle(-1),
+	m_scoreBgHandle(-1),
 	m_isPause(false),
 	m_isPlayBGM(true)
 {
@@ -62,6 +63,7 @@ void SceneGame::Init()
 	m_pUI->Init(*m_pPlayer, *m_pEnemy);
 	m_pTime->Init();
 	m_pSound->InitBGM();
+	m_pScore->Init(m_pTime);
 
 	// BGMのロード
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kGameBGM);
@@ -73,11 +75,14 @@ void SceneGame::Init()
 	Effect::GetInstance().Load();
 
 	// 画像の読み込み
-	m_gameClearHandle = LoadGraph("Data/Image/SceneGame/Clear/GameClear.png");
-	m_pressAHandle = LoadGraph("Data/Image/SceneGame/PressA.png");
+	m_gameClearHandle = LoadGraph("Data/Image/SceneGame/Clear/GameClear2.png");
+	m_pressAHandle = LoadGraph("Data/Image/SceneGame/Clear/Aボタンで進む.png");
 	m_defeatedTimeHandle = LoadGraph("Data/Image/SceneGame/Clear/DefeatedTime.png");
 	m_scoreHandle = LoadGraph("Data/Image/SceneGame/Clear/Score.png");
 	m_gameOverHandle = LoadGraph("Data/Image/SceneGame/Over/GameOver.png");
+	m_logoBgHandle = LoadGraph("Data/Image/SceneGame/Clear/GameClearBg.png");
+	m_scoreBgHandle = LoadGraph("Data/Image/SceneGame/Clear/ScoreBg.png");
+
 }
 
 std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
@@ -142,6 +147,9 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 			}
 			// ゲームクリア時の演出
 			second--;
+
+			m_pScore->Update();
+
 			if (second <= 0) {
 				pos -= 0.03f;
 				if (pos <= 1.0f)
@@ -195,8 +203,8 @@ void SceneGame::Draw()
 	if (m_pPlayer->GetDeathFlag()) 
 	{
 		if (!m_pFade->GetHarfFadeFlag()) {
-			DrawGraph(kGameClearPosX, kGameClearPosY, m_gameOverHandle, true);
-			DrawGraph(kPressAPosX, kPressAPosY, m_pressAHandle, true);
+			DrawGraph(kLogoPos.x, kLogoPos.y, m_gameOverHandle, true);
+			DrawGraph(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
 		}
 	}
 
@@ -207,19 +215,24 @@ void SceneGame::Draw()
 		if (!m_pFade->GetHarfFadeFlag()) {
 			if (second <= 0) {
 				// ゲームクリアロゴを描画する
-				DrawRotaGraph3(kGameClearPosX, kGameClearPosY, 0, 0,
+				DrawGraph(kLogoBgPos.x, kLogoBgPos.y, m_logoBgHandle, true);
+
+				DrawRotaGraph3(kLogoPos.x, kLogoPos.y, 0, 0,
 					std::max(1.0f, pos), std::max(1.0f, pos),
 					0, m_gameClearHandle, true, false);
 				if (pos <= 1.0f)
 				{
-					DrawGraph(kPressAPosX, kPressAPosY, m_pressAHandle, true);
+					DrawGraph(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
 				}
 			}
 			// Aボタンを押すごとに画像を追加する
 			if (count >= 1) {
-				DrawGraph(kScorePosX, kScorePosY, m_scoreHandle, true);
+				DrawGraph(kScoreBgPos.x, kScoreBgPos.y, m_scoreBgHandle, true);
+
+				DrawGraph(kScorePos.x, kScorePos.y, m_scoreHandle, true);
+				m_pScore->DrawClearScore();
 				if (count >= 2) {
-					DrawGraph(kDefeatedTimePosX, kDefeatedTimePosY, m_defeatedTimeHandle, true);
+					DrawGraph(kDefeatedTimePos.x, kDefeatedTimePos.y, m_defeatedTimeHandle, true);
 					m_pTime->DrawClearTime();
 				}
 			}
@@ -238,10 +251,13 @@ void SceneGame::End()
 	m_pSound->ReleaseSound();
 
 	m_pPlayer->End();
+	m_pScore->End();
 
 	DeleteGraph(m_gameClearHandle);
 	DeleteGraph(m_pressAHandle);
 	DeleteGraph(m_defeatedTimeHandle);
 	DeleteGraph(m_scoreHandle);
 	DeleteGraph(m_gameOverHandle);
+	DeleteGraph(m_logoBgHandle);
+	DeleteGraph(m_scoreBgHandle);
 }

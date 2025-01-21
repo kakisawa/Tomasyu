@@ -4,6 +4,14 @@
 namespace {
 	constexpr int kMaxtimeLimit = 10800;	// 制限時間(3分=180秒)
 
+	const VECTOR kGameClearTimePos[4] = {
+		VGet(1060.0f, 848.0f, 0.0f),
+		VGet(1144.0f, 848.0f, 0.0f),
+		VGet(1183.0f, 848.0f, 0.0f),
+		VGet(1247.0f, 848.0f, 0.0f),
+		};	// ゲームクリア時間画像座標
+
+
 	const char* const kNumberNavyUI[11]{
 		"Data/Image/SceneGame/時間/0.png",
 		"Data/Image/SceneGame/時間/1.png",
@@ -17,7 +25,7 @@ namespace {
 		"Data/Image/SceneGame/時間/9.png",
 		"Data/Image/SceneGame/時間/点.png",
 	};
-	const char* const kNumberGreenUI[11]{
+	const char* const kNumberBlackUI[11]{
 		"Data/Image/SceneGame/Clear/0.png",
 		"Data/Image/SceneGame/Clear/1.png",
 		"Data/Image/SceneGame/Clear/2.png",
@@ -46,14 +54,14 @@ Time::Time():
 	m_timeHandleMinites(-1),
 	m_timeHandleSecondsTen(-1),
 	m_timeHandleSecondsOne(-1),
-	m_second(kMaxtimeLimit),
+	m_remainingTime(kMaxtimeLimit),
 	m_isTimeUp(false)
 {
 	// 数字UI画像読み込み
 	for (int i = 0; i < m_numberNavyUIHandle.size(); i++)
 	{
 		m_numberNavyUIHandle[i] = LoadGraph(kNumberNavyUI[i]);
-		m_numberGreenUIHandle[i] = LoadGraph(kNumberGreenUI[i]);
+		m_numberGreenUIHandle[i] = LoadGraph(kNumberBlackUI[i]);
 	}
 	m_timeBgHandle = LoadGraph("Data/Image/SceneGame/時間/Time.png");
 }
@@ -68,13 +76,13 @@ void Time::Init()
 
 void Time::Update()
 {
-	m_second--;
+	m_remainingTime--;
 	m_elapsedTime++;
 
 	// 表示用時間計算
-	m_minutes = m_second / kMinutes;
-	m_secondsTen = ((m_second % kMinutes) / kSecondOne) / 10;
-	m_secondsOne= ((m_second % kMinutes) / kSecondOne) % 10;
+	m_minutes = m_remainingTime / kMinutes;
+	m_secondsTen = ((m_remainingTime % kMinutes) / kSecondOne) / 10;
+	m_secondsOne= ((m_remainingTime % kMinutes) / kSecondOne) % 10;
 
 	// 経過時間計算
 	m_elapsedMinutes = m_elapsedTime / kMinutes;
@@ -85,7 +93,7 @@ void Time::Update()
 	SetTimeGreenHandle();
 
 	// 制限時間が0になったら
-	if (m_second <= 0.0f)
+	if (m_remainingTime <= 0.0f)
 	{
 		m_isTimeUp = true;
 	}
@@ -116,7 +124,7 @@ void Time::Draw()
 
 void Time::End()
 {
-	// 数字UI画像読み込み
+	// 数字UI画像削除
 	for (int i = 0; i < m_numberNavyUIHandle.size(); i++)
 	{
 		DeleteGraph(m_numberNavyUIHandle[i]);
@@ -180,8 +188,8 @@ void Time::SetTimeGreenHandle()
 
 void Time::DrawClearTime()
 {
-	DrawGraph(1024, 870, m_elapsedTimeHandleMinites, true);
-	DrawGraph(1120, 870, m_numberGreenUIHandle[10], true);
-	DrawGraph(1164, 870, m_elapsedTimeHandleSecondsTen, true);
-	DrawGraph(1236, 870, m_elapsedTimeHandleSecondsOne, true);
+	DrawGraph(kGameClearTimePos[0].x, kGameClearTimePos[0].y, m_elapsedTimeHandleMinites, true);
+	DrawGraph(kGameClearTimePos[1].x, kGameClearTimePos[1].y, m_numberGreenUIHandle[10], true);
+	DrawGraph(kGameClearTimePos[2].x, kGameClearTimePos[2].y, m_elapsedTimeHandleSecondsTen, true);
+	DrawGraph(kGameClearTimePos[3].x, kGameClearTimePos[3].y, m_elapsedTimeHandleSecondsOne, true);
 }

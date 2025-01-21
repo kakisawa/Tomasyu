@@ -44,7 +44,16 @@ public:
 	/// </summary>
 	void SetTimeGreenHandle();
 
+	/// <summary>
+	/// クリアにかかった時間の描画
+	/// </summary>
 	void DrawClearTime();
+
+	/// <summary>
+	/// 残り時間を渡す
+	/// </summary>
+	/// <returns>残りカウント</returns>
+	int GetRemainingTime() const {return m_remainingTime;}
 
 	/// <summary>
 	/// 制限時間終了フラグを渡す
@@ -72,9 +81,9 @@ private:
 
 	int m_timeBgHandle;
 	std::array<int, 11>m_numberNavyUIHandle{};	// 時間の紺UI画像
-	std::array<int, 11>m_numberGreenUIHandle{};	// 時間の緑UI画像
+	std::array<int, 11>m_numberGreenUIHandle{};	// 時間の黒UI画像
 
-	int m_second;		// 残りのゲームカウント...(制限時間)*60
+	int m_remainingTime;// 残りカウント
 	int m_elapsedTime;	// 経過カウント
 
 	bool m_isTimeUp;	// 制限時間終了フラグ
