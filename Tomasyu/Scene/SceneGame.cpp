@@ -173,10 +173,10 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 
 
 #ifdef _DEBUG
-	//if (input.IsTrigger(InputInfo::DebugStart)) {			// STARTボタン
+	if (input.IsTrigger(InputInfo::DebugStart)) {			// STARTボタン
 
-	//	return std::make_shared<SceneDebug>();	// ゲームシーンへ行く
-	//}
+		m_pEnemy->SetDeathFlag(true);
+	}
 #endif // DEBUG
 
 	return shared_from_this();
@@ -236,7 +236,6 @@ void SceneGame::Draw()
 					m_pTime->DrawClearTime();
 				}
 			}
-
 		}
 	}
 

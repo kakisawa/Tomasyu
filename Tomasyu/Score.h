@@ -53,6 +53,11 @@ public:
 	void DrawClearScore();
 
 	/// <summary>
+	/// 合計スコアにあたる画像をセットする
+	/// </summary>
+	void SetTotalScoreHandle();
+
+	/// <summary>
 	/// スコア渡し
 	/// </summary>
 	/// <returns>スコア</returns>
@@ -68,6 +73,12 @@ private:
 	int m_totalScoreThreeDigits;// 合計スコアの三桁目
 	int m_totalScoreFourDigits;	// 合計スコアの四桁目
 	int m_totalScoreFiveDigits;	// 合計スコアの五桁目
+
+	int m_totalScoreHandleOneDigits;	// 合計スコアの一桁目
+	int m_totalScoreHandleTwoDigits;	// 合計スコアの二桁目
+	int m_totalScoreHandleThreeDigits;	// 合計スコアの三桁目
+	int m_totalScoreHandleFourDigits;	// 合計スコアの四桁目
+	int m_totalScoreHandleFiveDigits;	// 合計スコアの五桁目
 
 	std::array<int, 11>m_numberBlackUIHandle{};	// 黒数字UI画像
 	

@@ -5,10 +5,10 @@ namespace {
 	constexpr int kMaxtimeLimit = 10800;	// 制限時間(3分=180秒)
 
 	const VECTOR kGameClearTimePos[4] = {
-		VGet(1060.0f, 848.0f, 0.0f),
-		VGet(1144.0f, 848.0f, 0.0f),
-		VGet(1183.0f, 848.0f, 0.0f),
-		VGet(1247.0f, 848.0f, 0.0f),
+		VGet(1103.0f, 848.0f, 0.0f),
+		VGet(1187.0f, 848.0f, 0.0f),
+		VGet(1238.0f, 848.0f, 0.0f),
+		VGet(1302.0f, 848.0f, 0.0f),
 		};	// ゲームクリア時間画像座標
 
 

@@ -8,7 +8,7 @@ namespace {
 	const VECTOR kScorePos[5] = {
 	VGet(1028.0f, 714.0f, 0.0f),
 	VGet(1096.0f, 714.0f, 0.0f),
-	VGet(1183.0f, 714.0f, 0.0f),
+	VGet(1166.0f, 714.0f, 0.0f),
 	VGet(1229.0f, 714.0f, 0.0f),
 	VGet(1295.0f, 714.0f, 0.0f),
 	};	// ゲームクリア時間画像座標
@@ -37,7 +37,12 @@ Score::Score():
 	m_totalScoreTwoDigits(0),
 	m_totalScoreThreeDigits(0),
 	m_totalScoreFourDigits(0),
-	m_totalScoreFiveDigits(0)
+	m_totalScoreFiveDigits(0),
+	m_totalScoreHandleOneDigits(-1),
+	m_totalScoreHandleTwoDigits(-1),
+	m_totalScoreHandleThreeDigits(-1),
+	m_totalScoreHandleFourDigits(-1),
+	m_totalScoreHandleFiveDigits(-1)
 {
 }
 
@@ -61,6 +66,10 @@ void Score::Update()
 	m_remainingTimeScore = (m_pTime->GetRemainingTime()/60) * kRemainingTimScore;
 
 	m_totalScore = m_score + m_remainingTimeScore;
+
+
+	CalculatingTotalScore();
+	SetTotalScoreHandle();
 }
 
 void Score::Draw()
@@ -98,12 +107,67 @@ void Score::CalculatingTotalScore()
 
 void Score::DrawClearScore()
 {
-	/*DrawGraph(kScorePos[0].x, kScorePos[0].y, m_elapsedTimeHandleMinites, true);
-	DrawGraph(1120, 870, m_numberGreenUIHandle[10], true);
-	DrawGraph(1164, 870, m_elapsedTimeHandleSecondsTen, true);
-	DrawGraph(1236, 870, m_elapsedTimeHandleSecondsOne, true);*/
+	DrawGraph(kScorePos[0].x, kScorePos[0].y, m_totalScoreHandleFiveDigits, true);
+	DrawGraph(kScorePos[1].x, kScorePos[1].y, m_totalScoreHandleFourDigits, true);
+	DrawGraph(kScorePos[2].x, kScorePos[2].y, m_totalScoreHandleThreeDigits, true);
+	DrawGraph(kScorePos[3].x, kScorePos[3].y, m_totalScoreHandleTwoDigits, true);
+	DrawGraph(kScorePos[4].x, kScorePos[4].y, m_totalScoreHandleOneDigits, true);
+	
 
 #ifdef DEBUG
 	DrawFormatString(0, 680, 0xffffff, "m_totalScore=%d", m_totalScore);
 #endif // DEBUG
+}
+
+void Score::SetTotalScoreHandle()
+{
+	// 一桁目
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_totalScoreOneDigits == i)
+		{
+			m_totalScoreHandleOneDigits = m_numberBlackUIHandle[i];
+		}
+		
+	}
+	// 二桁目
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_totalScoreTwoDigits == i)
+		{
+			m_totalScoreHandleTwoDigits = m_numberBlackUIHandle[i];
+		}
+	}
+	// 三桁目
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_totalScoreThreeDigits == i)
+		{
+			m_totalScoreHandleThreeDigits = m_numberBlackUIHandle[i];
+		}
+	}
+	// 四桁目
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_totalScoreFourDigits == i)
+		{
+			m_totalScoreHandleFourDigits = m_numberBlackUIHandle[i];
+		}
+		if (m_totalScoreFiveDigits == 0&& m_totalScoreFourDigits == 0)
+		{
+			m_totalScoreHandleTwoDigits = -1;
+		}
+	}
+	// 五桁目
+	for (int i = 1; i < 10; i++)
+	{
+		if (m_totalScoreFiveDigits == 0)
+		{
+			m_totalScoreHandleFiveDigits = -1;
+		}
+		else if (m_totalScoreFiveDigits == i)
+		{
+			m_totalScoreHandleFiveDigits = m_numberBlackUIHandle[i];
+		}
+	}
 }

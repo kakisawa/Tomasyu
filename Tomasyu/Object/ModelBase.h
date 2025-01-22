@@ -84,10 +84,18 @@ public:
 	/// <returns></returns>
 	bool IsLoopAnimEnd();
 
+
+	/// <summary>
+	/// デバッグ用:敵が死亡したかをセットする
+	/// </summary>
+	/// <param name="flag"></param>
+	/// <returns>志望しているかのフラグ</returns>
+	bool SetDeathFlag(bool flag) { return m_deathFlag = flag; }
+
 	/// <summary>
 	/// HPを渡す
 	/// </summary>
-	/// <returns></returns>
+	/// <returnsHP></returns>
 	int GetHp() const { return m_hp; }
 
 	/// <summary>
