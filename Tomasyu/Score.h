@@ -58,10 +58,10 @@ public:
 	void SetTotalScoreHandle();
 
 	/// <summary>
-	/// スコア渡し
+	/// 合計スコア渡し
 	/// </summary>
 	/// <returns>スコア</returns>
-	const int GetScore() { return m_score; }
+	const int GetTotalScore() { return m_totalScore; }
 
 private:
 	int m_score;				// スコア

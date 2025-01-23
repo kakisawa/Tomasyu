@@ -11,6 +11,7 @@
 #include "../Time/Time.h"
 #include "../Util/Fade.h"
 #include "../Score.h"
+#include"../RankingData.h"
 #include "DxLib.h"
 
 using namespace MyInputInfo;
@@ -23,16 +24,10 @@ namespace
 
 	const VECTOR kDefeatedTimePos = { 493.0f, 850.0f, 0.0f };	// ゲームクリア時間画像座標
 
-	const  VECTOR kPressAPos = { 795.0f, 1005.0f, 0.0f };	// 「Aボタンで進む」画像座標
+	const VECTOR kPressAPos = { 795.0f, 1005.0f, 0.0f };	// 「Aボタンで進む」画像座標
 
 	const VECTOR kLogoBgPos = { 0.0f, 0.0f, 0.0f };	// ゲームクリア・オーバー背景画像座標
 	const VECTOR kScoreBgPos = { 0.0f, 642.0f, 0.0f };	// スコア背景画像座標
-
-	int count = 0;		// ゲームクリア演出時のシーン遷移用カウント
-	// 3回Aボタンがクリックされたらセレクトシーンへ遷移する
-	int second = 100;	// ゲームクリア演出時のロゴ画像を映すまでの待機時間
-
-	float pos = 1.7f;	// ゲームクリアロゴ画像拡大表示演出用
 }
 
 SceneGame::SceneGame() :
@@ -43,10 +38,13 @@ SceneGame::SceneGame() :
 	m_scoreHandle(-1),
 	m_logoBgHandle(-1),
 	m_scoreBgHandle(-1),
+	m_gameClearStagingCount(0),
+	m_gameClearLogoWaitTime(100),
+	m_gameClearLogoScale(1.7f),
 	m_isPause(false),
 	m_isPlayBGM(true)
 {
-	m_pPlayer = std::make_shared<Player>(m_pEnemy);
+	
 }
 
 SceneGame::~SceneGame()
@@ -146,23 +144,24 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 				m_isPlayBGM = false;
 			}
 			// ゲームクリア時の演出
-			second--;
+			m_gameClearLogoWaitTime--;
 
 			m_pScore->Update();
 
-			if (second <= 0) {
-				pos -= 0.03f;
-				if (pos <= 1.0f)
+			if (m_gameClearLogoWaitTime <= 0) {
+				m_gameClearLogoScale -= 0.03f;
+				if (m_gameClearLogoScale <= 1.0f)
 				{
 					// Aボタンが押されたら、次の処理を行う
 						// 3回押されたらセレクトシーンへ遷移する
 					if (input.IsTrigger(InputInfo::OK))
 					{
-						count++;
+						m_gameClearStagingCount++;
 					}
 
-					if (count >= 3)
+					if (m_gameClearStagingCount >= 3)
 					{
+						m_pRankingData->Save(m_pTime->GetRemainingTime(), m_pScore->GetTotalScore());
 						return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く
 					}
 				}
@@ -203,8 +202,8 @@ void SceneGame::Draw()
 	if (m_pPlayer->GetDeathFlag()) 
 	{
 		if (!m_pFade->GetHarfFadeFlag()) {
-			DrawGraph(kLogoPos.x, kLogoPos.y, m_gameOverHandle, true);
-			DrawGraph(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
+			DrawGraphF(kLogoPos.x, kLogoPos.y, m_gameOverHandle, true);
+			DrawGraphF(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
 		}
 	}
 
@@ -213,26 +212,26 @@ void SceneGame::Draw()
 	if (m_pEnemy->GetDeathFlag()) {
 
 		if (!m_pFade->GetHarfFadeFlag()) {
-			if (second <= 0) {
+			if (m_gameClearLogoWaitTime <= 0) {
 				// ゲームクリアロゴを描画する
-				DrawGraph(kLogoBgPos.x, kLogoBgPos.y, m_logoBgHandle, true);
+				DrawGraphF(kLogoBgPos.x, kLogoBgPos.y, m_logoBgHandle, true);
 
-				DrawRotaGraph3(kLogoPos.x, kLogoPos.y, 0, 0,
-					std::max(1.0f, pos), std::max(1.0f, pos),
-					0, m_gameClearHandle, true, false);
-				if (pos <= 1.0f)
+				DrawRotaGraph3F(kLogoPos.x, kLogoPos.y, 0.0f, 0.0f,
+					std::max(1.0f, m_gameClearLogoScale), std::max(1.0f, m_gameClearLogoScale),
+					0.0f, m_gameClearHandle, true, false);
+				if (m_gameClearLogoScale <= 1.0f)
 				{
-					DrawGraph(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
+					DrawGraphF(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
 				}
 			}
 			// Aボタンを押すごとに画像を追加する
-			if (count >= 1) {
-				DrawGraph(kScoreBgPos.x, kScoreBgPos.y, m_scoreBgHandle, true);
+			if (m_gameClearStagingCount >= 1) {
+				DrawGraphF(kScoreBgPos.x, kScoreBgPos.y, m_scoreBgHandle, true);
 
-				DrawGraph(kScorePos.x, kScorePos.y, m_scoreHandle, true);
+				DrawGraphF(kScorePos.x, kScorePos.y, m_scoreHandle, true);
 				m_pScore->DrawClearScore();
-				if (count >= 2) {
-					DrawGraph(kDefeatedTimePos.x, kDefeatedTimePos.y, m_defeatedTimeHandle, true);
+				if (m_gameClearStagingCount >= 2) {
+					DrawGraphF(kDefeatedTimePos.x, kDefeatedTimePos.y, m_defeatedTimeHandle, true);
 					m_pTime->DrawClearTime();
 				}
 			}

@@ -20,7 +20,7 @@ namespace {
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);		// ベクトル初期化用
 }
 
-Shot::Shot(Player* pPlayer, std::shared_ptr<Enemy> pEnemy, int attack, int num,int score) :
+Shot::Shot(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, int attack, int num,int score) :
 	m_baseModel(-1),
 	m_attack(attack),
 	m_score(score),
@@ -62,6 +62,7 @@ Shot::Shot(Player* pPlayer, std::shared_ptr<Enemy> pEnemy, int attack, int num,i
 
 Shot::~Shot()
 {
+	End();
 }
 
 void Shot::Init(std::shared_ptr<Score> score)
@@ -96,10 +97,18 @@ void Shot::Draw()
 void Shot::End()
 {
 	// モデルの削除
-	MV1DeleteModel(m_baseModel);
+	if (m_baseModel != -1)
+	{
+		MV1DeleteModel(m_baseModel);
+		m_baseModel = -1;
+	}
 	for (auto& bullet : m_bullet)
 	{
-		MV1DeleteModel(bullet.m_model);
+		if (bullet.m_model != -1)
+		{
+			MV1DeleteModel(bullet.m_model);
+			bullet.m_model = -1;
+		}
 	}
 }
 

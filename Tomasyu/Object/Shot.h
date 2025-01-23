@@ -2,10 +2,10 @@
 #include "../Util/Collision.h"
 #include <memory>
 #include <vector>
+#include "Player.h"
+#include "Enemy.h"
 #include "DxLib.h"
 
-class Player;
-class Enemy;
 class IsTime;
 class Score;
 class Shot
@@ -20,7 +20,7 @@ public:
 	/// <param name="attack">攻撃力</param>
 	/// <param name="num">弾の最大数</param>
 	/// <param name="score">スコア</param>
-	Shot(Player* pPlayer, std::shared_ptr<Enemy> pEnemy,int attack,int num,int score);
+	Shot(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, int attack, int num, int score);
 
 	/// <summary>
 	/// デストラクタ
@@ -75,13 +75,13 @@ private:
 	struct Bullet
 	{
 		int m_model;		// モデル
-		VECTOR m_pos;		// 座標
-		VECTOR m_move;		// 移動
-		VECTOR m_colPos;	// 当たり判定座標
-		VECTOR m_direction;	// 進む方向
+		VECTOR m_pos = VGet(0.0f, 0.0f, 0.0f);		// 座標
+		VECTOR m_move = VGet(0.0f, 0.0f, 0.0f);		// 移動
+		VECTOR m_colPos = VGet(0.0f, 0.0f, 0.0f);	// 当たり判定座標
+		VECTOR m_direction = VGet(0.0f, 0.0f, 0.0f);	// 進む方向
 		Collision m_col;	// 当たり判定
 		std::shared_ptr<IsTime> m_existTime;	// 消えるまでの時間
-		bool m_isExist;		// 存在しているかのフラグ
+		bool m_isExist = false;		// 存在しているかのフラグ
 	};
 
 	std::vector<Bullet> m_bullet;			// 弾(配列)

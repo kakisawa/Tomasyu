@@ -77,12 +77,6 @@ Player::Player(std::shared_ptr<Enemy> pEnemy) :
 	// データの読み込みを行う
 	LoadData();
 
-	// 銃
-	m_pShotHandGun = std::make_shared<Shot>(this,m_pEnemy, 
-		kAttackHandGun, kHandGunMaxBullet,30);
-	m_pShotMachineGun = std::make_shared<Shot>(this, m_pEnemy, 
-		kAttackMachineGun, kMachineGunMaxBullet,10);
-
 	// プレイヤーモデルの座標初期値
 	m_pos = VGet(m_chara.initPosX, m_chara.initPosY, m_chara.initPosZ);
 	// プレイヤーモデルのサイズ初期化
@@ -104,6 +98,12 @@ Player::~Player()
 void Player::Init(std::shared_ptr<Score> score)
 {
 	ModelBase::Init();
+
+	// 銃
+	m_pShotHandGun = std::make_shared<Shot>(shared_from_this(), m_pEnemy,
+		kAttackHandGun, kHandGunMaxBullet, 30);
+	m_pShotMachineGun = std::make_shared<Shot>(shared_from_this(), m_pEnemy,
+		kAttackMachineGun, kMachineGunMaxBullet, 10);
 
 	m_pScore = score;
 

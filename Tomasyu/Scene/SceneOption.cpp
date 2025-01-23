@@ -112,7 +112,7 @@ std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 
 void SceneOption::Draw()
 {
-	DrawGraph(kOptionGraphPos.x, kOptionGraphPos.y, m_optionGraph, true);
+	DrawGraphF(kOptionGraphPos.x, kOptionGraphPos.y, m_optionGraph, true);
 
 	DrawExtendGraphF(c1.m_selectBox1.x, c1.m_selectBox1.y,
 		c1.m_selectBox2.x, c1.m_selectBox2.y, m_cursorGraph, true);

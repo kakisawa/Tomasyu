@@ -11,8 +11,8 @@ class Shot;
 class Camera;
 class Input;
 class Score;
-class Player :
-	public ModelBase
+class Player : 
+	public ModelBase, public std::enable_shared_from_this<Player>
 {
 public:
 	struct Situation {

@@ -11,6 +11,15 @@ namespace {
 		VGet(1302.0f, 848.0f, 0.0f),
 		};	// ゲームクリア時間画像座標
 
+	const VECTOR kGameTimePos[4] = {
+		VGet(35.0f, 45.0f, 0.0f),
+		VGet(90.0f, 50.0f, 0.0f),
+		VGet(110.0f, 45.0, 0.0f),
+		VGet(155.0f, 45.0f, 0.0f),
+	};	// 残り時間画像座標
+
+	const VECTOR kGameTimeBgPos = VGet(10.0f, 20.0f, 0.0f);	// 残り時間背景画像座標
+
 
 	const char* const kNumberNavyUI[11]{
 		"Data/Image/SceneGame/時間/0.png",
@@ -43,7 +52,7 @@ namespace {
 	constexpr int kSecondOne = 60;	// 1秒の値
 }
 
-Time::Time():
+Time::Time() :
 	m_minutes(0),
 	m_elapsedTime(0),
 	m_secondsTen(0),
@@ -54,6 +63,9 @@ Time::Time():
 	m_timeHandleMinites(-1),
 	m_timeHandleSecondsTen(-1),
 	m_timeHandleSecondsOne(-1),
+	m_elapsedTimeHandleMinites(-1),
+	m_elapsedTimeHandleSecondsTen(-1),
+	m_elapsedTimeHandleSecondsOne(-1),
 	m_remainingTime(kMaxtimeLimit),
 	m_isTimeUp(false)
 {
@@ -101,12 +113,12 @@ void Time::Update()
 
 void Time::Draw()
 {
-	DrawGraph(10, 20, m_timeBgHandle, true);
+	DrawGraphF(kGameTimeBgPos.x, kGameTimeBgPos.y, m_timeBgHandle, true);
 
-	DrawGraph(35, 45, m_timeHandleMinites, true);
-	DrawGraph(90, 50, m_numberNavyUIHandle[10], true);
-	DrawGraph(110, 45, m_timeHandleSecondsTen, true);
-	DrawGraph(155, 45, m_timeHandleSecondsOne, true);
+	DrawGraphF(kGameTimePos[0].x, kGameTimePos[0].y, m_timeHandleMinites, true);
+	DrawGraphF(kGameTimePos[1].x, kGameTimePos[1].y, m_numberNavyUIHandle[10], true);
+	DrawGraphF(kGameTimePos[2].x, kGameTimePos[2].y, m_timeHandleSecondsTen, true);
+	DrawGraphF(kGameTimePos[3].x, kGameTimePos[3].y, m_timeHandleSecondsOne, true);
 
 #ifdef _DEBUG
 	//DrawFormatString(0, 1000, 0xffffff, "m_second=%d", m_elapsedTime);
@@ -188,8 +200,8 @@ void Time::SetTimeGreenHandle()
 
 void Time::DrawClearTime()
 {
-	DrawGraph(kGameClearTimePos[0].x, kGameClearTimePos[0].y, m_elapsedTimeHandleMinites, true);
-	DrawGraph(kGameClearTimePos[1].x, kGameClearTimePos[1].y, m_numberGreenUIHandle[10], true);
-	DrawGraph(kGameClearTimePos[2].x, kGameClearTimePos[2].y, m_elapsedTimeHandleSecondsTen, true);
-	DrawGraph(kGameClearTimePos[3].x, kGameClearTimePos[3].y, m_elapsedTimeHandleSecondsOne, true);
+	DrawGraphF(kGameClearTimePos[0].x, kGameClearTimePos[0].y, m_elapsedTimeHandleMinites, true);
+	DrawGraphF(kGameClearTimePos[1].x, kGameClearTimePos[1].y, m_numberGreenUIHandle[10], true);
+	DrawGraphF(kGameClearTimePos[2].x, kGameClearTimePos[2].y, m_elapsedTimeHandleSecondsTen, true);
+	DrawGraphF(kGameClearTimePos[3].x, kGameClearTimePos[3].y, m_elapsedTimeHandleSecondsOne, true);
 }

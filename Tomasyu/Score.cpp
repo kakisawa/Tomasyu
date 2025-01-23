@@ -107,11 +107,11 @@ void Score::CalculatingTotalScore()
 
 void Score::DrawClearScore()
 {
-	DrawGraph(kScorePos[0].x, kScorePos[0].y, m_totalScoreHandleFiveDigits, true);
-	DrawGraph(kScorePos[1].x, kScorePos[1].y, m_totalScoreHandleFourDigits, true);
-	DrawGraph(kScorePos[2].x, kScorePos[2].y, m_totalScoreHandleThreeDigits, true);
-	DrawGraph(kScorePos[3].x, kScorePos[3].y, m_totalScoreHandleTwoDigits, true);
-	DrawGraph(kScorePos[4].x, kScorePos[4].y, m_totalScoreHandleOneDigits, true);
+	DrawGraphF(kScorePos[0].x, kScorePos[0].y, m_totalScoreHandleFiveDigits, true);
+	DrawGraphF(kScorePos[1].x, kScorePos[1].y, m_totalScoreHandleFourDigits, true);
+	DrawGraphF(kScorePos[2].x, kScorePos[2].y, m_totalScoreHandleThreeDigits, true);
+	DrawGraphF(kScorePos[3].x, kScorePos[3].y, m_totalScoreHandleTwoDigits, true);
+	DrawGraphF(kScorePos[4].x, kScorePos[4].y, m_totalScoreHandleOneDigits, true);
 	
 
 #ifdef DEBUG
