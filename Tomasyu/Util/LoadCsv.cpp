@@ -97,3 +97,7 @@ void LoadCsv::LoadPlayerOnlyFileData(std::map<std::string, Player::PlayerOnlyDat
 
 	}
 }
+
+void LoadCsv::LoadRankingData(std::map<std::string, int>& rankingData)
+{
+}

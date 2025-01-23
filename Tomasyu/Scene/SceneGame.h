@@ -39,6 +39,10 @@ private:
     bool m_isPause;         // ポーズフラグ
     bool m_isPlayBGM;       // BGMを鳴らすフラグ
 
+	int m_timeYear;     // 年
+	int m_timeMonth;    // 月
+	int m_timeDay;      // 日
+
     // カメラ
     std::shared_ptr<Camera> m_pCamera = std::make_shared<Camera>();
     // 敵

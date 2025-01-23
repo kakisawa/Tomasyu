@@ -1,6 +1,8 @@
 ﻿#include "SceneRanking.h"
 #include "SceneSelect.h"
+#include "../RankingData.h"
 #include "SceneDebug.h"
+#include <iostream>
 
 using namespace MyInputInfo;
 
@@ -51,6 +53,10 @@ void SceneRanking::Init()
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kRankingBGM);
 
 	m_pSound->PlayBGM(SoundManager::BGM_Type::kRankingBGM, DX_PLAYTYPE_LOOP);
+
+	m_pRankingData->Load();
+
+	
 }
 
 std::shared_ptr<SceneBase> SceneRanking::Update(Input& input)
@@ -88,6 +94,27 @@ void SceneRanking::Draw()
 
 	DrawGraphF(kRankingUIPos.x, kRankingUIPos.y, m_rankingUI, true);
 	DrawGraphF(kRankingUI_Change.x, kRankingUI_Change.y, m_rankingSelectUI, true);
+
+	// ランキングデータを取得
+	std::vector<std::pair<int, int>> ranking = m_pRankingData->GetRanking();
+
+	DrawFormatString(0, 500, 0xffffff, "Time:%d", ranking[0].first);
+	DrawFormatString(0, 520, 0xffffff, "Second:%d", ranking[0].second);
+	
+	DrawFormatString(0, 540, 0xffffff, "Time:%d", ranking[1].first);
+	DrawFormatString(0, 560, 0xffffff, "Second:%d", ranking[1].second);
+
+	DrawFormatString(0, 580, 0xffffff, "Time:%d", ranking[2].first);
+	DrawFormatString(0, 600, 0xffffff, "Second:%d", ranking[2].second);
+
+
+	// ランキングデータを表示
+	for (const auto& entry : ranking)
+	{
+		std::cout << "Time: " << entry.first << ", Score: " << entry.second << std::endl;
+
+		
+	}
 
 #ifdef _DEBUG
 	//DrawString(0, 0, "SceneRanking", 0xffffff);

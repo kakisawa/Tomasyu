@@ -6,12 +6,12 @@ class RankingData
 {
 public:
 	/// <summary>
-	/// 
+	/// コンストラクタ
 	/// </summary>
 	RankingData();
 
 	/// <summary>
-	/// 
+	/// デストラクタ
 	/// </summary>
 	~RankingData() {};
 

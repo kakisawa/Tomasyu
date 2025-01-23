@@ -13,12 +13,13 @@
 #include "../Score.h"
 #include"../RankingData.h"
 #include "DxLib.h"
+#include <ctime>
 
 using namespace MyInputInfo;
 
 namespace
 {
-	const VECTOR  kLogoPos = { 564.0f, 134.0f ,0.0f};	// ゲームクリア・オーバー時ロゴ画像座標
+	const VECTOR  kLogoPos = { 564.0f, 134.0f ,0.0f };	// ゲームクリア・オーバー時ロゴ画像座標
 
 	const VECTOR kScorePos = { 560.0f, 730.0f, 0.0f };	// スコア画像座標
 
@@ -41,10 +42,12 @@ SceneGame::SceneGame() :
 	m_gameClearStagingCount(0),
 	m_gameClearLogoWaitTime(100),
 	m_gameClearLogoScale(1.7f),
+	m_timeYear(0),
+	m_timeMonth(0),
+	m_timeDay(0),
 	m_isPause(false),
 	m_isPlayBGM(true)
 {
-	
 }
 
 SceneGame::~SceneGame()
@@ -81,6 +84,13 @@ void SceneGame::Init()
 	m_logoBgHandle = LoadGraph("Data/Image/SceneGame/Clear/GameClearBg.png");
 	m_scoreBgHandle = LoadGraph("Data/Image/SceneGame/Clear/ScoreBg.png");
 
+	time_t now = time(nullptr);
+	tm* localTime = localtime(&now);
+
+	m_timeYear = localTime->tm_year += 1900;
+	m_timeMonth = localTime->tm_mon += 1;
+	m_timeDay = localTime->tm_wday;
+
 }
 
 std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
@@ -95,10 +105,10 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 		}
 	}
 
-		// エネミーが死んでいなければ
+	// エネミーが死んでいなければ
 	if (!m_pEnemy->GetDeathFlag())
 	{
-		if (!m_pPlayer->GetDeathFlag()||m_pTime->GetTimeUp()) {
+		if (!m_pPlayer->GetDeathFlag() || m_pTime->GetTimeUp()) {
 			m_pFade->FadeIn(true);
 			m_pMap->Update();
 			m_pPlayer->Update(*m_pEnemy, *m_pItem, *m_pCamera, input);
@@ -120,8 +130,8 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 		// フェード演出が終わったら、BGMを変更する
 		if (!m_pFade->GetHarfFadeFlag()) {
 			if (m_isPlayBGM) {
-			m_pSound->StopBGM(SoundManager::BGM_Type::kGameBGM);
-			m_isPlayBGM = false;
+				m_pSound->StopBGM(SoundManager::BGM_Type::kGameBGM);
+				m_isPlayBGM = false;
 			}
 
 			if (input.IsTrigger(InputInfo::OK))
@@ -199,7 +209,7 @@ void SceneGame::Draw()
 	m_pFade->Draw();
 
 	// プレイヤーが死亡orタイムアップしたら
-	if (m_pPlayer->GetDeathFlag()) 
+	if (m_pPlayer->GetDeathFlag())
 	{
 		if (!m_pFade->GetHarfFadeFlag()) {
 			DrawGraphF(kLogoPos.x, kLogoPos.y, m_gameOverHandle, true);
@@ -240,6 +250,9 @@ void SceneGame::Draw()
 
 #ifdef DEBUG
 	//DrawString(0, 0, "SceneGame", 0xffffff);
+
+DrawFo
+
 #endif // DEBUG
 }
 

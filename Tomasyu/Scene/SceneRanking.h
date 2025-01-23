@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "SceneBase.h"
+class RankingData;
 class SceneRanking :
     public SceneBase
 {
@@ -29,5 +30,7 @@ private:
     int m_rankingSelectUI;
     
     VECTOR m_selectBox1;
+
+	std::shared_ptr<RankingData> m_pRankingData = std::make_shared<RankingData>();
 };
 
