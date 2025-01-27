@@ -45,6 +45,8 @@ SceneGame::SceneGame() :
 	m_timeYear(0),
 	m_timeMonth(0),
 	m_timeDay(0),
+	m_timeHour(0),
+	m_timeMin(0),
 	m_isPause(false),
 	m_isPlayBGM(true)
 {
@@ -85,12 +87,14 @@ void SceneGame::Init()
 	m_scoreBgHandle = LoadGraph("Data/Image/SceneGame/Clear/ScoreBg.png");
 
 	time_t now = time(nullptr);
-	tm* localTime = localtime(&now);
+	tm localTime;
+	localtime_s(&localTime, &now);
 
-	m_timeYear = localTime->tm_year += 1900;
-	m_timeMonth = localTime->tm_mon += 1;
-	m_timeDay = localTime->tm_wday;
-
+	m_timeYear = localTime.tm_year + 1900;
+	m_timeMonth = localTime.tm_mon + 1;
+	m_timeDay = localTime.tm_mday;
+	m_timeHour=localTime.tm_hour;
+	m_timeMin=localTime.tm_min;
 }
 
 std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
@@ -106,7 +110,7 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 	}
 
 	// エネミーが死んでいなければ
-	if (!m_pEnemy->GetDeathFlag())
+	if (!m_pEnemy->GetDeathFlag()&& !m_pTime->GetTimeUp())
 	{
 		if (!m_pPlayer->GetDeathFlag() || m_pTime->GetTimeUp()) {
 			m_pFade->FadeIn(true);
@@ -136,7 +140,7 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 
 			if (input.IsTrigger(InputInfo::OK))
 			{
-				return std::make_shared<SceneSelect>();	// ゲームオーバーシーンへ行く
+				return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く
 			}
 		}
 	}
@@ -171,7 +175,12 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 
 					if (m_gameClearStagingCount >= 3)
 					{
-						m_pRankingData->Save(m_pTime->GetRemainingTime(), m_pScore->GetTotalScore());
+						m_pRankingData->Save(m_pTime->GetRemainingTime(), m_pScore->GetTotalScore(),
+							m_timeYear, m_timeMonth, m_timeDay, m_timeHour, m_timeMin);
+
+
+
+
 						return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く
 					}
 				}
@@ -186,6 +195,7 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 
 		m_pEnemy->SetDeathFlag(true);
 	}
+
 #endif // DEBUG
 
 	return shared_from_this();
@@ -208,16 +218,42 @@ void SceneGame::Draw()
 
 	m_pFade->Draw();
 
-	// プレイヤーが死亡orタイムアップしたら
-	if (m_pPlayer->GetDeathFlag())
-	{
-		if (!m_pFade->GetHarfFadeFlag()) {
-			DrawGraphF(kLogoPos.x, kLogoPos.y, m_gameOverHandle, true);
-			DrawGraphF(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
-		}
-	}
+	GameClearDraw();
+	GameOverDraw();
 
 
+
+#ifdef _DEBUG
+
+	DrawFormatString(0, 300, 0xffffff, "m_timeYear=%d", m_timeYear);
+	DrawFormatString(0, 320, 0xffffff, "m_timeMonth=%d", m_timeMonth);
+	DrawFormatString(0, 340, 0xffffff, "m_timeDay=%d", m_timeDay);
+	DrawFormatString(0, 360, 0xffffff, "m_timeHour=%d", m_timeHour);
+	DrawFormatString(0, 380, 0xffffff, "m_timeMin=%d", m_timeMin);
+	
+
+#endif // DEBUG
+}
+
+void SceneGame::End()
+{
+	m_pUI->End();
+	m_pSound->ReleaseSound();
+
+	m_pPlayer->End();
+	m_pScore->End();
+
+	DeleteGraph(m_gameClearHandle);
+	DeleteGraph(m_pressAHandle);
+	DeleteGraph(m_defeatedTimeHandle);
+	DeleteGraph(m_scoreHandle);
+	DeleteGraph(m_gameOverHandle);
+	DeleteGraph(m_logoBgHandle);
+	DeleteGraph(m_scoreBgHandle);
+}
+
+void SceneGame::GameClearDraw()
+{	
 	// 敵が死亡したら
 	if (m_pEnemy->GetDeathFlag()) {
 
@@ -247,28 +283,16 @@ void SceneGame::Draw()
 			}
 		}
 	}
-
-#ifdef DEBUG
-	//DrawString(0, 0, "SceneGame", 0xffffff);
-
-DrawFo
-
-#endif // DEBUG
 }
 
-void SceneGame::End()
+void SceneGame::GameOverDraw()
 {
-	m_pUI->End();
-	m_pSound->ReleaseSound();
-
-	m_pPlayer->End();
-	m_pScore->End();
-
-	DeleteGraph(m_gameClearHandle);
-	DeleteGraph(m_pressAHandle);
-	DeleteGraph(m_defeatedTimeHandle);
-	DeleteGraph(m_scoreHandle);
-	DeleteGraph(m_gameOverHandle);
-	DeleteGraph(m_logoBgHandle);
-	DeleteGraph(m_scoreBgHandle);
+	// プレイヤーが死亡orタイムアップしたら
+	if (m_pPlayer->GetDeathFlag() || m_pTime->GetTimeUp())
+	{
+		if (!m_pFade->GetHarfFadeFlag()) {
+			DrawGraphF(kLogoPos.x, kLogoPos.y, m_gameOverHandle, true);
+			DrawGraphF(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
+		}
+	}
 }

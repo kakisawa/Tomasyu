@@ -1,4 +1,5 @@
 ﻿#include "Time.h"
+#include "../Util/Input.h"
 #include "DxLib.h"
 
 namespace {
@@ -130,6 +131,15 @@ void Time::Draw()
 	DrawFormatString(0, 1020, 0xffffff,"残り時間:分=%d", m_minutes);
 	DrawFormatString(0, 1040, 0xffffff,"残り時間:十秒=%d", m_secondsTen);
 	DrawFormatString(0, 1060, 0xffffff,"残り時間:秒=%d", m_secondsOne);*/
+
+	Input input;
+
+
+	input.Update();
+
+	if (input.IsPress(InputInfo::DebugDamageReceived)) {
+		m_remainingTime = 60;
+	}
 
 #endif // DEBUG
 }

@@ -64,6 +64,8 @@ std::shared_ptr<SceneBase> SceneRanking::Update(Input& input)
 
 	SelectRanking(input);
 
+	// ランキングデータを取得
+	m_ranking = m_pRankingData->GetRanking();
 
 
 	if (input.IsTrigger(InputInfo::Back)) {			// Bボタン
@@ -95,29 +97,23 @@ void SceneRanking::Draw()
 	DrawGraphF(kRankingUIPos.x, kRankingUIPos.y, m_rankingUI, true);
 	DrawGraphF(kRankingUI_Change.x, kRankingUI_Change.y, m_rankingSelectUI, true);
 
-	// ランキングデータを取得
-	std::vector<std::pair<int, int>> ranking = m_pRankingData->GetRanking();
-
-	DrawFormatString(0, 500, 0xffffff, "Time:%d", ranking[0].first);
-	DrawFormatString(0, 520, 0xffffff, "Second:%d", ranking[0].second);
 	
-	DrawFormatString(0, 540, 0xffffff, "Time:%d", ranking[1].first);
-	DrawFormatString(0, 560, 0xffffff, "Second:%d", ranking[1].second);
-
-	DrawFormatString(0, 580, 0xffffff, "Time:%d", ranking[2].first);
-	DrawFormatString(0, 600, 0xffffff, "Second:%d", ranking[2].second);
 
 
-	// ランキングデータを表示
-	for (const auto& entry : ranking)
-	{
-		std::cout << "Time: " << entry.first << ", Score: " << entry.second << std::endl;
+	if (m_ranking.size() > 0) {
 
-		
+		for (int i = 0; i < m_ranking.size(); i++)
+		{
+			DrawFormatString(0, 500 + (i * 60), 0xffffff, "Time: %d", std::get<0>(m_ranking[i]));
+			DrawFormatString(0, 520 + (i * 60), 0xffffff, "Score: %d", std::get<1>(m_ranking[i]));
+			DrawFormatString(0, 540 + (i * 60), 0xffffff, "Date: %d/%d/%d/%d/%d",
+				std::get<2>(m_ranking[i]), std::get<3>(m_ranking[i]), std::get<4>(m_ranking[i]),
+				std::get<5>(m_ranking[i]),std::get<6>(m_ranking[i]));
+		}
 	}
+	
 
 #ifdef _DEBUG
-	//DrawString(0, 0, "SceneRanking", 0xffffff);
 #endif // DEBUG
 }
 

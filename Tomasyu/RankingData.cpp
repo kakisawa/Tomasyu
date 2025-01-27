@@ -2,20 +2,25 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <tuple>
 
 namespace {
-	const char* fileName = "Data/csv/RankingData.csv";	// 保存するファイル名
+	const char* kTimeFilePath = "Data/csv/ScoreRankingData.csv";	// スコアランキングデータを保存するファイル名
+	const char* kScoreFilePath = "Data/csv/TimeRankingData.csv";	// タイムランキングデータを保存するファイル名
 	constexpr int kRankingNum = 5;	// 保存する順位数
 }
 
 RankingData::RankingData()
 {
-	Load();
+	Load(kTimeFilePath);
+	Load(kScoreFilePath);
 }
 
-void RankingData::Load()
+void RankingData::Load(const char* path)
 {
-	std::ifstream file(fileName);
+	std::ifstream file(path);
+
+
 	if (!file.is_open()) // ファイル読み込み失敗
 	{
 #ifdef _DEBUG
@@ -29,28 +34,88 @@ void RankingData::Load()
 		while (std::getline(file, line))
 		{
 			std::istringstream ss(line);
-			int time, score;
+			int time = 0, score = 0, year = 0, month = 0, day = 0, hour = 0, min = 0;
 			char comma;
-			ss >> time >> comma >> score;
-			m_ranking.push_back(std::make_pair(time, score));
+			ss >> time >> comma >> score >> comma >> year >> comma >> month >> comma >> day >> comma >> hour >> comma >> min;
+			if (ss.fail()) {
+#ifdef _DEBUG
+				printfDx("データの読み込みに失敗しました: %s\n", line.c_str());
+#endif
+				continue; // 読み込みに失敗した場合は次の行へ
+			}
+			m_ranking.emplace_back(time, score, year, month, day, hour, min);
 		}
 		file.close();
 	}
 }
 
-void RankingData::Save(int time, int score)
+void RankingData::Save(int time, int score, int year, int month, int day, int hour, int min)
 {
-	m_ranking.push_back(std::make_pair(time, score));
+//
+//	// 負の値がある場合は何もせず終了
+//	if (time <= 0 || score <= 0 || year <= 0 || month <= 0 || day <= 0 || hour <= 0 || min <= 0) {
+//#ifdef _DEBUG
+//		printfDx("負の値が含まれているため、保存をスキップしました\n");
+//#endif
+//		return; // 処理を中断
+//	}
+//
+//	m_ranking.emplace_back(time, score, year, month, day, hour, min);
+//	// ランキングをソートして上位 kRankingNum 件を保存
+//	std::sort(m_ranking.begin(), m_ranking.end(), [](const std::tuple<int, int, int, int, int, int, int>& lhs, const std::tuple<int, int, int, int, int, int, int>& rhs) {
+//		return std::get<0>(lhs) > std::get<0>(rhs); // クリア時間でソート
+//		});
+//	if (m_ranking.size() > kRankingNum)
+//	{
+//		m_ranking.resize(kRankingNum);
+//	}
+//
+//	std::ofstream file(fileName, std::ios::out | std::ios::trunc);
+//
+//
+//	if (!file.is_open()) // ファイル書き込み失敗
+//	{
+//#ifdef _DEBUG
+//		printfDx("ファイル書き込み失敗\n");
+//#endif
+//	}
+//	else // ファイル書き込み成功
+//	{
+//		for (const auto& entry : m_ranking)
+//		{
+//			file << std::get<0>(entry) << "," << std::get<1>(entry) << ","
+//				<< std::get<2>(entry) << "," << std::get<3>(entry) << ","
+//				<< std::get<4>(entry) << "," << std::get<5>(entry) << ","
+//				<< std::get<6>(entry) << "\n";
+//		}
+//		file.close();
+//	}
+}
+
+void RankingData::ScoreSave(int score, int year, int month, int day, int hour, int min)
+{
+
+	// 負の値がある場合は何もせず終了
+	if ( score <= 0 || year <= 0 || month <= 0 || day <= 0 || hour <= 0 || min <= 0) {
+#ifdef _DEBUG
+		printfDx("負の値が含まれているため、保存をスキップしました\n");
+#endif
+		return; // 処理を中断
+	}
+
+	m_ranking.emplace_back(score, year, month, day, hour, min);
 	// ランキングをソートして上位 kRankingNum 件を保存
-	std::sort(m_ranking.begin(), m_ranking.end(), [](const auto& lhs, const auto& rhs) {
-		return lhs.first < rhs.first; // クリア時間でソート
+	std::sort(m_ranking.begin(), m_ranking.end(), [](const std::tuple<int, int, int, int, int, int, int>& lhs, const std::tuple<int, int, int, int, int, int, int>& rhs) {
+		return std::get<0>(lhs) > std::get<0>(rhs); // クリア時間でソート
 		});
 	if (m_ranking.size() > kRankingNum)
 	{
 		m_ranking.resize(kRankingNum);
 	}
 
-	std::ofstream file(fileName, std::ios::out | std::ios::trunc);
+	std::ofstream file(kScoreFilePath, std::ios::out | std::ios::trunc);
+
+
 	if (!file.is_open()) // ファイル書き込み失敗
 	{
 #ifdef _DEBUG
@@ -61,45 +126,53 @@ void RankingData::Save(int time, int score)
 	{
 		for (const auto& entry : m_ranking)
 		{
-			file << entry.first << "," << entry.second << "\n";
+			file << std::get<0>(entry) << "," << std::get<1>(entry) << ","
+				<< std::get<2>(entry) << "," << std::get<3>(entry) << ","
+				<< std::get<4>(entry) << "," << std::get<5>(entry) << ","
+				<< std::get<6>(entry) << "\n";
 		}
 		file.close();
 	}
+}
+
+void RankingData::TimeSave(int time, int year, int month, int day, int hour, int min)
+{
+	// 負の値がある場合は何もせず終了
+	if (time <= 0 ||year <= 0 || month <= 0 || day <= 0 || hour <= 0 || min <= 0) {
+#ifdef _DEBUG
+		printfDx("負の値が含まれているため、保存をスキップしました\n");
+#endif
+		return; // 処理を中断
+	}
+
+	m_ranking.emplace_back(time, year, month, day, hour, min);
+	// ランキングをソートして上位 kRankingNum 件を保存
+	std::sort(m_ranking.begin(), m_ranking.end(), [](const std::tuple<int, int, int, int, int, int, int>& lhs, const std::tuple<int, int, int, int, int, int, int>& rhs) {
+		return std::get<0>(lhs) > std::get<0>(rhs); // クリア時間でソート
+		});
+	if (m_ranking.size() > kRankingNum)
+	{
+		m_ranking.resize(kRankingNum);
+	}
+
+	std::ofstream file(kTimeFilePath, std::ios::out | std::ios::trunc);
 
 
-
-
-	// 時間の保存（途中）
-	
-
-
-
-
-
-
-
-//	std::ofstream file(fileName, std::ios::out | std::ios::trunc);
-//	if (!file.is_open()) // ファイル書き込み失敗
-//	{
-//#ifdef _DEBUG
-//		printfDx("ファイル書き込み失敗\n");
-//#endif
-//	}
-//	else // ファイル書き込み成功
-//	{
-//		m_ranking.push_back(std::make_pair(time, score));
-//		// ランキングをソートして上位 kRankingNum 件を保存
-//		std::sort(m_ranking.begin(), m_ranking.end(), [](const auto& lhs, const auto& rhs) {
-//			return lhs.first < rhs.first; // クリア時間でソート
-//			});
-//		if (m_ranking.size() > kRankingNum)
-//		{
-//			m_ranking.resize(kRankingNum);
-//		}
-//		for (const auto& entry : m_ranking)
-//		{
-//			file << entry.first << "," << entry.second << "\n";
-//		}
-//		file.close();
-//	}
+	if (!file.is_open()) // ファイル書き込み失敗
+	{
+#ifdef _DEBUG
+		printfDx("ファイル書き込み失敗\n");
+#endif
+	}
+	else // ファイル書き込み成功
+	{
+		for (const auto& entry : m_ranking)
+		{
+			file << std::get<0>(entry) << "," << std::get<1>(entry) << ","
+				<< std::get<2>(entry) << "," << std::get<3>(entry) << ","
+				<< std::get<4>(entry) << "," << std::get<5>(entry) << ","
+				<< std::get<6>(entry) << "\n";
+		}
+		file.close();
+	}
 }

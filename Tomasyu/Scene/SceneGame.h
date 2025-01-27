@@ -23,6 +23,9 @@ public:
     virtual void Draw() override;
     virtual void End() override;
 
+    void GameClearDraw();
+	void GameOverDraw();
+
 private:
     int m_gameClearHandle;      // ゲームクリアロゴ画像
     int m_gameOverHandle;       // ゲームオーバーロゴ画像
@@ -42,6 +45,8 @@ private:
 	int m_timeYear;     // 年
 	int m_timeMonth;    // 月
 	int m_timeDay;      // 日
+	int m_timeHour;     // 時間
+	int m_timeMin;      // 分
 
     // カメラ
     std::shared_ptr<Camera> m_pCamera = std::make_shared<Camera>();
