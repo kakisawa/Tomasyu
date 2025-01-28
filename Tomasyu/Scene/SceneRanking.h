@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "SceneBase.h"
+
+
 class RankingData;
 class SceneRanking :
     public SceneBase
@@ -33,6 +35,7 @@ private:
 
 	std::shared_ptr<RankingData> m_pRankingData = std::make_shared<RankingData>();
 
-	std::vector<std::tuple<int, int, int, int, int, int, int>> m_ranking;
+    std::vector<std::tuple<int, int, int, int, int, int>> m_scoreRanking;	// スコアランキング
+    std::vector<std::tuple<int, int, int, int, int, int>> m_timeRanking;	// タイムランキング
 };
 

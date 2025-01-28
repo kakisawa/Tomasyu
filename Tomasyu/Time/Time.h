@@ -56,6 +56,12 @@ public:
 	int GetRemainingTime() const {return m_remainingTime;}
 
 	/// <summary>
+	/// 経過時間を渡す
+	/// </summary>
+	/// <returns>経過カウント</returns>
+	int GetElapsedTime() const { return m_elapsedTime; }
+
+	/// <summary>
 	/// 制限時間終了フラグを渡す
 	/// </summary>
 	/// <returns>制限時間終了フラグ</returns>

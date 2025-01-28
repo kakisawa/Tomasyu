@@ -463,25 +463,21 @@ void Player::ItemChange()
 	}
 	if (m_getItem == 2)
 	{
-		m_setItem = Item::ItemKind::SwivelChair;
+		m_setItem = Item::ItemKind::landmine;
 	}
 	if (m_getItem == 3)
 	{
-		m_setItem = Item::ItemKind::landmine;
+		m_setItem = Item::ItemKind::SurpriseBox;
 	}
 	if (m_getItem == 4)
 	{
-		m_setItem = Item::ItemKind::SurpriseBox;
+		m_setItem = Item::ItemKind::RecoveryMedic;
 	}
 	if (m_getItem == 5)
 	{
-		m_setItem = Item::ItemKind::RecoveryMedic;
-	}
-	if (m_getItem == 6)
-	{
 		m_setItem = Item::ItemKind::Ammunition;
 	}
-	if (m_getItem == 7)
+	if (m_getItem == 6)
 	{
 		m_setItem = Item::ItemKind::SummonBox;
 	}
@@ -512,15 +508,6 @@ void Player::UseItem(Input& input)
 		{
 			// 使用するアイテムが氷床だった場合
 			if (m_item[m_useItem] == Item::ItemKind::IceFloor)
-			{
-				//プレイヤーの罠設置状態をtrueにする
-				m_status.situation.isInstallation = true;
-				// 罠設置アニメーションを入れる
-				ChangeAnimNo(PlayerAnim::Installation, m_animSpeed.Installation, false, m_animChangeTime.Installation);
-			}
-
-			// 使用するアイテムが回転椅子だった場合
-			if (m_item[m_useItem] == Item::ItemKind::SwivelChair)
 			{
 				//プレイヤーの罠設置状態をtrueにする
 				m_status.situation.isInstallation = true;

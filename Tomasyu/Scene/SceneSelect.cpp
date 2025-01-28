@@ -43,7 +43,7 @@ namespace {
 	const char* const kSceneSelectGtaph[5]{
 		"Data/Image/SceneSelect/SceneGameGraph.png",
 		"Data/Image/SceneSelect/SceneRankingGraph.png",
-		"Data/Image/SceneSelect/",
+		"Data/Image/SceneSelect/SceneExplanation.png",
 		"Data/Image/SceneSelect/",
 		"Data/Image/SceneSelect/",
 	};
@@ -154,11 +154,11 @@ std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 	}
 	else if (m_nextScene == nextScene::ExplanationScene)
 	{
-		m_nextSceneGrapgh = m_sceneSelectGtaph[3];
+		m_nextSceneGrapgh = m_sceneSelectGtaph[2];
 	}
 	else if (m_nextScene == nextScene::OptionScene)
 	{
-		m_nextSceneGrapgh = m_sceneSelectGtaph[2];
+		m_nextSceneGrapgh = m_sceneSelectGtaph[3];
 	}
 	else if (m_nextScene == nextScene::RankingScene)
 	{

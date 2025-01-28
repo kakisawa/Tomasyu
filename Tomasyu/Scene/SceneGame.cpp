@@ -175,10 +175,11 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 
 					if (m_gameClearStagingCount >= 3)
 					{
-						m_pRankingData->Save(m_pTime->GetRemainingTime(), m_pScore->GetTotalScore(),
+						m_pRankingData->TimeSave(m_pTime->GetElapsedTime(),
 							m_timeYear, m_timeMonth, m_timeDay, m_timeHour, m_timeMin);
 
-
+						m_pRankingData->ScoreSave(m_pScore->GetTotalScore(),
+							m_timeYear, m_timeMonth, m_timeDay, m_timeHour, m_timeMin);
 
 
 						return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く

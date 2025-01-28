@@ -3,6 +3,7 @@
 #include "../RankingData.h"
 #include "SceneDebug.h"
 #include <iostream>
+#include <tuple>
 
 using namespace MyInputInfo;
 
@@ -54,9 +55,8 @@ void SceneRanking::Init()
 
 	m_pSound->PlayBGM(SoundManager::BGM_Type::kRankingBGM, DX_PLAYTYPE_LOOP);
 
-	m_pRankingData->Load();
-
-	
+	m_pRankingData->ScoreLoad();
+	m_pRankingData->TimeLoad();	
 }
 
 std::shared_ptr<SceneBase> SceneRanking::Update(Input& input)
@@ -65,7 +65,8 @@ std::shared_ptr<SceneBase> SceneRanking::Update(Input& input)
 	SelectRanking(input);
 
 	// ランキングデータを取得
-	m_ranking = m_pRankingData->GetRanking();
+	m_scoreRanking = m_pRankingData->GetScoreRanking();
+	m_timeRanking = m_pRankingData->GetTimeRanking();
 
 
 	if (input.IsTrigger(InputInfo::Back)) {			// Bボタン
@@ -100,17 +101,28 @@ void SceneRanking::Draw()
 	
 
 
-	if (m_ranking.size() > 0) {
+	if (m_scoreRanking.size() > 0) {
 
-		for (int i = 0; i < m_ranking.size(); i++)
+		for (int i = 0; i < m_scoreRanking.size(); i++)
 		{
-			DrawFormatString(0, 500 + (i * 60), 0xffffff, "Time: %d", std::get<0>(m_ranking[i]));
-			DrawFormatString(0, 520 + (i * 60), 0xffffff, "Score: %d", std::get<1>(m_ranking[i]));
-			DrawFormatString(0, 540 + (i * 60), 0xffffff, "Date: %d/%d/%d/%d/%d",
-				std::get<2>(m_ranking[i]), std::get<3>(m_ranking[i]), std::get<4>(m_ranking[i]),
-				std::get<5>(m_ranking[i]),std::get<6>(m_ranking[i]));
+			DrawFormatString(0, 500 + (i * 40), 0xffffff, "Score: %d", std::get<0>(m_scoreRanking[i]));
+			DrawFormatString(0, 520 + (i * 40), 0xffffff, "Date: %d/%d/%d/%d/%d",
+				std::get<1>(m_scoreRanking[i]), std::get<2>(m_scoreRanking[i]), std::get<3>(m_scoreRanking[i]),
+				std::get<4>(m_scoreRanking[i]),std::get<5>(m_scoreRanking[i]));
 		}
 	}
+
+	if (m_timeRanking.size() > 0) {
+
+		for (int i = 0; i < m_timeRanking.size(); i++)
+		{
+			DrawFormatString(200, 500 + (i * 40), 0xffffff, "Time: %d:%d", std::get<0>(m_timeRanking[i])/3600, (std::get<0>(m_timeRanking[i])%3600)/60);
+			DrawFormatString(200, 520 + (i * 40), 0xffffff, "Date: %d/%d/%d/%d/%d",
+				std::get<1>(m_timeRanking[i]), std::get<2>(m_timeRanking[i]), std::get<3>(m_timeRanking[i]),
+				std::get<4>(m_timeRanking[i]), std::get<5>(m_timeRanking[i]));
+		}
+	}
+
 	
 
 #ifdef _DEBUG

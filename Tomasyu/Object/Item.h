@@ -4,7 +4,7 @@
 #include <DxLib.h>
 
 namespace {
-	constexpr int kItemKind = 7;	// アイテムの種類数
+	constexpr int kItemKind = 6;	// アイテムの種類数
 	constexpr float kItemRespawnTime = 200.0f;	// アイテムリスポーン時間
 }
 
@@ -51,7 +51,6 @@ public:
 	enum class ItemKind {
 		NoItem,			// アイテム無し
 		IceFloor,		// 氷床
-		SwivelChair,	// 回転椅子
 		landmine,		// 地雷
 		SurpriseBox,	// びっくり箱
 		RecoveryMedic,	// 回復薬
