@@ -477,10 +477,6 @@ void Player::ItemChange()
 	{
 		m_setItem = Item::ItemKind::Ammunition;
 	}
-	if (m_getItem == 6)
-	{
-		m_setItem = Item::ItemKind::SummonBox;
-	}
 }
 
 void Player::UseItem(Input& input)
@@ -558,15 +554,6 @@ void Player::UseItem(Input& input)
 			// 弾再装填のアニメーションを入れる
 			ChangeAnimNo(PlayerAnim::Reload, m_animSpeed.Reload, false, m_animChangeTime.Reload);
 		}
-
-		// 使用するアイテムが召喚アイテムだった場合
-		if (m_item[m_useItem] == Item::ItemKind::SummonBox)
-		{
-			//プレイヤーの召喚状態をtrueにする
-			m_status.situation.isSummon = true;
-			//召喚するアニメーションを入れる
-			ChangeAnimNo(PlayerAnim::Summon, m_animSpeed.Summon, false, m_animChangeTime.Summon);
-		}
 	}
 
 	// プレイヤーがアイテム使用状態かつ、アイテム使用アニメーションが終了したら
@@ -576,7 +563,6 @@ void Player::UseItem(Input& input)
 		m_status.situation.isInstallation = false;
 		m_status.situation.isDrink = false;
 		m_status.situation.isReload = false;
-		m_status.situation.isSummon = false;
 		m_status.situation.isUseItem = false;
 
 		m_item[m_useItem] = Item::ItemKind::NoItem;

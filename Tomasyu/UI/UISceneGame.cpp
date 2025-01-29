@@ -53,15 +53,15 @@ namespace {
 		"Data/Image/SceneGame/文字UI_仮.png",
 		"Data/Image/SceneGame/文字UI_地雷.png",
 		"Data/Image/SceneGame/文字UI_びっくり箱.png",
-		"Data/Image/SceneGame/文字UI_回復薬.png",
 		"Data/Image/SceneGame/文字UI_氷床.png",
-		"Data/Image/SceneGame/文字UI_回転椅子.png",
+		"Data/Image/SceneGame/文字UI_回復薬.png",
+		"Data/Image/SceneGame/文字UI_弾薬.png",
 		"Data/Image/SceneGame/文字UI_ハンドガン.png",
 		"Data/Image/SceneGame/文字UI_マシンガン.png",
 		"Data/Image/SceneGame/文字UI_ナイフ.png",
 	};
 
-	const char* const kPlayerToolUI[10]{
+	const char* const kPlayerToolUI[12]{
 		"Data/Image/SceneGame/アイテム・武器大本.png",
 		"Data/Image/SceneGame/武器カーソル.png",
 		"Data/Image/SceneGame/アイテムカーソル.png",
@@ -69,7 +69,9 @@ namespace {
 		"Data/Image/SceneGame/アイテム_仮.png",
 		"Data/Image/SceneGame/アイテム_地雷.png",
 		"Data/Image/SceneGame/アイテム_びっくり箱.png",
+		"Data/Image/SceneGame/アイテム_氷床.png",
 		"Data/Image/SceneGame/アイテム_回復薬.png",
+		"Data/Image/SceneGame/アイテム_弾薬.png",
 		"Data/Image/SceneGame/ChangeWeapon.png",		// 武器切り替えUI
 		"Data/Image/SceneGame/ChangeItem.png",			// アイテム切り替えUI
 	};
@@ -187,8 +189,8 @@ void UISceneGame::Draw()
 	}
 
 	// 武器・アイテム切り替えUI
-	DrawGraphF(kChangeButtonPos[0].x, kChangeButtonPos[0].y, m_playerToolUIHandle[8], true);
-	DrawGraphF(kChangeButtonPos[1].x, kChangeButtonPos[1].y, m_playerToolUIHandle[9], true);
+	DrawGraphF(kChangeButtonPos[0].x, kChangeButtonPos[0].y, m_playerToolUIHandle[10], true);
+	DrawGraphF(kChangeButtonPos[1].x, kChangeButtonPos[1].y, m_playerToolUIHandle[11], true);
 
 
 	// 選択中の武器文字UI
@@ -320,35 +322,25 @@ void UISceneGame::UpdateWeaponUI(const Player& player)
 void UISceneGame::SetUI_SelectItem(const Player& player)
 {
 	// 選択中アイテム名UIの表示
-	if (player.item() == Item::ItemKind::IceFloor)
-	{
-		m_useItemChara = m_itemCharaUIHnadle[4];
-	}
-	if (player.item() == Item::ItemKind::SwivelChair)
-	{
-		m_useItemChara = m_itemCharaUIHnadle[5];
-	}
 	if (player.item() == Item::ItemKind::landmine)
 	{
 		m_useItemChara = m_itemCharaUIHnadle[1];
 	}
-	if (player.item() == Item::ItemKind::SurpriseBox)
+	else if (player.item() == Item::ItemKind::SurpriseBox)
 	{
 		m_useItemChara = m_itemCharaUIHnadle[2];
 	}
-	if (player.item() == Item::ItemKind::RecoveryMedic)
+	else if (player.item() == Item::ItemKind::IceFloor)
 	{
 		m_useItemChara = m_itemCharaUIHnadle[3];
 	}
-
-	// 後々消す予定
-	if (player.item() == Item::ItemKind::Ammunition)
+	else if (player.item() == Item::ItemKind::RecoveryMedic)
 	{
-		m_useItemChara = m_itemCharaUIHnadle[0];	// まだやってない
+		m_useItemChara = m_itemCharaUIHnadle[4];
 	}
-	if (player.item() == Item::ItemKind::SummonBox)
+	else if (player.item() == Item::ItemKind::Ammunition)
 	{
-		m_useItemChara = m_itemCharaUIHnadle[0];	// まだやってない
+		m_useItemChara = m_itemCharaUIHnadle[5];	// まだやってない
 	}
 }
 
@@ -357,15 +349,7 @@ void UISceneGame::SetUI_GetItem(const Player& player)
 	for (int i = 0; i < m_itemUI.size(); i++)
 	{
 		// アイテム枠
-		if (player.m_item[i] == Item::ItemKind::IceFloor)
-		{
-			m_itemUI[i] = m_playerToolUIHandle[4];		// 仮
-		}
-		else if (player.m_item[i] == Item::ItemKind::SwivelChair)
-		{
-			m_itemUI[i] = m_playerToolUIHandle[4];		// 仮
-		}
-		else if (player.m_item[i] == Item::ItemKind::landmine)
+		if (player.m_item[i] == Item::ItemKind::landmine)
 		{
 			m_itemUI[i] = m_playerToolUIHandle[5];
 		}
@@ -373,19 +357,17 @@ void UISceneGame::SetUI_GetItem(const Player& player)
 		{
 			m_itemUI[i] = m_playerToolUIHandle[6];
 		}
-		else if (player.m_item[i] == Item::ItemKind::RecoveryMedic)
+		else if (player.m_item[i] == Item::ItemKind::IceFloor)
 		{
 			m_itemUI[i] = m_playerToolUIHandle[7];
 		}
-
-		// 後で削除予定
+		else if (player.m_item[i] == Item::ItemKind::RecoveryMedic)
+		{
+			m_itemUI[i] = m_playerToolUIHandle[8];
+		}
 		else if (player.m_item[i] == Item::ItemKind::Ammunition)
 		{
-			m_itemUI[i] = m_playerToolUIHandle[4];		// 仮
-		}
-		else if (player.m_item[i] == Item::ItemKind::SummonBox)
-		{
-			m_itemUI[i] = m_playerToolUIHandle[4];		// 仮
+			m_itemUI[i] = m_playerToolUIHandle[9];
 		}
 	}
 }

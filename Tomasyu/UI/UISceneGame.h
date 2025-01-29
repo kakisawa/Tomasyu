@@ -103,7 +103,7 @@ private:
 	std::map<GunType, BalanceBullet> balanceBullets = {};	// 銃の残弾管理
 	
 	std::array<int, 9>m_itemCharaUIHnadle{};		// 文字画像UI用ハンドル
-	std::array<int, 10>m_playerToolUIHandle{};	// 武器・アイテム画像UI用ハンドル
+	std::array<int, 12>m_playerToolUIHandle{};	// 武器・アイテム画像UI用ハンドル
 	std::array<int, 7>m_barUIHandle{};			// HP・スタミナバー画像UI用ハンドル
 
 	std::array<int, 10>m_numberUIHandle{};	// 残弾表示UI用ハンドル

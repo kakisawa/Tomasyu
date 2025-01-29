@@ -55,7 +55,6 @@ public:
 		SurpriseBox,	// びっくり箱
 		RecoveryMedic,	// 回復薬
 		Ammunition,		// 弾薬
-		SummonBox,		// 召喚BOX
 	};
 
 private:

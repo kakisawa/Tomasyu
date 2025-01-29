@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "SceneBase.h"
+#include <array>
+
 class SceneExplanation :
     public SceneBase
 {
@@ -13,6 +15,11 @@ public:
     virtual void End() override;
 
 private:
+	int m_explanationHandle{};	// 説明画像ハンドル
+
+	int m_count;	// 画像変更カウント
+
+	std::array<int, 2> m_triangleUIHandle{};	// 三角形画像ハンドル
+	std::array<int, 3> m_explanationUIHandle{};	// 説明画像ハンドル
 
 };
-

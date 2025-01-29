@@ -21,7 +21,6 @@ public:
 		bool isInstallation = false;	// 罠使用中
 		bool isDrink = false;			// 回復アイテム使用中
 		bool isReload = false;			// 弾再装填アイテム使用中
-		bool isSummon = false;			// 召喚アイテム使用中
 		bool isGunAttack = false;		// 銃攻撃中
 		bool isKnifeAttack = false;		// ナイフ攻撃中
 		bool isRoll = false;			// 回避中
@@ -73,7 +72,6 @@ public:
 		int Knife3 = 5;			// ナイフ攻撃3
 		int Installation = 5;	// 罠設置
 		int Drink = 1;			// 飲む
-		int Summon = 5;			// 召喚
 		int Reload = 5;			// 弾再装填
 
 		// ここから下未定
@@ -96,7 +94,6 @@ public:
 		float Knife3 = 0.8f;		// ナイフ攻撃3
 		float Installation = 1.3f;	// 罠設置
 		float Drink = 1.3f;			// 飲む
-		float Summon = 1.0f;		// 召喚
 		float Reload = 0.6f;		// 弾再装填
 		float DamageReceived = 1.0f;// 被ダメージ
 		float Roll = 0.5f;			// 回避
