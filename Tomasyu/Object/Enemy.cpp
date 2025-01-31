@@ -131,11 +131,11 @@ void Enemy::Draw()
 
 	//DrawFormatString(0, 140, 0xffffff, "Enemy:HP=%d", m_hp);
 	//DrawFormatString(0, 780, 0xffffff, "Enemy:m_pos.x=%.2f:z=%.2f", m_pos.x, m_pos.z);
-	//DrawFormatString(0, 800, 0xffffff, "Enemy:m_targetMoveDistance=%.2f", m_targetMoveDistance);
-	//DrawFormatString(0, 820, 0xffffff, "Enemy:m_targetDistance=%.2f", m_targetDistance);
-	//DrawFormatString(0, 840, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
-	//DrawFormatString(0, 860, 0xffffff, "Enemy:m_startPos.x=%.2f:z=%.2f", m_startPos.x, m_startPos.z);
-	//DrawFormatString(0, 880, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
+	DrawFormatString(0, 800, 0xffffff, "Enemy:m_targetMoveDistance=%.2f", m_targetMoveDistance);
+	DrawFormatString(0, 1000, 0xffffff, "Enemy:m_targetDistance=%.2f", m_targetDistance);
+	DrawFormatString(0, 1020, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
+	DrawFormatString(0, 1040, 0xffffff, "Enemy:m_startPos.x=%.2f:z=%.2f", m_startPos.x, m_startPos.z);
+	DrawFormatString(0, 1060, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_move.x=%.2f:z=%.2f", m_move.x, m_move.z);
 	//DrawFormatString(0, 920, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
 	//DrawFormatString(0, 940, 0xffffff, "Enemy:m_isAttackToPlayer=%d", m_isAttackToPlayer);
@@ -171,29 +171,6 @@ void Enemy::Move(const Map& map)
 	
 	if (isMove)
 	{
-		// Pos1からPos2
-		/*if (m_pos.x != map.GetPointPos().point2.x) {
-			m_move.x = m_chara.walkSpeed;
-		}
-		else if (m_pos.z != map.GetPointPos().point2.z)
-		{
-			m_move.z = m_chara.walkSpeed;
-		}*/
-
-
-
-		//if(m_targetPos)
-
-
-
-		// Pos2からPos3
-
-
-		// Pos3からPos4
-
-
-		// Pos4からPos1
-
 
 		if (m_pos.x != m_targetPos.x) {
 			if (m_pos.x >= m_targetPos.x)

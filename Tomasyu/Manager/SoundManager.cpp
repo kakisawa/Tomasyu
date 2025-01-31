@@ -1,99 +1,77 @@
 ﻿#include "SoundManager.h"
+#include "../Util/Input.h"
 #include "DxLib.h"
 
 namespace {
 	// 音量の最大
 	constexpr int kMaxVolume = 255;
 
-	// 初期音量
-	constexpr float kInitBgmVolume = kMaxVolume * 0.6f;	// BGM初期音量
-	constexpr float kInitSeVolume = kMaxVolume * 0.6f;	// SE初期音量
+	// 音量の初期値
+	constexpr float kInitBgmVolume = (kMaxVolume / 7.0f) * 5.0f;	// BGM初期音量
+	constexpr float kInitSeVolume = (kMaxVolume / 7.0f) * 5.0f;// SE初期音量
+
 
 	// 変更後音量保存
 	float kChangeBgm = kInitBgmVolume;
 	float kChangeSe = kInitSeVolume;
 }
 
-void SoundManager::Init(Input input)
+void SoundManager::Init()
 {
 	// 音量を調整
-	m_select = Select::kBgmVolume;
-	m_input = input;
-
 	InitSound();
 }
 
-void SoundManager::ChangeSound()
+void SoundManager::ChangeSEVolume(Input& input)
 {
-	// 右キーを押すと音量を上げる
-	if (m_input.IsTrigger(InputInfo::Right))
+	if (input.IsTrigger(InputInfo::Right))
 	{
-		if (m_select == kSeVolume)
+		m_seVolume += (kMaxVolume / 7.0f) * 1.0f;
+		SetSeVolume();
+		PlaySE(SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
+		if (m_seVolume >= kMaxVolume - (kMaxVolume / 7.0f) * 1.0f)
 		{
-			m_seVolume += kMaxVolume * 0.08f;
-			SetSeVolume();
-			PlaySE(SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
-			if (m_seVolume >= kMaxVolume)
-			{
-				m_seVolume = kMaxVolume;
-			}
-			kChangeSe = m_seVolume;
+			m_seVolume = kMaxVolume;
 		}
-		else if (m_select == kBgmVolume)
-		{
-			m_bgmVolume += kMaxVolume * 0.08f;
-			SetBgmVolume();
-			if (m_bgmVolume >= kMaxVolume)
-			{
-				m_bgmVolume = kMaxVolume;
-			}
-			kChangeBgm = m_bgmVolume;
-		}
-	}	// 左キーを押すと、音量が下がる
-	else if (m_input.IsTrigger(InputInfo::Left))
+		kChangeSe = m_seVolume;
+	}
+
+	if (input.IsTrigger(InputInfo::Left))
 	{
-		if (m_select == kBgmVolume)
+		m_seVolume -= (kMaxVolume / 7.0f) * 1.0f;
+		SetSeVolume();
+		PlaySE(SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
+		if (m_seVolume <= 0)
 		{
-			m_bgmVolume -= kMaxVolume * 0.08f;
-			SetBgmVolume();
-			if (m_bgmVolume <= 0)
-			{
-				m_bgmVolume = 0;
-			}
-			kChangeBgm = m_bgmVolume;
+			m_seVolume = 0;
 		}
-		if (m_select == kSeVolume)
-		{
-			m_seVolume -= kMaxVolume * 0.08f;
-			SetSeVolume();
-			PlaySE(SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
-			if (m_seVolume <= 0)
-			{
-				m_seVolume = 0;
-			}
-			kChangeSe = m_seVolume;
-		}
+		kChangeSe = m_seVolume;
 	}
 }
 
-void SoundManager::SelectOption()
+void SoundManager::ChangeBGMVolume(Input& input)
 {
-	if (m_input.IsTrigger(InputInfo::Up))
+	if (input.IsTrigger(InputInfo::Right))
 	{
-		m_select -= 1;
-		if (m_select <= -1)
+		m_bgmVolume += (kMaxVolume / 7.0f) * 1.0f;
+		SetBgmVolume();
+		if (m_bgmVolume >= kMaxVolume- (kMaxVolume / 7.0f) * 1.0f)
 		{
-			m_select = Select::kBack;
+			m_bgmVolume = kMaxVolume;
 		}
-	}
+		kChangeBgm = m_bgmVolume;
 
-	if (m_input.IsTrigger(InputInfo::Down))
+	}
+	else if (input.IsTrigger(InputInfo::Left))
 	{
-		m_select += 1;
-		if (m_select >= 3)
+		m_bgmVolume -= (kMaxVolume / 7.0f) * 1.0f;
+		SetBgmVolume();
+		if (m_bgmVolume <= 0)
 		{
-			m_select = Select::kBgmVolume;
+			m_bgmVolume = 0;
 		}
+		kChangeBgm = m_bgmVolume;
+
 	}
 }
 
@@ -134,9 +112,9 @@ void SoundManager::InitSE(void)
 	m_sePass[SE_Type::kButtonSE] = "Button.mp3";
 	m_sePass[SE_Type::kBackSE] = "";
 	m_sePass[SE_Type::kHandGunSE] = "HandGun.mp3";
-	m_sePass[SE_Type::kMachineGunSE]= "";
+	m_sePass[SE_Type::kMachineGunSE] = "";
 	m_sePass[SE_Type::kKnifeSE] = "Knife.mp3";
-	m_sePass[SE_Type::kInstallationSE ] = "";
+	m_sePass[SE_Type::kInstallationSE] = "";
 	m_sePass[SE_Type::kDrinkSE] = "";
 	m_sePass[SE_Type::kSummonSE] = "";
 	m_sePass[SE_Type::kDamageReceivedSE] = "";
@@ -199,7 +177,7 @@ void SoundManager::ReleaseSound(void)
 
 void SoundManager::SetBgmVolume()
 {
-	for (const auto& entry : m_bgm) 
+	for (const auto& entry : m_bgm)
 	{
 		ChangeVolumeSoundMem(static_cast<int>(m_bgmVolume), entry.second);
 	}

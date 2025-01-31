@@ -18,9 +18,19 @@ public:
     /// <param name="num"></param>
     void ChangeCursorInfo(int num);
 
+	void ChangeSoundVolume();
+
+	void SetVolumeUI();
+
 private:
-    int m_optionGraph;
-    int m_cursorGraph;
+    int m_optionHandle;
+    int m_cursorHandle;
+    int m_volumeHandle;
+
+    std::array<int, 7> m_bgmVolumeUI{};   //
+	std::array<int, 7> m_seVolumeUI{};   //
+
+
 
     struct Cursor   // 選択中のセレクト
     {

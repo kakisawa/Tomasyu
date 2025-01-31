@@ -30,24 +30,18 @@ private:
     int m_selectGraphX, m_selectGraphY; // 選択中のセレクト画像のサイズ獲得用
 
     int m_nextSceneGrapgh;          // セレクト中のシーンの画像
-    int m_nextSceneIntroductionHandle;    // セレクト中のシーンの説明
+    int m_nextSceneIntroductionGraph;    // セレクト中のシーンの説明
 
     int m_pressAHandle;    // Aボタンを押す画像
     int m_cursorUIHandle;  // カーソル画像
 	int m_bgHandle;        // 背景画像
 
+	VECTOR m_cursolPos;	 // カーソルの座標
+
 
     std::array<int, 5> m_sceneSelectUIHandle{};   // シーンセレクトUI
     std::array<int, 5> m_sceneSelectHandle{};    // シーンセレクト画像
     std::array<int, 5> m_sceneSelectIntroductionHandle{};    // シーンセレクト説明画像
-
-    struct Cursor			// 選択中のセレクト
-    {
-        VECTOR m_selectBox1;	// 四角始点
-        VECTOR m_selectBox2;	// 四角終点
-    }c1;
-
-
 
     enum class nextScene {
         None,               // 無し

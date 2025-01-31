@@ -20,40 +20,42 @@ namespace {
 			VGet(641.0f,798.0f,0.0f)		// ゲームを終了する
 	};
 
-	const VECTOR kExampleGraph = VGet(958.0f, 162.0f, 0.0f);		// 例画像座標
+	const VECTOR kExampleGraph = VGet(958.0f, 162.0f, 0.0f);	// 例画像座標
 	const VECTOR kExplanatoryText = VGet(950.0f, 708.0f, 0.0f);	// 説明文座標
-	const VECTOR kPressAPos = VGet(700.0f, 1000.0f, 0.0f);			// Aボタンを押す座標
+	const VECTOR kPressAPos = VGet(700.0f, 1000.0f, 0.0f);		// Aボタンを押す座標
 
 	const VECTOR kCursorUIPos[5]{
-			VGet(kScenenSelectUIPos[0].x - 2,kScenenSelectUIPos[0].y - 2,0.0f),	// ゲームを始める
-			VGet(kScenenSelectUIPos[1].x - 2,kScenenSelectUIPos[1].y - 2,0.0f),	// ランキング
-			VGet(kScenenSelectUIPos[2].x - 2,kScenenSelectUIPos[2].y - 2,0.0f),	// 設定
-			VGet(kScenenSelectUIPos[3].x - 2,kScenenSelectUIPos[3].y - 2,0.0f),	// 操作説明
-			VGet(kScenenSelectUIPos[4].x - 2,kScenenSelectUIPos[4].y - 2,0.0f),	// ゲームを終了する
+			VGet(517.0f,177.0f,0.0f),	// ゲームを始める
+			VGet(386.0f,587.0f,0.0f),	// ランキング
+			VGet(754.0f,587.0f,0.0f),	// 設定
+			VGet(372.0f,762.0f,0.0f),	// 操作説明
+			VGet(753.0f,762.0f,0.0f),	// ゲームを終了する
 	};
 
+
+
 	const char* const kSceneSelectUI[5]{
-		"Data/Image/SceneSelect/GameStartUI.png",
-		"Data/Image/SceneSelect/RankingUI.png",
-		"Data/Image/SceneSelect/SettingUI.png",
-		"Data/Image/SceneSelect/Operate.png",
-		"Data/Image/SceneSelect/GameFinishUI.png",
+		"Data/Image/SceneSelect/GameStartUI.png",		// ゲームを始める
+		"Data/Image/SceneSelect/RankingUI.png",			// ランキング
+		"Data/Image/SceneSelect/SettingUI.png",			// 設定
+		"Data/Image/SceneSelect/Operate.png",			// 操作説明
+		"Data/Image/SceneSelect/GameFinishUI.png",		// ゲームを終了する
 	};
 
 	const char* const kSceneSelectGtaph[5]{
-		"Data/Image/SceneSelect/SceneGameGraph.png",
-		"Data/Image/SceneSelect/SceneRankingGraph.png",
-		"Data/Image/SceneSelect/SceneExplanation.png",
-		"Data/Image/SceneSelect/",
-		"Data/Image/SceneSelect/",
+		"Data/Image/SceneSelect/SceneGameGraph.png",	// ゲームを始める
+		"Data/Image/SceneSelect/SceneRankingGraph.png",	// ランキング
+		"Data/Image/SceneSelect/SceneSetting.png",		// 設定
+		"Data/Image/SceneSelect/SceneExplanation.png",	// 操作説明
+		"Data/Image/SceneSelect/",						// ゲームを終了する
 	};
 
 	const char* const kSceneSelectIntroductionGtaph[5]{
-		"Data/Image/SceneSelect/",
-		"Data/Image/SceneSelect/",
-		"Data/Image/SceneSelect/",
-		"Data/Image/SceneSelect/",
-		"Data/Image/SceneSelect/",
+		"Data/Image/SceneSelect/GameStartText.png",
+		"Data/Image/SceneSelect/RankingText.png",
+		"Data/Image/SceneSelect/SettingText.png",
+		"Data/Image/SceneSelect/ExplanationText.png",
+		"Data/Image/SceneSelect/GameFinishTextUI.png",
 	};
 }
 
@@ -62,7 +64,7 @@ SceneSelect::SceneSelect() :
 	m_selectGraphY(0),
 	m_sceneSelectGraph(-1),
 	m_nextSceneGrapgh(-1),
-	m_nextSceneIntroductionHandle(-1),
+	m_nextSceneIntroductionGraph(-1),
 	m_cursorUIHandle(-1),
 	m_pressAHandle(-1),
 	m_bgHandle(-1),
@@ -91,16 +93,15 @@ void SceneSelect::Init()
 	}
 
 	// 画像の読み込み
-	m_nextSceneIntroductionHandle = LoadGraph("Data/Image/SceneSelect/説明文.png");
-	m_cursorUIHandle = LoadGraph("Data/Image/SceneSelect/Cursor1.png");
+	m_nextSceneIntroductionGraph = LoadGraph("Data/Image/SceneSelect/説明文.png");
+	m_cursorUIHandle = LoadGraph("Data/Image/SceneSelect/Cursor.png");
 	m_pressAHandle = LoadGraph("Data/Image/SceneGame/PressA.png");
 	m_bgHandle = LoadGraph("Data/Image/SceneSelect/board2.png");
 
 
 	m_sceneSelectGraph = m_sceneSelectUIHandle[0];
 	GetGraphSize(m_sceneSelectGraph, &m_selectGraphX, &m_selectGraphY);
-	c1.m_selectBox1 = kCursorUIPos[0];
-	c1.m_selectBox2 = VGet(kCursorUIPos[0].x + m_selectGraphX, kCursorUIPos[0].y + m_selectGraphY, 0.0f);
+	m_cursolPos = kCursorUIPos[0];
 
 	m_pSound->InitSound();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kSelectBGM);
@@ -153,22 +154,27 @@ std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 	if (m_nextScene == nextScene::GameScene)
 	{
 		m_nextSceneGrapgh = m_sceneSelectHandle[0];
+		m_nextSceneIntroductionGraph = m_sceneSelectIntroductionHandle[0];
 	}
 	else if (m_nextScene == nextScene::ExplanationScene)
 	{
-		m_nextSceneGrapgh = m_sceneSelectHandle[2];
+		m_nextSceneGrapgh = m_sceneSelectHandle[3];
+		m_nextSceneIntroductionGraph = m_sceneSelectIntroductionHandle[3];
 	}
 	else if (m_nextScene == nextScene::OptionScene)
 	{
-		m_nextSceneGrapgh = m_sceneSelectHandle[3];
+		m_nextSceneGrapgh = m_sceneSelectHandle[2];
+		m_nextSceneIntroductionGraph = m_sceneSelectIntroductionHandle[2];
 	}
 	else if (m_nextScene == nextScene::RankingScene)
 	{
 		m_nextSceneGrapgh = m_sceneSelectHandle[1];
+		m_nextSceneIntroductionGraph = m_sceneSelectIntroductionHandle[1];
 	}
 	else if (m_nextScene == nextScene::GameEnd)
 	{
 		m_nextSceneGrapgh = m_sceneSelectHandle[4];
+		m_nextSceneIntroductionGraph = m_sceneSelectIntroductionHandle[4];
 	}
 
 
@@ -195,8 +201,8 @@ void SceneSelect::Draw()
 	}
 
 	DrawGraphF(kExampleGraph.x, kExampleGraph.y, m_nextSceneGrapgh, true);
-	DrawGraphF(kExplanatoryText.x, kExplanatoryText.y, m_nextSceneIntroductionHandle, true);
-	DrawExtendGraphF(c1.m_selectBox1.x, c1.m_selectBox1.y, c1.m_selectBox2.x, c1.m_selectBox2.y, m_cursorUIHandle, true);
+	DrawGraphF(kExplanatoryText.x, kExplanatoryText.y, m_nextSceneIntroductionGraph, true);
+	DrawGraphF(m_cursolPos.x, m_cursolPos.y, m_cursorUIHandle, true);
 	DrawGraphF(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
 
 	m_pFade->Draw();
@@ -210,7 +216,7 @@ void SceneSelect::End()
 	m_pSound->ReleaseSound();
 
 	DeleteGraph(m_nextSceneGrapgh);
-	DeleteGraph(m_nextSceneIntroductionHandle);
+	DeleteGraph(m_nextSceneIntroductionGraph);
 	DeleteGraph(m_pressAHandle);
 	DeleteGraph(m_cursorUIHandle);
 	DeleteGraph(m_bgHandle);
@@ -346,6 +352,5 @@ void SceneSelect::SwitchingScene(Input& input)
 void SceneSelect::ChangeCursorInfo(int num)
 {
 	GetGraphSize(m_sceneSelectGraph, &m_selectGraphX, &m_selectGraphY);
-	c1.m_selectBox1 = kCursorUIPos[num];
-	c1.m_selectBox2 = VGet(kCursorUIPos[num].x + m_selectGraphX + 2, kCursorUIPos[num].y + m_selectGraphY + 2, 0.0f);
+	m_cursolPos = kCursorUIPos[num];
 }
