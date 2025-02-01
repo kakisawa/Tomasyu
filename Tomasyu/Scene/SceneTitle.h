@@ -14,8 +14,10 @@ public:
     virtual void End() override;
 
 private:
-    int m_titleGraph;   // タイトルロゴ画像
-    int m_buttonGraph;  // Press...画像
+    int m_titleLogoHandle;   // タイトルロゴ画像
+    int m_buttonHandle;  // Press...画像
+    int m_titleBgHandle;
+    int m_wantedHandle;
 
     std::shared_ptr<Fade> m_pFade=std::make_shared<Fade>();
 };

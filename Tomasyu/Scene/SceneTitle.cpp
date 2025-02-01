@@ -7,7 +7,7 @@ using namespace MyInputInfo;
 
 namespace {
 	constexpr int kTitlePosX = 798;	// タイトルロゴ座標X
-	constexpr int kTitlePosY = 82;	// タイトルロゴ座標Y
+	constexpr int kTitlePosY = 180;	// タイトルロゴ座標Y
 
 	constexpr int kTitlePosX_Tentative = 250;
 
@@ -17,8 +17,10 @@ namespace {
 }
 
 SceneTitle::SceneTitle() :
-	m_titleGraph(-1),
-	m_buttonGraph(-1)
+	m_titleLogoHandle(-1),
+	m_buttonHandle(-1),
+	m_titleBgHandle(-1),
+	m_wantedHandle(-1)
 {
 	m_isNextSceneFlag = false;
 }
@@ -31,8 +33,10 @@ SceneTitle::~SceneTitle()
 void SceneTitle::Init()
 {
 	// 画像の読み込み
-	m_titleGraph = LoadGraph("Data/Image/SceneTitle/討魔衆.png");
-	m_buttonGraph = LoadGraph("Data/Image/SceneTitle/AButton.png");
+	m_titleLogoHandle = LoadGraph("Data/Image/SceneTitle/討魔衆.png");
+	m_buttonHandle = LoadGraph("Data/Image/SceneTitle/AButton.png");
+	m_titleBgHandle= LoadGraph("Data/Image/SceneTitle/TitleBg.png");
+	m_wantedHandle = LoadGraph("Data/Image/SceneTitle/Wanted.png");
 
 	m_pSound->InitBGM();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kTitleBGM);
@@ -74,10 +78,12 @@ std::shared_ptr<SceneBase> SceneTitle::Update(Input& input)
 
 void SceneTitle::Draw()
 {
+	DrawGraph(0, 0, m_titleBgHandle, true);
 	// タイトルロゴを描画
-	DrawGraph(kTitlePosX, kTitlePosY, m_titleGraph, true);
-	//DrawGraph(kTitlePosX_Tentative, kTitlePosY, m_titleGraph, true);
-
+	DrawGraph(kTitlePosX, kTitlePosY, m_titleLogoHandle, true);
+	
+	DrawGraph(55, 200, m_wantedHandle, true);
+	
 
 	// PressAnyButton画像を点滅しながら描画させる
 	static int m_fadeAlpha;
@@ -98,7 +104,7 @@ void SceneTitle::Draw()
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_fadeAlpha);	// 半透明で表示開始
-	DrawGraph(kButtonX, kButtonY, m_buttonGraph, true);
+	DrawGraph(kButtonX, kButtonY, m_buttonHandle, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);		// 不透明に戻しておく	
 
 
@@ -113,8 +119,10 @@ void SceneTitle::Draw()
 void SceneTitle::End()
 {
 	// 画像の削除
-	DeleteGraph(m_titleGraph);
-	DeleteGraph(m_buttonGraph);
+	DeleteGraph(m_titleLogoHandle);
+	DeleteGraph(m_buttonHandle);
+	DeleteGraph(m_titleBgHandle);
+	DeleteGraph(m_wantedHandle);
 
 	m_pSound->ReleaseSound();
 }

@@ -8,13 +8,17 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	// 一部の関数はDxLib_Init()の前に実行する必要がある
-	ChangeWindowMode(true);
+	// Windowモード設定(フルスクリーン)
+	ChangeWindowMode(false);
 	// ウインドウ名設定
-	SetMainWindowText("Switching! S&B fight");
+	SetMainWindowText("Tomasyu");
 
 	// 画面サイズの設定
 	SetGraphMode(1920, 1080, 32);
-	SetWindowSize(1920, 1080);
+	
+
+	SetWindowSizeExtendRate(1.0);
+	SetWindowSizeChangeEnableFlag(true, true);
 
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{

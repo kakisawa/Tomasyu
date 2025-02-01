@@ -26,10 +26,13 @@ private:
     int m_optionHandle;
     int m_cursorHandle;
     int m_volumeHandle;
+    int m_selectWindowHandlel;
 
     std::array<int, 7> m_bgmVolumeUI{};   //
 	std::array<int, 7> m_seVolumeUI{};   //
 
+    std::array<int, 2>m_selectWindowUI{};
+        
 
 
     struct Cursor   // 選択中のセレクト
@@ -45,4 +48,10 @@ private:
         Back,
     }m_select;
 
+    enum SelectWindow {
+        FullScreen,
+        WindowMode,
+        SelectWindowNum,
+    };
+    int m_selectWindow;
 };

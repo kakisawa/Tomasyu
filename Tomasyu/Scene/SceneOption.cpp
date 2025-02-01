@@ -7,6 +7,7 @@ using namespace MyInputInfo;
 namespace {
 
 	const VECTOR kOptionGraphPos = VGet(256.0f, 131.0f, 0.0f);	
+	const VECTOR kSelectWindowPos = VGet(880.0f, 640.0f, 0.0f);
 
 	const VECTOR kCursorGraphPos1[4] = {
 		VGet(370.0f,322.0f,0.0f),
@@ -45,14 +46,19 @@ namespace {
 
 	const char* const kOptionGraph = "Data/Image/SceneOption/設定画面.png";
 	const char* const kCursorGraph = "Data/Image/SceneOption/Cursor.png";
-
 	const char* const kSound = "Data/Image/SceneOption/Volume.png";
+
+	const char* const kSelectWindow[2]{
+		 "Data/Image/SceneOption/FullScreen.png",
+		  "Data/Image/SceneOption/WindowMode.png",
+	};
 }
 
 SceneOption::SceneOption() :
 	m_optionHandle(-1),
 	m_cursorHandle(-1),
 	m_volumeHandle(-1),
+	m_selectWindowHandlel(-1),
 	m_select(Select::BGM)
 {
 	c1.m_selectBox1 = kCursorGraphPos1[0];
@@ -67,13 +73,21 @@ void SceneOption::Init()
 {
 	m_optionHandle = LoadGraph(kOptionGraph);
 	m_cursorHandle = LoadGraph(kCursorGraph);
+	m_volumeHandle = LoadGraph(kSound);
+	for (int i = 0; i < m_selectWindowUI.size(); i++)
+	{
+		m_selectWindowUI[i] = LoadGraph(kSelectWindow[i]);
+	}
+
 
 	m_pSound->Init();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kSelectBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
 	m_pSound->PlayBGM(SoundManager::BGM_Type::kSelectBGM, DX_PLAYTYPE_LOOP);
 	
-	m_volumeHandle = LoadGraph(kSound);
+	
+
+	m_selectWindow = SelectWindow::FullScreen;
 }
 
 std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
@@ -139,6 +153,35 @@ std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 	}
 
 
+	if (m_select == Select::Window)
+	{
+		if(input.IsTrigger(InputInfo::Right))
+		{
+			m_selectWindow += 1;
+			if (m_selectWindow == SelectWindowNum) {
+				m_selectWindow = SelectWindow::FullScreen;
+			}
+		}
+		if (input.IsTrigger(InputInfo::Left))
+		{
+			m_selectWindow -= 1;
+			if (m_selectWindow == -1) {
+				m_selectWindow = SelectWindow::WindowMode;
+			}
+		}
+	}
+
+	if (m_selectWindow == SelectWindow::FullScreen) {
+		ChangeWindowMode(false);
+		m_selectWindowHandlel = m_selectWindowUI[0];
+	}
+	else if (m_selectWindow == SelectWindow::WindowMode)
+	{
+		ChangeWindowMode(true);
+		m_selectWindowHandlel = m_selectWindowUI[1];
+	}
+
+
 	ChangeSoundVolume();
 	SetVolumeUI();
 
@@ -157,6 +200,9 @@ void SceneOption::Draw()
 {
 	DrawGraphF(kOptionGraphPos.x, kOptionGraphPos.y, m_optionHandle, true);
 
+	DrawGraphF(kSelectWindowPos.x, kSelectWindowPos.y, m_selectWindowHandlel, true);
+	
+
 	DrawExtendGraphF(c1.m_selectBox1.x, c1.m_selectBox1.y,
 		c1.m_selectBox2.x, c1.m_selectBox2.y, m_cursorHandle, true);
 
@@ -172,6 +218,7 @@ void SceneOption::Draw()
 	}
 
 #ifdef _DEBUG
+	DrawFormatString(0, 460, 0xffffff, "m_selectWindow=%d", m_selectWindow);
 	DrawFormatString(0, 480, 0xffffff, "BGM=%d", m_pSound->GetBgmVolume());
 	DrawFormatString(0, 500, 0xffffff, "SE=%d", m_pSound->GetSeVolume());
 	DrawFormatString(0, 520, 0xffffff, "SE=%d", (255 / 7) * 5);
