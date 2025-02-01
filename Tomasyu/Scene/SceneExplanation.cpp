@@ -88,11 +88,11 @@ std::shared_ptr<SceneBase> SceneExplanation::Update(Input& input)
 
 void SceneExplanation::Draw()
 {
-	DrawGraph(kExplanationGraphPos.x, kExplanationGraphPos.y, m_explanationHandle, true);	// 説明画像
+	DrawGraphF(kExplanationGraphPos.x, kExplanationGraphPos.y, m_explanationHandle, true);	// 説明画像
 
 	for (int i = 0; i < 2; i++)
 	{
-		DrawGraph(kTrianglePos[i].x, kTrianglePos[i].y, m_triangleUIHandle[i], true);	// 三角形
+		DrawGraphF(kTrianglePos[i].x, kTrianglePos[i].y, m_triangleUIHandle[i], true);	// 三角形
 	}
 	
 

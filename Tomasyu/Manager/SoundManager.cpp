@@ -7,29 +7,35 @@ namespace {
 	constexpr int kMaxVolume = 255;
 
 	// 音量の初期値
-	constexpr float kInitBgmVolume = (kMaxVolume / 7.0f) * 5.0f;	// BGM初期音量
-	constexpr float kInitSeVolume = (kMaxVolume / 7.0f) * 5.0f;// SE初期音量
+	constexpr int kInitBgmVolume = (kMaxVolume / 7) * 5;	// BGM初期音量
+	constexpr int kInitSeVolume = (kMaxVolume / 7) * 5;// SE初期音量
 
 
 	// 変更後音量保存
-	float kChangeBgm = kInitBgmVolume;
-	float kChangeSe = kInitSeVolume;
+	int kChangeBgm = kInitBgmVolume;
+	int kChangeSe = kInitSeVolume;
+}
+
+SoundManager::~SoundManager()
+{
+	ReleaseSound();
 }
 
 void SoundManager::Init()
 {
 	// 音量を調整
 	InitSound();
+	LoadSE(SoundManager::SE_Type::kSelectSE);
 }
 
 void SoundManager::ChangeSEVolume(Input& input)
 {
 	if (input.IsTrigger(InputInfo::Right))
 	{
-		m_seVolume += (kMaxVolume / 7.0f) * 1.0f;
+		m_seVolume += (kMaxVolume / 7) * 1;
 		SetSeVolume();
 		PlaySE(SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
-		if (m_seVolume >= kMaxVolume - (kMaxVolume / 7.0f) * 1.0f)
+		if (m_seVolume >= kMaxVolume - (kMaxVolume / 7) * 1)
 		{
 			m_seVolume = kMaxVolume;
 		}
@@ -38,7 +44,7 @@ void SoundManager::ChangeSEVolume(Input& input)
 
 	if (input.IsTrigger(InputInfo::Left))
 	{
-		m_seVolume -= (kMaxVolume / 7.0f) * 1.0f;
+		m_seVolume -= (kMaxVolume / 7) * 1;
 		SetSeVolume();
 		PlaySE(SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
 		if (m_seVolume <= 0)
@@ -53,25 +59,23 @@ void SoundManager::ChangeBGMVolume(Input& input)
 {
 	if (input.IsTrigger(InputInfo::Right))
 	{
-		m_bgmVolume += (kMaxVolume / 7.0f) * 1.0f;
+		m_bgmVolume += (kMaxVolume / 7) * 1;
 		SetBgmVolume();
-		if (m_bgmVolume >= kMaxVolume- (kMaxVolume / 7.0f) * 1.0f)
+		if (m_bgmVolume >= kMaxVolume- (kMaxVolume / 7) * 1)
 		{
 			m_bgmVolume = kMaxVolume;
 		}
 		kChangeBgm = m_bgmVolume;
-
 	}
 	else if (input.IsTrigger(InputInfo::Left))
 	{
-		m_bgmVolume -= (kMaxVolume / 7.0f) * 1.0f;
+		m_bgmVolume -= (kMaxVolume / 7) * 1;
 		SetBgmVolume();
 		if (m_bgmVolume <= 0)
 		{
 			m_bgmVolume = 0;
 		}
 		kChangeBgm = m_bgmVolume;
-
 	}
 }
 
@@ -187,7 +191,7 @@ void SoundManager::SetSeVolume()
 {
 	for (const auto& entry : m_se)
 	{
-		ChangeVolumeSoundMem(static_cast<int>(m_bgmVolume), entry.second);
+		ChangeVolumeSoundMem(static_cast<int>(m_seVolume), entry.second);
 	}
 }
 

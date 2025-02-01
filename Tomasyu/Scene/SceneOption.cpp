@@ -33,13 +33,13 @@ namespace {
 	};
 
 	const VECTOR kSEVolumePos[7] = {
-		VGet(1376.0f,489.0f,0.0f),
-		VGet(1291.0f,489.0f,0.0f),
-		VGet(1206.0f,489.0f,0.0f),
-		VGet(1121.0f,489.0f,0.0f),
-		VGet(1036.0f,489.0f,0.0f),
+		VGet(866.0f,489.0f,0.0f),
 		VGet(951.0f,489.0f,0.0f),
-		VGet(866.0f,489.0f,0.0f)
+		VGet(1036.0f,489.0f,0.0f),
+		VGet(1121.0f,489.0f,0.0f),
+		VGet(1206.0f,489.0f,0.0f),
+		VGet(1291.0f,489.0f,0.0f),
+		VGet(1376.0f,489.0f,0.0f),
 	};
 
 
@@ -52,6 +52,7 @@ namespace {
 SceneOption::SceneOption() :
 	m_optionHandle(-1),
 	m_cursorHandle(-1),
+	m_volumeHandle(-1),
 	m_select(Select::BGM)
 {
 	c1.m_selectBox1 = kCursorGraphPos1[0];
@@ -70,7 +71,6 @@ void SceneOption::Init()
 	m_pSound->Init();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kSelectBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
-	m_pSound->LoadSE(SoundManager::SE_Type::kSelectSE);
 	m_pSound->PlayBGM(SoundManager::BGM_Type::kSelectBGM, DX_PLAYTYPE_LOOP);
 	
 	m_volumeHandle = LoadGraph(kSound);
@@ -78,7 +78,7 @@ void SceneOption::Init()
 
 std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 {
-	if (m_select==Select::Back&&input.IsTrigger(InputInfo::OK)) {
+	if (m_select == Select::Back && input.IsTrigger(InputInfo::OK)){
 
 		return std::make_shared<SceneSelect>();	//セレクトシーンへ向かう
 	}
@@ -172,11 +172,11 @@ void SceneOption::Draw()
 	}
 
 #ifdef _DEBUG
-
-	DrawFormatString(0, 500, 0xffffff, "BGM=%f", m_pSound->GetBgmVolume());
-	DrawFormatString(0, 520, 0xffffff, "BGM=%f", (static_cast<float>(255.0f / 7.0f) * 5.0f));
-	DrawFormatString(0, 540, 0xffffff, "BGM=%f", (static_cast<float>(255.0f / 7.0f) * 6.0f));
-	DrawFormatString(0, 560, 0xffffff, "BGM=%f", (static_cast<float>(255.0f / 7.0f) * 7.0f));
+	DrawFormatString(0, 480, 0xffffff, "BGM=%d", m_pSound->GetBgmVolume());
+	DrawFormatString(0, 500, 0xffffff, "SE=%d", m_pSound->GetSeVolume());
+	DrawFormatString(0, 520, 0xffffff, "SE=%d", (255 / 7) * 5);
+	DrawFormatString(0, 540, 0xffffff, "SE=%d", (255 / 7) * 6);
+	DrawFormatString(0, 560, 0xffffff, "SE=%d",(255 / 7) * 7);
 
 #endif // DEBUG
 }
@@ -185,12 +185,20 @@ void SceneOption::End()
 {
 	DeleteGraph(m_optionHandle);
 	DeleteGraph(m_cursorHandle);
+
+	m_pSound->ReleaseSound();
 }
 
 void SceneOption::ChangeCursorInfo(int num)
 {
 	c1.m_selectBox1 = kCursorGraphPos1[num];
 	c1.m_selectBox2 = kCursorGraphPos2[num];
+}
+
+void SceneOption::ChangeSoundVolume()
+{
+	m_pSound->SetBgmVolume();
+	m_pSound->SetSeVolume();
 }
 
 void SceneOption::SetVolumeUI()
@@ -205,35 +213,35 @@ void SceneOption::SetVolumeUI()
 	}
 
 	// SEの音量
-	if (m_pSound->GetSeVolume() <= ((255.0f / 7.0f) * 0.0f)) {
+	if (m_pSound->GetSeVolume() <= ((255 / 7) * 0)) {
 
 	}
-	else if (m_pSound->GetSeVolume() <= ((255.0f / 7.0f) * 1.0f)) {
+	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 1)) {
 		m_seVolumeUI[0] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255.0f / 7.0f) * 2.0f)) {
+	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 2)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255.0f / 7.0f) * 3.0f)) {
+	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 3)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 		m_seVolumeUI[2] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255.0f / 7.0f) * 4.0f)) {
+	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 4)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 		m_seVolumeUI[2] = -1;
 		m_seVolumeUI[3] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255.0f / 7.0f) * 5.0f)) {
+	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 5)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 		m_seVolumeUI[2] = -1;
 		m_seVolumeUI[3] = -1;
 		m_seVolumeUI[4] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255.0f / 7.0f) * 6.0f)) {
+	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 6)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 		m_seVolumeUI[2] = -1;
@@ -253,35 +261,35 @@ void SceneOption::SetVolumeUI()
 
 
 	// BGMの音量
-	if (m_pSound->GetBgmVolume() <= ((255.0f / 7.0f) * 0.0f)) {
+	if (m_pSound->GetBgmVolume() <= ((255 / 7) * 0)) {
 		
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255.0f / 7.0f) * 1.0f)) {
+	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 1)) {
 		m_bgmVolumeUI[0] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255.0f / 7.0f) * 2.0f)) {
+	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 2)) {
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255.0f / 7.0f) * 3.0f)) {
+	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 3)) {
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 		m_bgmVolumeUI[2] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255.0f / 7.0f) * 4.0f)) {
+	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 4)) {
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 		m_bgmVolumeUI[2] = -1;
 		m_bgmVolumeUI[3] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255.0f / 7.0f) * 5.0f)) {
+	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 5)) {
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 		m_bgmVolumeUI[2] = -1;
 		m_bgmVolumeUI[3] = -1;
 		m_bgmVolumeUI[4] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255.0f / 7.0f) * 6.0f)) {
+	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 6)) {
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 		m_bgmVolumeUI[2] = -1;

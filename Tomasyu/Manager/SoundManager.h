@@ -47,6 +47,8 @@ public:
 		MAX,
 	};
 
+	~SoundManager();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -81,13 +83,13 @@ public:
 	/// BGM音量渡し
 	/// </summary>
 	/// <returns>BGM音量</returns>
-	float GetBgmVolume() const { return m_bgmVolume; }
+	int GetBgmVolume() const { return m_bgmVolume; }
 
 	/// <summary>
 	/// SE音量渡し
 	/// </summary>
 	/// <returns>SE音量</returns>
-	float GetSeVolume() const { return m_seVolume; }
+	int GetSeVolume() const { return m_seVolume; }
 
 	//サウンドの初期化
 	void InitSound(void);
