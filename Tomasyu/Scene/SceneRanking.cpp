@@ -8,11 +8,11 @@
 using namespace MyInputInfo;
 
 namespace {
-	const VECTOR kRankingPos = VGet(640.0f, 38.0f, 0.0f);
+	const VECTOR kRankingPos = VGet(637.0f, 91.0f, 0.0f);
 
 
-	const VECTOR kUIPos = VGet(464.0f, 214.0f, 0.0f);
-	const VECTOR kCursorPos = VGet(462.0f, 212.0f, 0.0f);
+	const VECTOR kUIPos = VGet(462.0f, 236.0f, 0.0f);
+	const VECTOR kCursorPos = VGet(457.5f, 231.5f, 0.0f);
 
 	const VECTOR kRankingUIPos = VGet(142.0f, 358.0f, 0.0f);
 	const VECTOR kRankingUI_Change = VGet(1322.0f, 389.0f, 0.0f);
@@ -22,6 +22,7 @@ namespace {
 }
 
 SceneRanking::SceneRanking() :
+	m_bg(-1),
 	m_rankingGraph(-1),
 	m_cursorUI(-1),
 	m_selectUI1(-1),
@@ -39,13 +40,14 @@ SceneRanking::~SceneRanking()
 
 void SceneRanking::Init()
 {
-	m_rankingGraph = LoadGraph("Data/Image/UI/ランキング.png");
-	m_selectUI1 = LoadGraph("Data/Image/UI/最大スコア.png");
-	m_selectUI3 = LoadGraph("Data/Image/UI/最短時間.png");
-	m_cursorUI = LoadGraph("Data/Image/UI/カーソル.png");
-	m_rankingUI = LoadGraph("Data/Image/UI/ランキングデータ.png");
-	m_rankingUI_Score= LoadGraph("Data/Image/UI/スコア.png");
-	m_rankingUI_Time = LoadGraph("Data/Image/UI/討伐時間.png");
+	m_bg = LoadGraph("Data/Image/SceneRanking/Bg.png");
+	m_rankingGraph = LoadGraph("Data/Image/SceneRanking/ランキング.png");
+	m_selectUI1 = LoadGraph("Data/Image/SceneRanking/最大スコア.png");
+	m_selectUI3 = LoadGraph("Data/Image/SceneRanking/最短時間.png");
+	m_cursorUI = LoadGraph("Data/Image/SceneRanking/カーソル.png");
+	m_rankingUI = LoadGraph("Data/Image/SceneRanking/ランキングデータ.png");
+	m_rankingUI_Score= LoadGraph("Data/Image/SceneRanking/スコア.png");
+	m_rankingUI_Time = LoadGraph("Data/Image/SceneRanking/討伐時間.png");
 
 	m_selectBox1 = kCursorPos;
 	m_rankingSelectUI = m_rankingUI_Score;
@@ -88,6 +90,7 @@ std::shared_ptr<SceneBase> SceneRanking::Update(Input& input)
 
 void SceneRanking::Draw()
 {
+	DrawGraph(0, 0, m_bg, true);
 	DrawGraphF(kRankingPos.x, kRankingPos.y, m_rankingGraph, true);
 
 	DrawGraphF(kUIPos.x, kUIPos.y, m_selectUI1, true);
@@ -131,6 +134,7 @@ void SceneRanking::Draw()
 
 void SceneRanking::End()
 {
+	DeleteGraph(m_bg);
 	DeleteGraph(m_rankingGraph);
 	DeleteGraph(m_selectUI1);
 	DeleteGraph(m_selectUI3);

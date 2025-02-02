@@ -41,9 +41,6 @@ public:
 	/// <param name="charaName"></param>
 	void LoadPlayerOnlyFileData(std::map<std::string, Player::PlayerOnlyData>& playerData);
 
-
-	void LoadRankingData(std::map<std::string, int>& rankingData);
-
 private:
 	LoadCsv() = default;
 	virtual ~LoadCsv() = default;

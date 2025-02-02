@@ -51,6 +51,7 @@ public:
 		float rotaSpeed = 0.0f;	// 回転速度
 		float bodyColRad = 0.0f;	// 体当たり判定半径
 		float bodyColUpY = 0.0f;	// 当たり判定上座標
+		float searchRad = 0.0f;		// 索敵当たり判定半径
 	}m_chara;
 
 	/// <summary>

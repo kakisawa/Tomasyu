@@ -18,6 +18,7 @@ public:
     void SelectRanking(Input& input);
 
 private:
+    int m_bg;
     int m_rankingGraph; // ランキング画像
 
     int m_selectUI1;    // セレクトUI_最大スコア

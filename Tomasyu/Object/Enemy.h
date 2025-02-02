@@ -123,6 +123,11 @@ public:
 	void SearchNearPosition(const Map& map);
 
 	/// <summary>
+	/// 回転処理
+	/// </summary>
+	void Angle();
+
+	/// <summary>
 	/// 攻撃処理
 	/// </summary>
 	void Attack();
@@ -198,4 +203,5 @@ private:
 	bool m_isAttack;				// 攻撃をしたかの判定
 	bool m_isAttackToPlayer;		// プレイヤーに攻撃が当たったかの判定
 	bool m_isNextTargetPosSearch;	// 次のターゲットポイントを探すフラグ
+	bool m_isCheckPlayer;			// 索敵範囲内にプレイヤーを見つけたかどうかのフラグ
 };

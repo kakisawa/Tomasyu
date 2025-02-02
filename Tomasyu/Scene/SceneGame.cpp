@@ -226,11 +226,11 @@ void SceneGame::Draw()
 
 #ifdef _DEBUG
 
-	DrawFormatString(0, 300, 0xffffff, "m_timeYear=%d", m_timeYear);
+	/*DrawFormatString(0, 300, 0xffffff, "m_timeYear=%d", m_timeYear);
 	DrawFormatString(0, 320, 0xffffff, "m_timeMonth=%d", m_timeMonth);
 	DrawFormatString(0, 340, 0xffffff, "m_timeDay=%d", m_timeDay);
 	DrawFormatString(0, 360, 0xffffff, "m_timeHour=%d", m_timeHour);
-	DrawFormatString(0, 380, 0xffffff, "m_timeMin=%d", m_timeMin);
+	DrawFormatString(0, 380, 0xffffff, "m_timeMin=%d", m_timeMin);*/
 	
 
 #endif // DEBUG

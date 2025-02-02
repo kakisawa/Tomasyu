@@ -23,6 +23,7 @@ public:
 		ColType m_body;
 		ColType m_rightArm[2];
 		ColType m_leftArm[2];
+		ColType m_search;
 	}m_colEnemy;
 
 	ColType m_itemCol;

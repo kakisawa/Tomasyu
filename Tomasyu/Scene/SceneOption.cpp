@@ -218,12 +218,12 @@ void SceneOption::Draw()
 	}
 
 #ifdef _DEBUG
-	DrawFormatString(0, 460, 0xffffff, "m_selectWindow=%d", m_selectWindow);
-	DrawFormatString(0, 480, 0xffffff, "BGM=%d", m_pSound->GetBgmVolume());
-	DrawFormatString(0, 500, 0xffffff, "SE=%d", m_pSound->GetSeVolume());
-	DrawFormatString(0, 520, 0xffffff, "SE=%d", (255 / 7) * 5);
-	DrawFormatString(0, 540, 0xffffff, "SE=%d", (255 / 7) * 6);
-	DrawFormatString(0, 560, 0xffffff, "SE=%d",(255 / 7) * 7);
+	//DrawFormatString(0, 460, 0xffffff, "m_selectWindow=%d", m_selectWindow);
+	//DrawFormatString(0, 480, 0xffffff, "BGM=%d", m_pSound->GetBgmVolume());
+	//DrawFormatString(0, 500, 0xffffff, "SE=%d", m_pSound->GetSeVolume());
+	//DrawFormatString(0, 520, 0xffffff, "SE=%d", (255 / 7) * 5);
+	//DrawFormatString(0, 540, 0xffffff, "SE=%d", (255 / 7) * 6);
+	//DrawFormatString(0, 560, 0xffffff, "SE=%d",(255 / 7) * 7);
 
 #endif // DEBUG
 }

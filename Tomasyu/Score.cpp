@@ -75,9 +75,9 @@ void Score::Update()
 void Score::Draw()
 {
 #ifdef _DEBUG
-	DrawFormatString(0, 600, 0xffffff, "m_score=%d", m_score);
+	/*DrawFormatString(0, 600, 0xffffff, "m_score=%d", m_score);
 	DrawFormatString(0, 620, 0xffffff, "m_remainingTimeScore=%d", m_remainingTimeScore);
-	DrawFormatString(0, 640, 0xffffff, "m_pTime->GetRemainingTime=%d", m_pTime->GetRemainingTime()/60);
+	DrawFormatString(0, 640, 0xffffff, "m_pTime->GetRemainingTime=%d", m_pTime->GetRemainingTime()/60);*/
 #endif // DEBUG
 }
 

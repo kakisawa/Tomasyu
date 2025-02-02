@@ -53,8 +53,9 @@ void LoadCsv::LoadCommonFileData(ModelBase::CharaCommonData& charaData, std::str
 				charaData.modelSize = std::stof(strvec[5]);	// モデルサイズ
 				charaData.walkSpeed = std::stof(strvec[6]);	// 歩く速度
 				charaData.rotaSpeed = std::stof(strvec[7]);	// 回転速度
-				charaData.bodyColRad = std::stof(strvec[8]);	// 体当たり判定半径
+				charaData.bodyColRad = std::stof(strvec[8]);// 体当たり判定半径
 				charaData.bodyColUpY = std::stof(strvec[9]);// 体当たり判定Y座標
+				charaData.searchRad = std::stof(strvec[10]);// 索敵当たり判定半径
 			}
 			catch (const std::exception&)
 			{
@@ -96,8 +97,4 @@ void LoadCsv::LoadPlayerOnlyFileData(std::map<std::string, Player::PlayerOnlyDat
 		}
 
 	}
-}
-
-void LoadCsv::LoadRankingData(std::map<std::string, int>& rankingData)
-{
 }

@@ -29,6 +29,12 @@ namespace {
 	const char* const kLeftShoulder = "mixamorig:LeftShoulder";
 	const char* const kLeftElbow = "mixamorig:LeftForeArm";
 	const char* const kLeftHand = "mixamorig:LeftHandMiddle4";
+
+
+	VECTOR target1;
+	VECTOR target2;
+	VECTOR target3;
+	VECTOR target4;
 }
 
 Enemy::Enemy():
@@ -47,7 +53,8 @@ Enemy::Enemy():
 	m_leftElbowPos(kInitVec),
 	m_leftHandPos(kInitVec),
 	m_isNextTargetPosSearch(true),
-	m_isAttack(false)
+	m_isAttack(false),
+	m_isCheckPlayer(false)
 {
 	// プレイヤー外部データ読み込み
 	LoadCsv::GetInstance().LoadCommonFileData(m_chara, "enemy");
@@ -101,6 +108,7 @@ void Enemy::Update(const Map& map, const Player& player)
 	ColUpdate(player);
 	SearchNearPosition(map);
 	Move(map);
+	Angle();
 	PlaySE();
 
 	// 攻撃が当たっていたらプレイヤーへ攻撃値を渡す
@@ -130,16 +138,21 @@ void Enemy::Draw()
 	}
 
 	//DrawFormatString(0, 140, 0xffffff, "Enemy:HP=%d", m_hp);
-	//DrawFormatString(0, 780, 0xffffff, "Enemy:m_pos.x=%.2f:z=%.2f", m_pos.x, m_pos.z);
+	DrawFormatString(0, 780, 0xffffff, "Enemy:m_pos.x=%.2f:z=%.2f", m_pos.x, m_pos.z);
 	DrawFormatString(0, 800, 0xffffff, "Enemy:m_targetMoveDistance=%.2f", m_targetMoveDistance);
-	DrawFormatString(0, 1000, 0xffffff, "Enemy:m_targetDistance=%.2f", m_targetDistance);
-	DrawFormatString(0, 1020, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
-	DrawFormatString(0, 1040, 0xffffff, "Enemy:m_startPos.x=%.2f:z=%.2f", m_startPos.x, m_startPos.z);
-	DrawFormatString(0, 1060, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
+	DrawFormatString(0, 820, 0xffffff, "Enemy:m_targetDistance=%.2f", m_targetDistance);
+	DrawFormatString(0, 840, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
+	DrawFormatString(0, 860, 0xffffff, "Enemy:m_startPos.x=%.2f:z=%.2f", m_startPos.x, m_startPos.z);
+	DrawFormatString(0, 880, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_move.x=%.2f:z=%.2f", m_move.x, m_move.z);
 	//DrawFormatString(0, 920, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
 	//DrawFormatString(0, 940, 0xffffff, "Enemy:m_isAttackToPlayer=%d", m_isAttackToPlayer);
 	//DrawFormatString(0, 960, 0xffffff, "Enemy:m_isAttack=%d", m_isAttack);
+
+	DrawFormatString(0, 920, 0xffffff, "target1.x=%.2f:.z=%.2f", target1.x,target1.z);
+	DrawFormatString(0, 940, 0xffffff, "target2.x=%.2f:.z=%.2f", target2.x, target2.z);
+	DrawFormatString(0, 960, 0xffffff, "target3.x=%.2f:.z=%.2f", target3.x, target3.z);
+	DrawFormatString(0, 980, 0xffffff, "target4.x=%.2f:.z=%.2f", target4.x, target4.z);
 #endif // DEBUG
 }
 
@@ -181,8 +194,6 @@ void Enemy::Move(const Map& map)
 			{
 				m_move.x = +m_chara.walkSpeed;
 			}
-
-			
 		}
 		else if (m_pos.z != m_targetPos.z)
 		{
@@ -195,9 +206,6 @@ void Enemy::Move(const Map& map)
 				m_move.z = +m_chara.walkSpeed;
 			}
 		}
-
-
-
 	}
 
 	// 正規化と移動速度の適用
@@ -225,10 +233,8 @@ void Enemy::MoveUpdate()
 	// 移動値があった場合
 	if (movingSpeed != 0.0f) 
 	{
-
 		// プレイヤーの移動状態をtrueにする
 		m_status.situation.isMoving = true;
-
 		// プレイヤーが移動している時のみ、移動アニメーションを入れる
 		ChangeAnimNo(EnemyAnim::Walk, m_animSpeed.Walk, true, m_animChangeTime.Walk);
 	}
@@ -236,19 +242,13 @@ void Enemy::MoveUpdate()
 
 void Enemy::SearchNearPosition(const Map& map)
 {
-	// エネミーが現在いる位置から、一番近いポイントを探しその地点へ向かう
-	// DOTO:こちらも挑戦中の為、コメント無し
-	
+	// エネミーが現在いる位置から、一番近いポイントを探しその地点へ向かう	
 	if (m_isNextTargetPosSearch)
 	{
 		m_isNextTargetPosSearch = false;
 
 		m_startPos = m_pos;
 
-		VECTOR target1;
-		VECTOR target2;
-		VECTOR target3;
-		VECTOR target4;
 
 		target1 = VSub(map.GetPointPos().point1, m_pos);
 		target2 = VSub(map.GetPointPos().point2, m_pos);
@@ -265,7 +265,36 @@ void Enemy::SearchNearPosition(const Map& map)
 		target3_1 = abs(target3.x) + abs(target3.z);
 		target4_1 = abs(target4.x) + abs(target4.z);
 
-		m_targetDistance = std::min({ target1_1,target2_1,target3_1,target4_1 });
+
+
+		std::vector<float> values = { target1_1,target2_1,target3_1,target4_1 };
+
+		std::vector<float> positiveValues;
+		for (int v : values) {
+			if (v > 0.0f)positiveValues.push_back(v);
+		}
+
+		int result = positiveValues.empty() ? 0 : *std::min_element(positiveValues.begin(), positiveValues.end());
+
+
+		if (result == target1_1)
+		{
+			m_targetPos = map.GetPointPos().point1;
+		}
+		else if (result == target2_1)
+		{
+			m_targetPos = map.GetPointPos().point2;
+		}
+		else if (result == target3_1)
+		{
+			m_targetPos = map.GetPointPos().point3;
+		}
+		else if (result == target4_1)
+		{
+			m_targetPos = map.GetPointPos().point4;
+		}
+
+		/*m_targetDistance = std::min({ target1_1,target2_1,target3_1,target4_1 });
 		
 		if (m_targetDistance == target1_1)
 		{
@@ -282,15 +311,66 @@ void Enemy::SearchNearPosition(const Map& map)
 		else if (m_targetDistance == target4_1)
 		{
 			m_targetPos = map.GetPointPos().point4;
-		}
+		}*/
 	}
 
-	if (m_targetMoveDistance >= abs(m_targetDistance))
+	m_targetMoveDistance = abs(m_targetPos.x + m_targetPos.z) - abs(m_pos.x + m_pos.z);
+
+	if (m_targetMoveDistance == 0.0f)
 	{
 		m_isNextTargetPosSearch = true;
 	}
+}
 
-	m_targetMoveDistance = abs( (m_startPos.x + m_startPos.z)- (m_pos.x + m_pos.z));
+void Enemy::Angle()
+{
+	// プレイヤーの移動方向にモデルの方向を近づける
+	float targetAngle;		// 目標角度
+	float difference;		// 目標角度と現在の角度の差
+
+	// 目標の方向ベクトルから角度値を算出する
+	targetAngle = static_cast<float>(atan2(m_targetDir.x, m_targetDir.z));
+
+	// 目標の角度と現在の角度との差を割り出す
+	difference = targetAngle - m_angle;
+
+	// 差の角度が180度以上になっていたら修正する
+	if (difference < -DX_PI_F)
+	{
+		difference += DX_TWO_PI_F;
+	}
+	else if (difference > DX_PI_F)
+	{
+		difference -= DX_TWO_PI_F;
+	}
+
+	// 角度の差が0に近づける
+	if (difference > 0.0f)
+	{
+		// 差がプラスの場合は引く
+		difference -= m_chara.rotaSpeed;
+		if (difference < 0.0f)
+		{
+			difference = 0.0f;
+		}
+	}
+	else
+	{
+		// 差がマイナスの場合は足す
+		difference += m_chara.rotaSpeed;
+		if (difference > 0.0f)
+		{
+			difference = 0.0f;
+		}
+	}
+
+	// 設置アニメーションを再生していないときは角度を変える
+	if (!m_status.situation.isAttack)
+	{
+		// モデルの角度を更新
+		m_angle = targetAngle - difference;
+		MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + DX_PI_F, 0.0f));
+	}
 }
 
 void Enemy::Attack()
