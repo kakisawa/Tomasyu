@@ -48,7 +48,7 @@ namespace
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// Vector値初期化値
 }
 
-Player::Player(std::shared_ptr<Enemy> pEnemy) :
+Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Item> pItem) :
 	m_useItem(0),
 	m_attackTheEnemy(0),
 	m_getItem(0),
@@ -72,7 +72,9 @@ Player::Player(std::shared_ptr<Enemy> pEnemy) :
 	m_setItem(Item::ItemKind::NoItem),
 	m_useWeapon(WeaponKind::HandGun),
 	m_SetComboknife(Knife::Attack1),
-	m_pEnemy(pEnemy)
+	m_pCamera(pCamera),
+	m_pEnemy(pEnemy),
+	m_pItem(pItem)
 {
 	// データの読み込みを行う
 	LoadData();
@@ -126,7 +128,7 @@ void Player::Init(std::shared_ptr<Score> score)
 #endif
 }
 
-void Player::Update(const Enemy& enemy, const Item& item, const Camera& camera, Input& input)
+void Player::Update(Input& input)
 {
 	// 敵への攻撃力の初期化
 	m_attackTheEnemy = 0;
@@ -136,16 +138,16 @@ void Player::Update(const Enemy& enemy, const Item& item, const Camera& camera, 
 	SetRemainingBulletsMachinegun();
 
 	// 当たり判定の更新
-	ColUpdate(enemy, item);
+	ColUpdate();
 	GetItem();
 
 	// 更新処理
-	Move(camera);
+	Move();
 	UseItem(input);
 	Angle();
-	LockOn(input, enemy);
+	LockOn(input);
 	Roll(input);
-	Hit(input,enemy);
+	Hit(input);
 	Death();
 
 	SetModelFramePosition(m_model, kModelRightHandMiddle, m_weapon[0], m_weaponSize[0],	m_weaponRota[0]);
@@ -283,7 +285,7 @@ void Player::SetModelFramePosition(int ModelHandle, const char* FrameName, int S
 	MV1SetMatrix(SetModelHandle, MMult(MMult(RotateMatrix, MGetScale(ModelSize)), FrameMatrix));
 }
 
-void Player::Move(const Camera& camera)
+void Player::Move()
 {
 	if (m_status.situation.isUseItem || m_status.situation.isReload ||
 		 m_status.situation.isDamageReceived ||
@@ -291,7 +293,7 @@ void Player::Move(const Camera& camera)
 		m_status.situation.isRoll)	return;
 
 	// カメラの向きベクトルを取得
-	VECTOR cameraForwardVec = VSub(camera.GetTarget(), camera.GetPosition());
+	VECTOR cameraForwardVec = VSub(m_pCamera->GetTarget(), m_pCamera->GetPosition());
 	cameraForwardVec.y = 0.0f; // 水平成分のみ考慮する
 	cameraForwardVec = VNorm(cameraForwardVec); // 正規化
 
@@ -397,15 +399,15 @@ void Player::Angle()
 	}
 }
 
-void Player::ColUpdate(const Enemy& enemy, const Item& item)
+void Player::ColUpdate()
 {
 	// プレイヤーの当たり判定更新
 	m_colPos = VAdd(m_pos, VGet(0.0f,m_chara.bodyColUpY,0.0f));
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colPlayer.m_body, m_pos, m_colPos, m_chara.bodyColRad);
 
 	// 敵・アイテムの当たり判定獲得
-	Collision itemCol = item.GetCol();
-	Collision enemyCol = enemy.GetCol();
+	Collision itemCol = m_pItem->GetCol();
+	Collision enemyCol = m_pEnemy->GetCol();		// ここでバグる
 
 	// アイテムとプレイヤーが当たったかどうかの判定
 	m_isItem = m_col.IsTypeChageSphereToCapsuleCollision(m_col.m_colPlayer.m_body, itemCol.m_itemCol);
@@ -415,7 +417,7 @@ void Player::ColUpdate(const Enemy& enemy, const Item& item)
 	{
 		// 当たっていたらその分押し返す
 		m_isEnemy = true;
-		VECTOR colNormal = VNorm(VSub(m_pos, enemy.GetPos()));
+		VECTOR colNormal = VNorm(VSub(m_pos, m_pEnemy->GetPos()));
 		m_pos = VAdd(m_pos, VScale(colNormal, m_chara.walkSpeed));
 	}
 
@@ -569,12 +571,12 @@ void Player::UseItem(Input& input)
 	}
 }
 
-void Player::LockOn(Input& input, const Enemy& enemy)
+void Player::LockOn(Input& input)
 {
 	m_isLookOn = false;
 	if (input.IsPress(InputInfo::TargetLockOn))
 	{
-		m_targetLockPos = enemy.GetPos();
+		m_targetLockPos = m_pEnemy->GetPos();
 		m_isLookOn = true;
 	}
 }
@@ -777,7 +779,7 @@ void Player::Roll(Input& input)
 	}
 }
 
-void Player::Hit(Input& input, const Enemy& enemy)
+void Player::Hit(Input& input)
 {
 	if (m_status.situation.isDeath) return;
 
@@ -785,7 +787,7 @@ void Player::Hit(Input& input, const Enemy& enemy)
 	if (m_status.situation.isRoll && (m_nextAnimTime <= 15.0f))return;
 
 	// 敵からの攻撃が当たったらの処理
-	if (enemy.GetAttack() > 0) 
+	if (m_pEnemy->GetAttack() > 0) 
 	{
 		ChangeAnimNo(PlayerAnim::DamageReceived, m_animSpeed.DamageReceived, false, m_animChangeTime.DamageReceived);
 		m_status.situation.isDamageReceived = true;
@@ -793,7 +795,7 @@ void Player::Hit(Input& input, const Enemy& enemy)
 		
 		if (!m_isInvincibleTime) 
 		{
-			m_hp -= enemy.GetAttack();
+			m_hp -= m_pEnemy->GetAttack();
 			m_isInvincibleTime = true;
 		}
 	}

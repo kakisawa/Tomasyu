@@ -139,7 +139,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Player(std::shared_ptr<Enemy> pEnemy);
+	Player(std::shared_ptr<Camera> pCamera ,std::shared_ptr<Enemy> pEnemy,std::shared_ptr<Item> pItem);
 
 	/// <summary>
 	/// デストラクタ
@@ -158,7 +158,7 @@ public:
 	/// <param name="item">アイテム参照</param>
 	/// <param name="camera">カメラ参照</param>
 	/// <param name="input">入力情報</param>
-	void Update(const Enemy& enemy, const Item& item, const Camera& camera, Input& input);
+	void Update(Input& input);
 
 	/// <summary>
 	/// 描画
@@ -188,7 +188,7 @@ public:
 	/// 移動処理
 	/// </summary>
 	/// <param name="camera">カメラ参照</param>
-	void Move(const Camera& camera);
+	void Move();
 
 	/// <summary>
 	/// 移動処理更新
@@ -205,7 +205,7 @@ public:
 	/// </summary>
 	/// <param name="enemy">敵情報参照</param>
 	/// <param name="item">アイテム参照</param>
-	void ColUpdate(const Enemy& enemy, const Item& item);
+	void ColUpdate();
 
 	/// <summary>
 	/// アイテム獲得
@@ -227,7 +227,7 @@ public:
 	/// </summary>
 	/// <param name="input">入力</param>
 	/// <param name="enemy">敵情報参照</param>
-	void LockOn(Input& input, const Enemy& enemy);
+	void LockOn(Input& input);
 
 	/// <summary>
 	/// 武器切り替え
@@ -257,7 +257,7 @@ public:
 	/// 被ダメージ処理
 	/// </summary>
 	/// <param name="input">入力</param>
-	void Hit(Input& input, const Enemy& enemy);
+	void Hit(Input& input);
 
 	/// <summary>
 	/// アニメーションの変更
@@ -396,6 +396,8 @@ private:
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Shot> m_pShotHandGun;
 	std::shared_ptr<Shot> m_pShotMachineGun;
+	std::shared_ptr<Item> m_pItem;
+	std::shared_ptr<Camera> m_pCamera;
 
 	std::shared_ptr<Score> m_pScore;
 

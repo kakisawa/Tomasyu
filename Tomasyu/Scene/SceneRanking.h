@@ -20,7 +20,7 @@ public:
 private:
     int m_bg;
     int m_rankingGraph; // ランキング画像
-
+ 
     int m_selectUI1;    // セレクトUI_最大スコア
     int m_selectUI3;    // セレクトUI_最短時間
 
@@ -32,6 +32,13 @@ private:
 
     int m_rankingSelectUI;
     
+    enum rankingDataChange {
+        Score,
+        Time,
+        RankingDataNum,
+    };
+    int m_rankingDataChange;
+
     VECTOR m_selectBox1;
 
 	std::shared_ptr<RankingData> m_pRankingData = std::make_shared<RankingData>();

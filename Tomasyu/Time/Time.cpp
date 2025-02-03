@@ -22,7 +22,7 @@ namespace {
 	const VECTOR kGameTimeBgPos = VGet(10.0f, 20.0f, 0.0f);	// 残り時間背景画像座標
 
 
-	const char* const kNumberNavyUI[11]{
+	const char* const kNumberNavyPath[11]{
 		"Data/Image/SceneGame/時間/0.png",
 		"Data/Image/SceneGame/時間/1.png",
 		"Data/Image/SceneGame/時間/2.png",
@@ -35,7 +35,7 @@ namespace {
 		"Data/Image/SceneGame/時間/9.png",
 		"Data/Image/SceneGame/時間/点.png",
 	};
-	const char* const kNumberBlackUI[11]{
+	const char* const kNumberBlackPath[11]{
 		"Data/Image/SceneGame/Clear/0.png",
 		"Data/Image/SceneGame/Clear/1.png",
 		"Data/Image/SceneGame/Clear/2.png",
@@ -73,8 +73,8 @@ Time::Time() :
 	// 数字UI画像読み込み
 	for (int i = 0; i < m_numberNavyUIHandle.size(); i++)
 	{
-		m_numberNavyUIHandle[i] = LoadGraph(kNumberNavyUI[i]);
-		m_numberGreenUIHandle[i] = LoadGraph(kNumberBlackUI[i]);
+		m_numberNavyUIHandle[i] = LoadGraph(kNumberNavyPath[i]);
+		m_numberGreenUIHandle[i] = LoadGraph(kNumberBlackPath[i]);
 	}
 	m_timeBgHandle = LoadGraph("Data/Image/SceneGame/時間/Time.png");
 }

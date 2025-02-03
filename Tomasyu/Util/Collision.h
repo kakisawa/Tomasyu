@@ -97,8 +97,8 @@ public:
 	/// <summary>
 	/// 球体とカプセルの当たり判定
 	/// </summary>
-	/// <param name="colType">当たり判定の属性</param>
-	/// <param name="col">もう一つの当たり判定</param>
+	/// <param name="colType">当たり判定の属性(Cupsule)</param>
+	/// <param name="col">もう一つの当たり判定(Sphere)</param>
 	/// <returns>当たっていたらtrueを返す</returns>
 	bool IsTypeChageSphereToCapsuleCollision(const ColType& colType, const Collision::ColType& m_col);
 

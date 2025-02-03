@@ -25,6 +25,7 @@ ModelBase::ModelBase() :
 	m_isLoopFinish(false),
 	m_deathFlag(false)
 {
+	m_pSound = std::make_shared<SoundManager>();
 }
 
 ModelBase::~ModelBase()

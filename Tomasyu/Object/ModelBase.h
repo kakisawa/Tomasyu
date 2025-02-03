@@ -4,7 +4,7 @@
 #include <memory>
 #include "DxLib.h"
 
-class ModelBase /*:public std::enable_shared_from_this<ModelBase>*/
+class ModelBase
 {
 public:
 	/// <summary>

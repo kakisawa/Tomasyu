@@ -50,6 +50,10 @@ SceneGame::SceneGame() :
 	m_isPause(false),
 	m_isPlayBGM(true)
 {
+	m_pCamera = std::make_shared<Camera>(m_pPlayer);
+	m_pPlayer = std::make_shared<Player>(m_pCamera, nullptr, m_pItem);
+	m_pEnemy = std::make_shared<Enemy>(m_pMap, m_pPlayer);
+	m_pUI = std::make_shared<UISceneGame>(m_pPlayer, m_pEnemy);
 }
 
 SceneGame::~SceneGame()
@@ -63,7 +67,7 @@ void SceneGame::Init()
 	m_pPlayer->Init(m_pScore);
 	m_pEnemy->Init();
 	m_pMap->Init();
-	m_pUI->Init(*m_pPlayer, *m_pEnemy);
+	m_pUI->Init();
 	m_pTime->Init();
 	m_pSound->InitBGM();
 	m_pScore->Init(m_pTime);
@@ -115,11 +119,11 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 		if (!m_pPlayer->GetDeathFlag() || m_pTime->GetTimeUp()) {
 			m_pFade->FadeIn(true);
 			m_pMap->Update();
-			m_pPlayer->Update(*m_pEnemy, *m_pItem, *m_pCamera, input);
-			m_pEnemy->Update(*m_pMap, *m_pPlayer);
-			m_pCamera->Update(*m_pPlayer);
+			m_pPlayer->Update(input);
+			m_pEnemy->Update();
+			m_pCamera->Update();
 			m_pItem->Update();
-			m_pUI->Update(*m_pPlayer, *m_pEnemy);
+			m_pUI->Update();
 			m_pTime->Update();
 
 			// エフェクトの更新

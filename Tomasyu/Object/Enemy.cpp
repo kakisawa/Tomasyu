@@ -37,7 +37,7 @@ namespace {
 	VECTOR target4;
 }
 
-Enemy::Enemy():
+Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPlayer):
 	m_attackThePlayer(0),
 	m_targetDistance(0.0f),
 	m_targetMoveDistance(0.0f),
@@ -52,9 +52,12 @@ Enemy::Enemy():
 	m_leftShoulderPos(kInitVec),
 	m_leftElbowPos(kInitVec),
 	m_leftHandPos(kInitVec),
+	m_vecToPlayer(kInitVec),
 	m_isNextTargetPosSearch(true),
 	m_isAttack(false),
-	m_isCheckPlayer(false)
+	m_isSearchPlayer(false), 
+	m_pMap(pMap),
+	m_pPlayer(pPlayer)
 {
 	// プレイヤー外部データ読み込み
 	LoadCsv::GetInstance().LoadCommonFileData(m_chara, "enemy");
@@ -91,23 +94,23 @@ void Enemy::Init()
 	SetAnimation(static_cast<int>(EnemyAnim::Idle), m_animSpeed.Idle,true, false);
 }
 
-void Enemy::Update(const Map& map, const Player& player)
+void Enemy::Update()
 {
 	// プレイヤーへの攻撃力を初期化
 	m_attackThePlayer = 0;
 
 	// エネミーが死んでいなかったら、プレイヤーが攻撃してきた際体力を減らす
-	if (!m_status.situation.isDeath)
+	if (!m_status.situation.isDeath && m_pPlayer != nullptr)
 	{
-		m_hp -= player.GetAttack();
+		m_hp -= m_pPlayer->GetAttack();
 	}
 
 	// 更新処理
 	Death();
 	Attack();
-	ColUpdate(player);
-	SearchNearPosition(map);
-	Move(map);
+	ColUpdate();
+	SearchNearPosition();
+	Move();
 	Angle();
 	PlaySE();
 
@@ -127,8 +130,12 @@ void Enemy::Draw()
 	ModelBase::Draw();
 
 #ifdef _DEBUG
+	// 体当たり判定
 	m_col.TypeChangeCapsuleDraw(m_col.m_colEnemy.m_body, 0x0000ff, false);
+	// 索敵範囲当たり判定
+	m_col.TypeChangeSphereDraw(m_col.m_colEnemy.m_search, 0x0000ff, false);
 
+	// 攻撃しているときのみ、腕の当たり判定
 	if(m_status.situation.isAttack){
 		m_col.TypeChangeCapsuleDraw(m_col.m_colEnemy.m_rightArm[0], 0x00ff00, false);
 		m_col.TypeChangeCapsuleDraw(m_col.m_colEnemy.m_rightArm[1], 0x00ff00, false);
@@ -138,6 +145,8 @@ void Enemy::Draw()
 	}
 
 	//DrawFormatString(0, 140, 0xffffff, "Enemy:HP=%d", m_hp);
+	DrawFormatString(0, 700, 0xffffff, "Enemy:m_isCheckPlayer=%d", m_isSearchPlayer);
+	
 	DrawFormatString(0, 780, 0xffffff, "Enemy:m_pos.x=%.2f:z=%.2f", m_pos.x, m_pos.z);
 	DrawFormatString(0, 800, 0xffffff, "Enemy:m_targetMoveDistance=%.2f", m_targetMoveDistance);
 	DrawFormatString(0, 820, 0xffffff, "Enemy:m_targetDistance=%.2f", m_targetDistance);
@@ -156,7 +165,7 @@ void Enemy::Draw()
 #endif // DEBUG
 }
 
-void Enemy::ColUpdate(const Player& player)
+void Enemy::ColUpdate()
 {
 	// 死んだら処理しない
 	if (m_status.situation.isDeath)return;
@@ -166,44 +175,56 @@ void Enemy::ColUpdate(const Player& player)
 	// 体当たり判定更新
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_body, m_pos, m_colPos, m_chara.bodyColRad);
 
+	// 索敵範囲当たり判定更新
+	m_col.TypeChangeSphereUpdate(m_col.m_colEnemy.m_search, m_pos, m_chara.searchRad);
+
 	// プレイヤーの当たり判定獲得
-	Collision playerCol = player.GetCol();
+	Collision playerCol = m_pPlayer->GetCol();
+
+	// 索敵範囲とプレイヤーが当たったかどうかの判定
+	m_isSearchPlayer = m_col.IsTypeChageSphereToCapsuleCollision(playerCol.m_colPlayer.m_body, m_col.m_colEnemy.m_search);
 
 	// プレイヤーに敵の攻撃が当たったかどうかの判定
 	m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], playerCol.m_colPlayer.m_body);
 }
 
-void Enemy::Move(const Map& map)
+void Enemy::Move()
 {
 	// DOTO:↓はまだ挑戦中
 		// 出来ることなら、複数ポイントをグルグル回りつつ一定範囲にプレイヤーが近づいたら接近して攻撃するようにしたい
-
-	if (m_status.situation.isAttack) return;
+	// 攻撃中もしくは死亡時は処理を通さない
+	if (m_status.situation.isAttack || m_status.situation.isDeath) return;
 
 	m_move = kInitVec;
 	
 	if (isMove)
 	{
 
-		if (m_pos.x != m_targetPos.x) {
-			if (m_pos.x >= m_targetPos.x)
-			{
-				m_move.x = -m_chara.walkSpeed;
-			}
-			else if (m_pos.x <= m_targetPos.x)
-			{
-				m_move.x = +m_chara.walkSpeed;
-			}
+		if (m_isSearchPlayer) {
+			m_vecToPlayer;
+
 		}
-		else if (m_pos.z != m_targetPos.z)
-		{
-			if (m_pos.z >= m_targetPos.z)
-			{
-				m_move.z = -m_chara.walkSpeed;
+		else {
+			if (m_pos.x != m_targetPos.x) {
+				if (m_pos.x >= m_targetPos.x)
+				{
+					m_move.x = -m_chara.walkSpeed;
+				}
+				else if (m_pos.x <= m_targetPos.x)
+				{
+					m_move.x = +m_chara.walkSpeed;
+				}
 			}
-			else if (m_pos.z <= m_targetPos.z)
+			else if (m_pos.z != m_targetPos.z)
 			{
-				m_move.z = +m_chara.walkSpeed;
+				if (m_pos.z >= m_targetPos.z)
+				{
+					m_move.z = -m_chara.walkSpeed;
+				}
+				else if (m_pos.z <= m_targetPos.z)
+				{
+					m_move.z = +m_chara.walkSpeed;
+				}
 			}
 		}
 	}
@@ -240,8 +261,11 @@ void Enemy::MoveUpdate()
 	}
 }
 
-void Enemy::SearchNearPosition(const Map& map)
+void Enemy::SearchNearPosition()
 {
+	// 死亡していたら処理しない
+	if (m_status.situation.isDeath)return;
+
 	// エネミーが現在いる位置から、一番近いポイントを探しその地点へ向かう	
 	if (m_isNextTargetPosSearch)
 	{
@@ -250,10 +274,10 @@ void Enemy::SearchNearPosition(const Map& map)
 		m_startPos = m_pos;
 
 
-		target1 = VSub(map.GetPointPos().point1, m_pos);
-		target2 = VSub(map.GetPointPos().point2, m_pos);
-		target3 = VSub(map.GetPointPos().point3, m_pos);
-		target4 = VSub(map.GetPointPos().point4, m_pos);
+		target1 = VSub(m_pMap->GetPointPos().point1, m_pos);
+		target2 = VSub(m_pMap->GetPointPos().point2, m_pos);
+		target3 = VSub(m_pMap->GetPointPos().point3, m_pos);
+		target4 = VSub(m_pMap->GetPointPos().point4, m_pos);
 
 		float target1_1;
 		float target2_1;
@@ -270,48 +294,29 @@ void Enemy::SearchNearPosition(const Map& map)
 		std::vector<float> values = { target1_1,target2_1,target3_1,target4_1 };
 
 		std::vector<float> positiveValues;
-		for (int v : values) {
+		for (float v : values) {
 			if (v > 0.0f)positiveValues.push_back(v);
 		}
 
-		int result = positiveValues.empty() ? 0 : *std::min_element(positiveValues.begin(), positiveValues.end());
+		float result = positiveValues.empty() ? 0 : *std::min_element(positiveValues.begin(), positiveValues.end());
 
 
 		if (result == target1_1)
 		{
-			m_targetPos = map.GetPointPos().point1;
+			m_targetPos = m_pMap->GetPointPos().point1;
 		}
 		else if (result == target2_1)
 		{
-			m_targetPos = map.GetPointPos().point2;
+			m_targetPos = m_pMap->GetPointPos().point2;
 		}
 		else if (result == target3_1)
 		{
-			m_targetPos = map.GetPointPos().point3;
+			m_targetPos = m_pMap->GetPointPos().point3;
 		}
 		else if (result == target4_1)
 		{
-			m_targetPos = map.GetPointPos().point4;
+			m_targetPos = m_pMap->GetPointPos().point4;
 		}
-
-		/*m_targetDistance = std::min({ target1_1,target2_1,target3_1,target4_1 });
-		
-		if (m_targetDistance == target1_1)
-		{
-			m_targetPos = map.GetPointPos().point1;
-		}
-		else if (m_targetDistance == target2_1)
-		{
-			m_targetPos = map.GetPointPos().point2;
-		}
-		else if (m_targetDistance == target3_1)
-		{
-			m_targetPos = map.GetPointPos().point3;
-		}
-		else if (m_targetDistance == target4_1)
-		{
-			m_targetPos = map.GetPointPos().point4;
-		}*/
 	}
 
 	m_targetMoveDistance = abs(m_targetPos.x + m_targetPos.z) - abs(m_pos.x + m_pos.z);

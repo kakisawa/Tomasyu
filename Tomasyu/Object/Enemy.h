@@ -75,7 +75,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Enemy();
+	Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPlayer);
 
 	/// <summary>
 	/// デストラクタ
@@ -92,7 +92,7 @@ public:
 	/// </summary>
 	/// <param name="map">マップ情報</param>
 	/// <param name="player">プレイヤー情報</param>
-	void Update(const Map& map,const Player& player);
+	void Update();
 
 	/// <summary>
 	/// 描画
@@ -103,13 +103,13 @@ public:
 	/// 当たり判定の更新
 	/// </summary>
 	/// <param name="player">プレイヤー情報</param>
-	void ColUpdate(const Player& player);
+	void ColUpdate();
 	
 	/// <summary>
 	/// 移動
 	/// </summary>
 	/// <param name="map">マップ情報</param>
-	void Move(const Map& map);
+	void Move();
 
 	/// <summary>
 	/// 移動処理更新
@@ -120,7 +120,7 @@ public:
 	/// 一番近い座標を出す
 	/// </summary>
 	/// <param name="map">マップ情報</param>
-	void SearchNearPosition(const Map& map);
+	void SearchNearPosition();
 
 	/// <summary>
 	/// 回転処理
@@ -193,6 +193,8 @@ private:
 	VECTOR m_leftElbowPos;		// 左肘座標
 	VECTOR m_leftHandPos;		// 左手座標
 
+	VECTOR m_vecToPlayer;		// プレイヤーまでの座標
+
 	int m_attackTimeCount;	// 攻撃をするまでにかかる時間
 
 	int m_attackThePlayer;		// プレイヤーへの攻撃力
@@ -203,5 +205,8 @@ private:
 	bool m_isAttack;				// 攻撃をしたかの判定
 	bool m_isAttackToPlayer;		// プレイヤーに攻撃が当たったかの判定
 	bool m_isNextTargetPosSearch;	// 次のターゲットポイントを探すフラグ
-	bool m_isCheckPlayer;			// 索敵範囲内にプレイヤーを見つけたかどうかのフラグ
+	bool m_isSearchPlayer;			// 索敵範囲内にプレイヤーを見つけたかどうかのフラグ
+
+	std::shared_ptr<Player> m_pPlayer;
+	std::shared_ptr<Map> m_pMap;
 };

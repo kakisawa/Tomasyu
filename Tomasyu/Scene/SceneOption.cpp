@@ -59,7 +59,8 @@ SceneOption::SceneOption() :
 	m_cursorHandle(-1),
 	m_volumeHandle(-1),
 	m_selectWindowHandlel(-1),
-	m_select(Select::BGM)
+	m_select(Select::BGM),
+	m_selectWindow(SelectWindow::FullScreen)
 {
 	c1.m_selectBox1 = kCursorGraphPos1[0];
 	c1.m_selectBox2 = kCursorGraphPos2[0];
@@ -84,10 +85,6 @@ void SceneOption::Init()
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kSelectBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
 	m_pSound->PlayBGM(SoundManager::BGM_Type::kSelectBGM, DX_PLAYTYPE_LOOP);
-	
-	
-
-	m_selectWindow = SelectWindow::FullScreen;
 }
 
 std::shared_ptr<SceneBase> SceneOption::Update(Input& input)

@@ -10,7 +10,6 @@ using namespace MyInputInfo;
 namespace {
 	const VECTOR kRankingPos = VGet(637.0f, 91.0f, 0.0f);
 
-
 	const VECTOR kUIPos = VGet(462.0f, 236.0f, 0.0f);
 	const VECTOR kCursorPos = VGet(457.5f, 231.5f, 0.0f);
 
@@ -30,12 +29,15 @@ SceneRanking::SceneRanking() :
 	m_rankingUI(-1),
 	m_rankingSelectUI(-1),
 	m_rankingUI_Score(-1),
-	m_rankingUI_Time(-1)
+	m_rankingUI_Time(-1),
+	m_rankingDataChange(rankingDataChange::Score),
+	m_selectBox1(VGet(0.0f,0.0f,0.0f))
 {
 }
 
 SceneRanking::~SceneRanking()
 {
+	
 }
 
 void SceneRanking::Init()
@@ -48,6 +50,15 @@ void SceneRanking::Init()
 	m_rankingUI = LoadGraph("Data/Image/SceneRanking/ランキングデータ.png");
 	m_rankingUI_Score= LoadGraph("Data/Image/SceneRanking/スコア.png");
 	m_rankingUI_Time = LoadGraph("Data/Image/SceneRanking/討伐時間.png");
+
+	/*for (int i = 0; i < m_dayNumberHandle.size(); i++)
+	{
+		m_dayNumberHandle[i] = LoadGraph(kDayNumberPath[i]);
+	}
+	for (int i = 0; i < m_scoreTimeHandle.size(); i++)
+	{
+		m_scoreTimeHandle[i] = LoadGraph(kScoreTimeNuberPath[i]);
+	}*/
 
 	m_selectBox1 = kCursorPos;
 	m_rankingSelectUI = m_rankingUI_Score;
@@ -102,31 +113,43 @@ void SceneRanking::Draw()
 	DrawGraphF(kRankingUI_Change.x, kRankingUI_Change.y, m_rankingSelectUI, true);
 
 	
+	if (m_rankingDataChange == rankingDataChange::Score) {
+		if (m_scoreRanking.size() > 0) {
 
+			for (int i = 0; i < m_scoreRanking.size(); i++)
+			{
+				// プレイ日時描画
+				SetFontSize(70);
+				DrawFormatString(660, 490 + (i * 100), 0xffffff, "%d/%d/%d %d:%d",
+					std::get<1>(m_scoreRanking[i]), std::get<2>(m_scoreRanking[i]), std::get<3>(m_scoreRanking[i]),
+					std::get<4>(m_scoreRanking[i]), std::get<5>(m_scoreRanking[i]));
 
-	if (m_scoreRanking.size() > 0) {
+				// スコア描画
+				SetFontSize(80);
+				DrawFormatString(1430, 490 + (i * 100), 0xffffff, "%d", std::get<0>(m_scoreRanking[i]));
+			}
+		}
+	}
+	else if (m_rankingDataChange == rankingDataChange::Time) {
+		if (m_timeRanking.size() > 0) {
 
-		for (int i = 0; i < m_scoreRanking.size(); i++)
-		{
-			DrawFormatString(0, 500 + (i * 40), 0xffffff, "Score: %d", std::get<0>(m_scoreRanking[i]));
-			DrawFormatString(0, 520 + (i * 40), 0xffffff, "Date: %d/%d/%d/%d/%d",
-				std::get<1>(m_scoreRanking[i]), std::get<2>(m_scoreRanking[i]), std::get<3>(m_scoreRanking[i]),
-				std::get<4>(m_scoreRanking[i]),std::get<5>(m_scoreRanking[i]));
+			for (int i = 0; i < m_timeRanking.size(); i++)
+			{
+				// プレイ日時描画
+				SetFontSize(70);
+				DrawFormatString(660, 490 + (i * 100), 0xffffff, "%d/%d/%d %d:%d",
+					std::get<1>(m_timeRanking[i]), std::get<2>(m_timeRanking[i]), std::get<3>(m_timeRanking[i]),
+					std::get<4>(m_timeRanking[i]), std::get<5>(m_timeRanking[i]));
+
+				// 時間描画
+				SetFontSize(80);
+				DrawFormatString(1430, 490 + (i * 100), 0xffffff, "%d:%d",
+					std::get<0>(m_timeRanking[i]) / 3600, (std::get<0>(m_timeRanking[i]) % 3600) / 60);
+			}
 		}
 	}
 
-	if (m_timeRanking.size() > 0) {
-
-		for (int i = 0; i < m_timeRanking.size(); i++)
-		{
-			DrawFormatString(200, 500 + (i * 40), 0xffffff, "Time: %d:%d", std::get<0>(m_timeRanking[i])/3600, (std::get<0>(m_timeRanking[i])%3600)/60);
-			DrawFormatString(200, 520 + (i * 40), 0xffffff, "Date: %d/%d/%d/%d/%d",
-				std::get<1>(m_timeRanking[i]), std::get<2>(m_timeRanking[i]), std::get<3>(m_timeRanking[i]),
-				std::get<4>(m_timeRanking[i]), std::get<5>(m_timeRanking[i]));
-		}
-	}
-
-	
+	SetFontSize(14);
 
 #ifdef _DEBUG
 #endif // DEBUG
@@ -150,6 +173,12 @@ void SceneRanking::SelectRanking(Input& input)
 {
 	if (input.IsTrigger(InputInfo::Right))
 	{
+		m_rankingDataChange++;
+		if (m_rankingDataChange >= rankingDataChange::RankingDataNum)
+		{
+			m_rankingDataChange = rankingDataChange::Score;
+		}
+
 		m_selectBox1.x += kUIMoveX;
 		if (m_selectBox1.x > kCursorPos.x + kUIMoveX)
 		{
@@ -159,6 +188,12 @@ void SceneRanking::SelectRanking(Input& input)
 
 	if (input.IsTrigger(InputInfo::Left))
 	{
+		m_rankingDataChange--;
+		if (m_rankingDataChange <0)
+		{
+			m_rankingDataChange = rankingDataChange::Time;
+		}
+
 		m_selectBox1.x -= kUIMoveX;
 		if (m_selectBox1.x < kCursorPos.x)
 		{

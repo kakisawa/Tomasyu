@@ -53,5 +53,6 @@ private:
         WindowMode,
         SelectWindowNum,
     };
+
     int m_selectWindow;
 };

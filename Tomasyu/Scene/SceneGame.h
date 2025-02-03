@@ -49,17 +49,17 @@ private:
 	int m_timeMin;      // 分
 
     // カメラ
-    std::shared_ptr<Camera> m_pCamera = std::make_shared<Camera>();
-    // 敵
-    std::shared_ptr<Enemy> m_pEnemy = std::make_shared<Enemy>();
+    std::shared_ptr<Camera> m_pCamera;
     // プレイヤー
-    std::shared_ptr<Player> m_pPlayer = std::make_shared<Player>(m_pEnemy);
+    std::shared_ptr<Player> m_pPlayer;
+    // 敵
+    std::shared_ptr<Enemy> m_pEnemy;
     // アイテム
     std::shared_ptr<Item> m_pItem = std::make_shared<Item>();
     // マップ
     std::shared_ptr<Map> m_pMap = std::make_shared<Map>();
     // UI
-    std::shared_ptr<UISceneGame> m_pUI = std::make_shared<UISceneGame>();
+    std::shared_ptr<UISceneGame> m_pUI;
     // 制限時間
     std::shared_ptr<Time> m_pTime = std::make_shared<Time>();
     // フェード

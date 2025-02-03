@@ -100,7 +100,7 @@ namespace {
 	};
 }
 
-UISceneGame::UISceneGame() :
+UISceneGame::UISceneGame(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy>pEnemy) :
 	m_useWeaponChara(0),
 	m_useItemChara(0),
 	m_playerHp_Green(1205),
@@ -108,7 +108,9 @@ UISceneGame::UISceneGame() :
 	m_playerStamina(0),
 	m_enemyHp(1205),
 	m_cursorUI1Pos(kWeaponSelectPos[0]),
-	m_cursorUI2Pos(kItemSelectPos[0])
+	m_cursorUI2Pos(kItemSelectPos[0]),
+	m_pPlayer(pPlayer),
+	m_pEnemy(pEnemy)
 {
 	// 文字UI画像読み込み
 	for (int i = 0; i < m_itemCharaUIHnadle.size(); i++)
@@ -143,20 +145,20 @@ UISceneGame::~UISceneGame()
 {
 }
 
-void UISceneGame::Init(const Player& player, const Enemy& enemy)
+void UISceneGame::Init()
 {
-	m_playerHp_Red = static_cast<float>(player.GetHp());
-	m_enemyHp = static_cast<float>(enemy.GetHp());
+	m_playerHp_Red = static_cast<float>(m_pPlayer->GetHp());
+	m_enemyHp = static_cast<float>(m_pPlayer->GetHp());
 }
 
-void UISceneGame::Update(const Player& player, const Enemy& enemy)
+void UISceneGame::Update()
 {
-	UpdateBarUI(player, enemy);
+	UpdateBarUI();
 
-	UpdateItemUI(player);
-	UpdateWeaponUI(player);
+	UpdateItemUI();
+	UpdateWeaponUI();
 
-	SetUI_RemainingBullets(player);
+	SetUI_RemainingBullets();
 
 }
 
@@ -253,10 +255,10 @@ void UISceneGame::End()
 	}
 }
 
-void UISceneGame::UpdateBarUI(const Player& player, const Enemy& enemy)
+void UISceneGame::UpdateBarUI()
 {
 	// プレイヤーのHPバー管理
-	m_playerHp_Green = static_cast<float>(player.GetHp());
+	m_playerHp_Green = static_cast<float>(m_pPlayer->GetHp());
 
 	if (m_playerHp_Green < m_playerHp_Red)
 	{
@@ -264,118 +266,118 @@ void UISceneGame::UpdateBarUI(const Player& player, const Enemy& enemy)
 	}
 
 	// 敵のHPバー管理
-	m_enemyHp = static_cast<float>(enemy.GetHp());
+	m_enemyHp = static_cast<float>(m_pEnemy->GetHp());
 }
 
-void UISceneGame::UpdateItemUI(const Player& player)
+void UISceneGame::UpdateItemUI()
 {
 	// 所持アイテムが何もなかったら、UIも表示しないようにする
 	for (int i = 0; i < m_itemUI.size(); i++) {
-		if (player.m_item[i] == Item::ItemKind::NoItem)
+		if (m_pPlayer->m_item[i] == Item::ItemKind::NoItem)
 		{
 			m_itemUI[i] = -1;
 		}
 	}
 
 	// プレイヤーが獲得したアイテムのUIを設定する関数
-	SetUI_GetItem(player);
+	SetUI_GetItem();
 
 	// プレイヤーのアイテム選択情報を獲得しての処理
 
 	for (int i = 0; i < 3; i++)
 	{
-		if (player.GetItemFrame() == i)
+		if (m_pPlayer->GetItemFrame() == i)
 		{
 			m_cursorUI2Pos = kItemSelectPos[i];		// カーソルの位置移動
 		}
 	}
 
 	// アイテムを所持していなかったらアイテム画像を消し、先には進まない
-	if (player.item() == Item::ItemKind::NoItem) {
+	if (m_pPlayer->item() == Item::ItemKind::NoItem) {
 		m_useItemChara = -1;
 		return;
 	}
 
-	SetUI_SelectItem(player);
+	SetUI_SelectItem();
 }
 
-void UISceneGame::UpdateWeaponUI(const Player& player)
+void UISceneGame::UpdateWeaponUI()
 {
 	// プレイヤーの武器選択情報を獲得しての処理
-	if (player.GetWeaponKind() == Player::WeaponKind::HandGun)
+	if (m_pPlayer->GetWeaponKind() == Player::WeaponKind::HandGun)
 	{
 		m_cursorUI1Pos = kWeaponSelectPos[0];	// カーソルの位置移動
 		m_useWeaponChara = m_itemCharaUIHnadle[6];	// 選択中武器名UIの表示
 
 	}
-	if (player.GetWeaponKind() == Player::WeaponKind::MachineGun) {
+	if (m_pPlayer->GetWeaponKind() == Player::WeaponKind::MachineGun) {
 		m_cursorUI1Pos = kWeaponSelectPos[1];	// カーソルの位置移動
 		m_useWeaponChara = m_itemCharaUIHnadle[7];	// 選択中武器名UIの表示
 	}
 
-	if (player.GetWeaponKind() == Player::WeaponKind::Knife) {
+	if (m_pPlayer->GetWeaponKind() == Player::WeaponKind::Knife) {
 		m_cursorUI1Pos = kWeaponSelectPos[2];	// カーソルの位置移動
 		m_useWeaponChara = m_itemCharaUIHnadle[8];	// 選択中武器名UIの表示
 	}
 }
 
-void UISceneGame::SetUI_SelectItem(const Player& player)
+void UISceneGame::SetUI_SelectItem()
 {
 	// 選択中アイテム名UIの表示
-	if (player.item() == Item::ItemKind::landmine)
+	if (m_pPlayer->item() == Item::ItemKind::landmine)
 	{
 		m_useItemChara = m_itemCharaUIHnadle[1];
 	}
-	else if (player.item() == Item::ItemKind::SurpriseBox)
+	else if (m_pPlayer->item() == Item::ItemKind::SurpriseBox)
 	{
 		m_useItemChara = m_itemCharaUIHnadle[2];
 	}
-	else if (player.item() == Item::ItemKind::IceFloor)
+	else if (m_pPlayer->item() == Item::ItemKind::IceFloor)
 	{
 		m_useItemChara = m_itemCharaUIHnadle[3];
 	}
-	else if (player.item() == Item::ItemKind::RecoveryMedic)
+	else if (m_pPlayer->item() == Item::ItemKind::RecoveryMedic)
 	{
 		m_useItemChara = m_itemCharaUIHnadle[4];
 	}
-	else if (player.item() == Item::ItemKind::Ammunition)
+	else if (m_pPlayer->item() == Item::ItemKind::Ammunition)
 	{
 		m_useItemChara = m_itemCharaUIHnadle[5];	// まだやってない
 	}
 }
 
-void UISceneGame::SetUI_GetItem(const Player& player)
+void UISceneGame::SetUI_GetItem()
 {
 	for (int i = 0; i < m_itemUI.size(); i++)
 	{
 		// アイテム枠
-		if (player.m_item[i] == Item::ItemKind::landmine)
+		if (m_pPlayer->m_item[i] == Item::ItemKind::landmine)
 		{
 			m_itemUI[i] = m_playerToolUIHandle[5];
 		}
-		else if (player.m_item[i] == Item::ItemKind::SurpriseBox)
+		else if (m_pPlayer->m_item[i] == Item::ItemKind::SurpriseBox)
 		{
 			m_itemUI[i] = m_playerToolUIHandle[6];
 		}
-		else if (player.m_item[i] == Item::ItemKind::IceFloor)
+		else if (m_pPlayer->m_item[i] == Item::ItemKind::IceFloor)
 		{
 			m_itemUI[i] = m_playerToolUIHandle[7];
 		}
-		else if (player.m_item[i] == Item::ItemKind::RecoveryMedic)
+		else if (m_pPlayer->m_item[i] == Item::ItemKind::RecoveryMedic)
 		{
 			m_itemUI[i] = m_playerToolUIHandle[8];
 		}
-		else if (player.m_item[i] == Item::ItemKind::Ammunition)
+		else if (m_pPlayer->m_item[i] == Item::ItemKind::Ammunition)
 		{
 			m_itemUI[i] = m_playerToolUIHandle[9];
 		}
 	}
 }
 
-void UISceneGame::SetUI_RemainingBullets(const Player& player)
+void UISceneGame::SetUI_RemainingBullets()
 {
-	m_playerRemainingBullets_handgun = player.GetRemainingBulletsHandgun();
-	m_playerRemainingBullets_machinegun = player.GetRemainingBulletsMachinegun();
+	m_playerRemainingBullets_handgun = m_pPlayer->GetRemainingBulletsHandgun();
+	m_playerRemainingBullets_machinegun = m_pPlayer->GetRemainingBulletsMachinegun();
 
 	SetUI_RemainingBulletsHandle(GunType::HandGun, m_playerRemainingBullets_handgun);
 	SetUI_RemainingBulletsHandle(GunType::MachineGun, m_playerRemainingBullets_machinegun);

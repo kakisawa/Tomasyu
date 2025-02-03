@@ -14,7 +14,7 @@ namespace {
 	};	// ゲームクリア時間画像座標
 
 
-	const char* const kNumberBlackUI[11]{
+	const char* const kNumberBlackPath[11]{
 	"Data/Image/SceneGame/Clear/0.png",
 	"Data/Image/SceneGame/Clear/1.png",
 	"Data/Image/SceneGame/Clear/2.png",
@@ -55,7 +55,7 @@ void Score::Init(std::shared_ptr<Time> time)
 	// 数字UI画像読み込み
 	for (int i = 0; i < m_numberBlackUIHandle.size(); i++)
 	{
-		m_numberBlackUIHandle[i] = LoadGraph(kNumberBlackUI[i]);
+		m_numberBlackUIHandle[i] = LoadGraph(kNumberBlackPath[i]);
 	}
 
 	m_pTime = time;

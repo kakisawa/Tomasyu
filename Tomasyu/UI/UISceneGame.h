@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include <array>
 #include <map>
+#include <memory>
 
 class Player;
 class Enemy;
@@ -19,20 +20,20 @@ class UISceneGame
 	};
 
 public:
-	UISceneGame();
+	UISceneGame(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy>pEnemy);
 	virtual ~UISceneGame();
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="player"></param>
-	void Init(const Player& player,const Enemy& enemy);
+	void Init();
 
 	/// <summary>
 	/// 更新
 	/// </summary>
 	/// <param name="player"></param>
-	void Update(const Player& player,const Enemy& enemy);
+	void Update();
 
 	/// <summary>
 	/// 描画
@@ -48,36 +49,36 @@ public:
 	/// HP・スタミナバーUIの更新
 	/// </summary>
 	/// <param name="player"></param>
-	void UpdateBarUI(const Player& player,const Enemy& enemy);
+	void UpdateBarUI();
 
 	/// <summary>
 	/// アイテムUIの更新
 	/// </summary>
 	/// <param name="player"></param>
-	void UpdateItemUI(const Player& player);
+	void UpdateItemUI();
 
 	/// <summary>
 	/// 武器UIの更新
 	/// </summary>
 	/// <param name="player"></param>
-	void UpdateWeaponUI(const Player& player);
+	void UpdateWeaponUI();
 
 	/// <summary>
 	/// 選択中アイテム名UIの表示
 	/// </summary>
 	/// <param name="player">プレイヤー情報</param>
-	void SetUI_SelectItem(const Player& player);
+	void SetUI_SelectItem();
 
 	/// <summary>
 	/// プレイヤーが獲得したアイテムのUIを設定する
 	/// </summary>
 	/// <param name="player">プレイヤー情報</param>
-	void SetUI_GetItem(const Player& player);
+	void SetUI_GetItem();
 
 	/// <summary>
 	/// プレイヤーの残弾UIを設定する
 	/// </summary>
-	void SetUI_RemainingBullets(const Player& player);
+	void SetUI_RemainingBullets();
 
 	/// <summary>
 	/// プレイヤーの残弾UIを表示する
@@ -110,5 +111,9 @@ private:
 
 	VECTOR m_cursorUI1Pos;		// 武器カーソルUI座標
 	VECTOR m_cursorUI2Pos;		// アイテムカーソルUI座標
+
+
+	std::shared_ptr<Player> m_pPlayer;
+	std::shared_ptr<Enemy> m_pEnemy;
 };
 

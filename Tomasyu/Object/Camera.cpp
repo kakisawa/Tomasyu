@@ -19,12 +19,13 @@ namespace {
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);		// ベクトルの初期価値
 }
 
-Camera::Camera() :
+Camera::Camera(std::shared_ptr<Player> pPlayer) :
 	m_pos(kInitVec),
 	m_targetPos(kInitVec),
 	m_enemyTargetPos(kInitVec),
 	m_angleH(kInitAngleH),
-	m_angleV(kInitAngleV)
+	m_angleV(kInitAngleV),
+	m_pPlayer(pPlayer)
 {
 }
 
@@ -33,25 +34,25 @@ void Camera::Init()
 	SetCameraNearFar(kCameraNear, kCameraFar);
 }
 
-void Camera::Update(const Player& player)
+void Camera::Update()
 {
 
 	// カメラの角度手動入力/更新
-	LeftstickCameraUpdate(player);
+	LeftstickCameraUpdate();
 	RightstickCameraUpdate();
 
 	// カメラの注視点を設定
-	if (player.GetLockOn()) 
+	if (m_pPlayer->GetLockOn()) 
 	{
-		m_targetPos = VAdd(player.GetTargetPos(), VGet(0.0f, kCameraHeight, 0.0f));
+		m_targetPos = VAdd(m_pPlayer->GetTargetPos(), VGet(0.0f, kCameraHeight, 0.0f));
 	}
 	else 
 	{
-		m_targetPos = VAdd(player.GetPos(), VGet(0.0f, kCameraHeight, 0.0f));
+		m_targetPos = VAdd(m_pPlayer->GetPos(), VGet(0.0f, kCameraHeight, 0.0f));
 	}
 
 	// カメラ位置補正
-	FixCameraPos(player);
+	FixCameraPos();
 
 	// カメラの情報をライブラリのカメラに反映させる
 	SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
@@ -65,13 +66,13 @@ void Camera::Update(const Player& player)
 	//	m_targetPos.x, m_targetPos.y, m_targetPos.z);
 
 	//DrawFormatString(0, 140, 0xffffff, "Player:m_pos.x/y/z=%.2f/%.2f/%.2f",
-	//	player.GetPos().x, player.GetPos().y, player.GetPos().z);
+	//	m_pPlayer->GetPos().x, m_pPlayer->GetPos().y, m_pPlayer->GetPos().z);
 
 	//DrawFormatString(0, 160, 0xffffff, "m_angleH=%.2f", m_angleH);
 #endif // DEBUG
 }
 
-void Camera::FixCameraPos(const Player& player)
+void Camera::FixCameraPos()
 {
 	// 水平方向の回転
 	auto rotY = MGetRotY(m_angleH);
@@ -84,9 +85,9 @@ void Camera::FixCameraPos(const Player& player)
 	m_pos = VTransform(m_pos, rotY);
 
 	// 注視点の座標を足す
-	if (player.GetLockOn()) 
+	if (m_pPlayer->GetLockOn()) 
 	{
-		m_pos = VAdd(m_pos, player.GetPos());
+		m_pos = VAdd(m_pos, m_pPlayer->GetPos());
 	}
 	else
 	{
@@ -125,7 +126,7 @@ void Camera::RightstickCameraUpdate()
 	}
 }
 
-void Camera::LeftstickCameraUpdate(const Player& player)
+void Camera::LeftstickCameraUpdate()
 {
 	//入力状態初期化
 	input2.X = 0;
@@ -134,7 +135,7 @@ void Camera::LeftstickCameraUpdate(const Player& player)
 	// 入力状態を取得
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input2);
 
-	if (player.GetLockOn()) 
+	if (m_pPlayer->GetLockOn()) 
 	{
 
 		if (input2.X < 0.0f)			// 右スティックを右に倒したら右回転する
