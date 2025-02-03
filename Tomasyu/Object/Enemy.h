@@ -100,6 +100,12 @@ public:
 	void Draw() override;
 
 	/// <summary>
+	/// Playerのポインタを設定する
+	/// </summary>
+	/// <param name="pPlayer"></param>
+	void SetPlayer(std::shared_ptr<Player> pPlayer) { m_pPlayer = pPlayer; }
+
+	/// <summary>
 	/// 当たり判定の更新
 	/// </summary>
 	/// <param name="player">プレイヤー情報</param>

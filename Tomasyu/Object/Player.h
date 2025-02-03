@@ -358,7 +358,18 @@ public:
 	Item::ItemKind item() const { return m_item[m_useItem]; }
 
 
-	
+	/// <summary>
+	///	Enemyポインタを設定する
+	/// </summary>
+	/// <param name="pEnemy"></param>
+	void SetEnemyPointer(std::shared_ptr<Enemy> pEnemy) { m_pEnemy = pEnemy; }
+
+	/// <summary>
+	/// Cameraポインタを設定する
+	/// </summary>
+	/// <param name="pCamera"></param>
+	void SetCameraPointer(std::shared_ptr<Camera> pCamera) {  m_pCamera = pCamera; }
+
 
 private:
 	int m_remainingBulletsHandgun;		// ハンドガンの残弾数

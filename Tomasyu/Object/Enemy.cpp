@@ -4,6 +4,7 @@
 #include "../Util/LoadCsv.h"
 #include <cassert>
 #include <cmath>
+#include <random>
 #include <algorithm>
 
 namespace {
@@ -413,9 +414,31 @@ void Enemy::Attack()
 	// 攻撃までのカウントが0になったら攻撃をする
 	if (m_attackTimeCount == 0)
 	{
+		// ランダムで値を獲得する
+		std::random_device rd;
+		std::mt19937 mt(rd());
+		std::uniform_real_distribution<> rand(1, 4 + 1);
+		int attackNum = static_cast<int>(rand(mt));
+
 		m_status.situation.isAttack = true;
-		ChangeAnimNo(EnemyAnim::Attack1, m_animSpeed.Attack1, false, m_animChangeTime.Attack1);
-		
+
+		if (attackNum == 1)
+		{
+			ChangeAnimNo(EnemyAnim::Attack1, m_animSpeed.Attack1, false, m_animChangeTime.Attack1);
+		}
+		else if (attackNum == 2)
+		{
+			ChangeAnimNo(EnemyAnim::Attack2, m_animSpeed.Attack2, false, m_animChangeTime.Attack2);
+		}
+		else if (attackNum == 3)
+		{
+			ChangeAnimNo(EnemyAnim::Attack3, m_animSpeed.Attack3, false, m_animChangeTime.Attack3);
+		}
+		else if (attackNum == 4)
+		{
+			ChangeAnimNo(EnemyAnim::Attack4, m_animSpeed.Attack4, false, m_animChangeTime.Attack4);
+		}
+
 		m_isAttack = true;	
 	}
 

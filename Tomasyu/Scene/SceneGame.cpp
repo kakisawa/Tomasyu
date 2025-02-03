@@ -50,10 +50,18 @@ SceneGame::SceneGame() :
 	m_isPause(false),
 	m_isPlayBGM(true)
 {
+	
+	m_pEnemy = std::make_shared<Enemy>(m_pMap, nullptr);
+	m_pPlayer = std::make_shared<Player>(nullptr, nullptr, m_pItem);
+	
+	// PlayerとEnemyの相手ポインタを設定する
+	m_pPlayer->SetEnemyPointer(m_pEnemy);
+	m_pEnemy->SetPlayer(m_pPlayer);
+
 	m_pCamera = std::make_shared<Camera>(m_pPlayer);
-	m_pPlayer = std::make_shared<Player>(m_pCamera, nullptr, m_pItem);
-	m_pEnemy = std::make_shared<Enemy>(m_pMap, m_pPlayer);
 	m_pUI = std::make_shared<UISceneGame>(m_pPlayer, m_pEnemy);
+
+	m_pPlayer->SetCameraPointer(m_pCamera);
 }
 
 SceneGame::~SceneGame()
