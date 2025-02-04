@@ -1,5 +1,6 @@
 ﻿#include "Item.h"
 #include "../Time/IsTime.h"
+#include "../Util/LoadCsv.h"
 #include "Player.h"
 #include <DxLib.h>
 #include <cassert>
@@ -22,6 +23,8 @@ Item::Item(std::shared_ptr<Player> pPlayer, int num) :
 	m_pPlayer(pPlayer),
 	m_maxItem(num)
 {
+	// プレイヤー外部データ読み込み
+	LoadCsv::GetInstance().LoadItemPosData(m_posData);
 }
 
 Item::~Item()
@@ -41,7 +44,7 @@ void Item::Init()
 		item.m_model = MV1DuplicateModel(m_baseModel);
 		assert(item.m_model != -1);
 		// 座標の初期化
-		item.m_pos = kInitPos;
+		item.m_pos = VGet(m_posData.posX, m_posData.posY, m_posData.posZ);
 		// 移動量の初期化
 		item.m_move = kInitVec;
 		// 角度の初期化
@@ -54,7 +57,7 @@ void Item::Init()
 		// 当たり判定
 		item.m_col.TypeChangeSphereUpdate(item.m_col.m_itemCol, item.m_pos, kBodyColRad);
 		// 復活までにかかる時間
-		item.m_respawnTime = std::make_shared<IsTime>(kResourceAdded);
+		item.m_respawnTime = std::make_shared<IsTime>(kItemRespawnTime);
 	}
 }
 
@@ -64,7 +67,14 @@ void Item::Update()
 	{
 		item.m_colPos = VAdd(item.m_pos, kColPosAdjustment);
 		item.m_col.TypeChangeSphereUpdate(item.m_col.m_itemCol, item.m_pos, kBodyColRad);
+
+		if (!item.m_isExist&& item.m_respawnTime->Update()) {
+			item.m_isExist = true;
+			item.m_respawnTime->Reset();
+		}
 	}
+
+
 
 	Floating();
 	ColUpdate();

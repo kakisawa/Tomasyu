@@ -10,6 +10,7 @@ namespace
 {
 	const char* const kCommonCharaInfoFileName = "Data/csv/CharaInfo.csv";
 	const char* const kPlayerOnlyDataFileName = "Data/csv/PlayerOnlyData.csv";
+	const char* const kItemDataFileName = "Data/csv/ItemPosData.csv";
 
 
 	/// <summary>
@@ -45,7 +46,7 @@ void LoadCsv::LoadCommonFileData(ModelBase::CharaCommonData& charaData, std::str
 		if (str == charaName) {
 			try
 			{
-				// プレイヤーの詳細
+				// モデルデータの詳細
 				charaData.maxHp = std::stoi(strvec[1]);		// 最大HP
 				charaData.initPosX = std::stof(strvec[2]);	// 初期座標X
 				charaData.initPosY = std::stof(strvec[3]);	// 初期座標Y
@@ -59,12 +60,9 @@ void LoadCsv::LoadCommonFileData(ModelBase::CharaCommonData& charaData, std::str
 			}
 			catch (const std::exception&)
 			{
-
 			}
 		}
 	}
-
-
 }
 
 void LoadCsv::LoadPlayerOnlyFileData(std::map<std::string, Player::PlayerOnlyData>& playerData)
@@ -93,8 +91,31 @@ void LoadCsv::LoadPlayerOnlyFileData(std::map<std::string, Player::PlayerOnlyDat
 		}
 		catch (const std::exception&)
 		{
-
 		}
+	}
+}
 
+void LoadCsv::LoadItemPosData(Item::PosData& posData)
+{
+	std::ifstream ifs(kItemDataFileName);
+	std::string line;
+	std::vector<std::string> strvec;
+	m_data.clear();
+
+	while (std::getline(ifs, line))
+	{
+		strvec = split(line, ',');
+		const char* str = strvec[0].c_str();
+
+		try
+		{
+			// アイテム座標の詳細
+			posData.posX = std::stoi(strvec[1]);
+			posData.posY = std::stoi(strvec[2]);
+			posData.posZ = std::stoi(strvec[3]);
+		}
+		catch (const std::exception&)
+		{
+		}
 	}
 }

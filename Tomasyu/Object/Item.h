@@ -14,6 +14,15 @@ class IsTime;
 class Item
 {
 public:
+
+	struct PosData
+	{
+		float posX;
+		float posY;
+		float posZ;
+	}m_posData;
+
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
