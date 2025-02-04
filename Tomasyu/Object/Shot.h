@@ -57,6 +57,9 @@ public:
 	/// </summary>
 	void UpdateBullet();
 
+	/// <summary>
+	/// 攻撃
+	/// </summary>
 	void Attack();
 
 	/// <summary>
@@ -64,6 +67,12 @@ public:
 	/// </summary>
 	/// <returns>残弾数</returns>
 	int GetBulletNum() { return m_bulletNum; }
+
+	/// <summary>
+	/// 残弾数を足す
+	/// </summary>
+	/// <param name="add">追加する残弾数</param>
+	void SetAddBullet(int add) { m_bulletNum += add; }
 
 private:
 	int m_baseModel;	// 弾の基本モデル
@@ -75,13 +84,13 @@ private:
 	struct Bullet
 	{
 		int m_model;		// モデル
+		bool m_isExist = false;		// 存在しているかのフラグ
 		VECTOR m_pos = VGet(0.0f, 0.0f, 0.0f);		// 座標
 		VECTOR m_move = VGet(0.0f, 0.0f, 0.0f);		// 移動
 		VECTOR m_colPos = VGet(0.0f, 0.0f, 0.0f);	// 当たり判定座標
 		VECTOR m_direction = VGet(0.0f, 0.0f, 0.0f);	// 進む方向
 		Collision m_col;	// 当たり判定
 		std::shared_ptr<IsTime> m_existTime;	// 消えるまでの時間
-		bool m_isExist = false;		// 存在しているかのフラグ
 	};
 
 	std::vector<Bullet> m_bullet;			// 弾(配列)

@@ -1,4 +1,6 @@
 ﻿#include "Item.h"
+#include "../Time/IsTime.h"
+#include "Player.h"
 #include <DxLib.h>
 #include <cassert>
 
@@ -16,12 +18,9 @@ namespace {
 	const char* kModelFilePath = "Data/Model/ItemBox.mv1";
 }
 
-Item::Item() :
-	m_model(-1),
-	m_angle(kInitFloat),
-	m_pos(kInitPos),
-	m_colPos(kInitPos),
-	m_move(kInitVec)
+Item::Item(std::shared_ptr<Player> pPlayer, int num) :
+	m_pPlayer(pPlayer),
+	m_maxItem(num)
 {
 }
 
@@ -31,31 +30,55 @@ Item::~Item()
 
 void Item::Init()
 {
-	// モデルの読み込み
-	m_model = MV1LoadModel(kModelFilePath);
-	assert(m_model != -1);
+	m_baseModel= MV1LoadModel(kModelFilePath);
+	assert(m_baseModel != -1);
 
-	// 当たり判定の初期化
-	m_col.Init();
+	// アイテムの最大配列を指定
+	m_item.resize(m_maxItem);
+	for (auto& item : m_item) 
+	{
+		// モデルの読み込み
+		item.m_model = MV1DuplicateModel(m_baseModel);
+		assert(item.m_model != -1);
+		// 座標の初期化
+		item.m_pos = kInitPos;
+		// 移動量の初期化
+		item.m_move = kInitVec;
+		// 角度の初期化
+		item.m_angle = kInitFloat;
+		// 存在しているかどうか
+		item.m_isExist = true;
 
-	// モデルの位置、サイズの初期化
-	MV1SetPosition(m_model, kInitPos);
-	MV1SetScale(m_model, kModelSize);
+		// サイズ設定
+		MV1SetScale(item.m_model, kModelSize);
+		// 当たり判定
+		item.m_col.TypeChangeSphereUpdate(item.m_col.m_itemCol, item.m_pos, kBodyColRad);
+		// 復活までにかかる時間
+		item.m_respawnTime = std::make_shared<IsTime>(kResourceAdded);
+	}
 }
 
 void Item::Update()
 {
-	// 当たり判定の更新
-	m_colPos = VAdd(m_pos, kColPosAdjustment);
-	m_col.TypeChangeSphereUpdate(m_col.m_itemCol , m_colPos, kBodyColRad);
+	for (auto& item : m_item)
+	{
+		item.m_colPos = VAdd(item.m_pos, kColPosAdjustment);
+		item.m_col.TypeChangeSphereUpdate(item.m_col.m_itemCol, item.m_pos, kBodyColRad);
+	}
 
 	Floating();
+	ColUpdate();
 }
 
 void Item::Draw()
 {
-	MV1DrawModel(m_model);	// モデルの描画
-	
+	for (auto& item : m_item)
+	{
+		if (!item.m_isExist) continue;
+
+		MV1DrawModel(item.m_model);	// モデルの描画
+	}
+
 #ifdef _DEBUG
 	//m_col.TypeChangeSphereDraw(m_col.m_itemCol,0xff00ff, false);
 	//DrawFormatString(0, 600, 0xffffff, "item:m_pos=%.2f", m_pos.y);
@@ -63,14 +86,58 @@ void Item::Draw()
 #endif
 }
 
+void Item::End()
+{
+	// モデルの削除
+	if (m_baseModel != -1)
+	{
+		MV1DeleteModel(m_baseModel);
+		m_baseModel = -1;
+	}
+
+	for (auto& item : m_item)
+	{
+		if (item.m_model != -1)
+		{
+			MV1DeleteModel(item.m_model);
+			item.m_model = -1;
+		}
+	}
+}
+
 void Item::Floating()
 {
 	// 浮遊角度の調整
-	m_angle += kAddAngle;
-	float angle = m_angle * (DX_PI_F / 180.0f);
-	m_move.y = static_cast<float>(sin(angle)) * kFloatingAdjustment;
+	for (auto& item : m_item)
+	{
+		// 浮遊角度の調整
+		item.m_angle += kAddAngle;
+		float angle = item.m_angle * (DX_PI_F / 180.0f);
+		item.m_move.y = static_cast<float>(sin(angle)) * kFloatingAdjustment;
 
-	// 座標更新
-	m_pos = VAdd(m_pos, m_move);
-	MV1SetPosition(m_model, m_pos);	
+		// 座標更新
+		item.m_pos = VAdd(item.m_pos, item.m_move);
+		MV1SetPosition(item.m_model, item.m_pos);
+	}
+}
+
+void Item::ColUpdate()
+{
+	Collision playerCol = m_pPlayer->GetCol();
+	bool isItem = false;
+
+	for (auto& item : m_item)
+	{
+		if (!item.m_isExist) continue;
+
+		// プレイヤーとアイテムが当たっていたら
+		if (item.m_col.IsTypeChageSphereToCapsuleCollision
+		(playerCol.m_colPlayer.m_body, item.m_col.m_itemCol)) {
+
+			isItem = true;
+			item.m_isExist = false;
+		}
+	}
+
+	m_pPlayer->SetGetItemFlag(isItem);
 }

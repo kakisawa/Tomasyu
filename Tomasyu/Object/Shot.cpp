@@ -43,7 +43,7 @@ Shot::Shot(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, int a
 
 		// 座標の初期化
 		bullet.m_pos = kInitVec;
-		// 当たり判定座標の初期化
+		// 移動量の初期化
 		bullet.m_move = kInitVec;
 		// 角度の初期化
 		bullet.m_direction = kInitVec;
@@ -186,7 +186,7 @@ void Shot::Attack()
 	for (auto& bullet : m_bullet)
 	{
 		// 弾が存在していなかったら処理をしない
-		if (!bullet.m_isExist) return;
+		if (!bullet.m_isExist) continue;
 
 		// 弾が敵と当たっていたら
 		if (bullet.m_col.IsTypeChageCupsuleCollision

@@ -42,13 +42,13 @@ public:
 	/// </summary>
 	struct CharaCommonData
 	{
-		int maxHp = 0;			// 最大HP
+		int maxHp = 0;				// 最大HP
 		float initPosX = 0.0f;		// 初期化座標X
 		float initPosY = 0.0f;		// 初期化座標Y
 		float initPosZ = 0.0f;		// 初期化座標Z
-		float modelSize = 0.0f;	// モデルサイズ
-		float walkSpeed = 0.0f;	// 歩く速度
-		float rotaSpeed = 0.0f;	// 回転速度
+		float modelSize = 0.0f;		// モデルサイズ
+		float walkSpeed = 0.0f;		// 歩く速度
+		float rotaSpeed = 0.0f;		// 回転速度
 		float bodyColRad = 0.0f;	// 体当たり判定半径
 		float bodyColUpY = 0.0f;	// 当たり判定上座標
 		float searchRad = 0.0f;		// 索敵当たり判定半径

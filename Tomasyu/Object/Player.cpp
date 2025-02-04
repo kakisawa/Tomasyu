@@ -43,6 +43,7 @@ namespace
 	constexpr int kMedicRecoveryAmount = 10;	// 回復量
 
 	bool kGun = false;
+	int useItem = 0;
 
 	constexpr float kInitFloat = 0.0f;				// float値初期化
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// Vector値初期化値
@@ -52,7 +53,7 @@ Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, s
 	m_useItem(0),
 	m_attackTheEnemy(0),
 	m_getItem(0),
-	m_getitemCount(0),
+	m_getitemCount(kItemRespawnTime),
 	m_machineGunCount(0),
 	m_inputX(0),
 	m_inputY(0),
@@ -73,8 +74,7 @@ Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, s
 	m_useWeapon(WeaponKind::HandGun),
 	m_SetComboknife(Knife::Attack1),
 	m_pCamera(pCamera),
-	m_pEnemy(pEnemy),
-	m_pItem(pItem)
+	m_pEnemy(pEnemy)
 {
 	// データの読み込みを行う
 	LoadData();
@@ -203,7 +203,7 @@ void Player::Draw()
 	//DrawFormatString(0, 360, 0xffffff, "Player:inputX=%d", m_inputX);
 	//DrawFormatString(0, 380, 0xffffff, "Player:inputY=%d", m_inputY);
 	//DrawFormatString(0, 400, 0xffffff, "Player:item=%d", m_useItem);
-	//DrawFormatString(0, 420, 0xffffff, "Player:m_isItem=%d", m_isItem);
+	DrawFormatString(0, 420, 0xffffff, "Player:m_isItem=%d", m_isItem);
 	//DrawFormatString(0, 440, 0xffffff, "Player:m_getItem=%d", m_getItem);
 	//DrawFormatString(0, 460, 0xffffff, "Player:itemCount=%d", m_getitemCount);
 	//DrawFormatString(0, 480, 0xffffff, "Player:m_useItem[0]=%d", m_item[0]);
@@ -216,7 +216,6 @@ void Player::Draw()
 	//DrawFormatString(0, 660, 0xffffff, "Player:m_isEnemy=%d", m_isEnemy);
 	//DrawFormatString(0, 680, 0xffffff, "Player:m_isAttackToEnemy=%d", m_isAttackToEnemy);
 	//DrawFormatString(0, 700, 0xffffff, "Player:m_isAttack=%d", m_isAttack);
-	//DrawFormatString(0, 720, 0xffffff, "Player:m_attackTheEnemy=%d", m_attackTheEnemy);
 	//DrawFormatString(0, 720, 0xffffff, "Player:m_attackTheEnemy=%d", m_attackTheEnemy);
 	//DrawFormatString(0, 520, 0xffffff, "kGun=%d", kGun);
 
@@ -406,11 +405,7 @@ void Player::ColUpdate()
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colPlayer.m_body, m_pos, m_colPos, m_chara.bodyColRad);
 
 	// 敵・アイテムの当たり判定獲得
-	Collision itemCol = m_pItem->GetCol();
-	Collision enemyCol = m_pEnemy->GetCol();		// ここでバグる
-
-	// アイテムとプレイヤーが当たったかどうかの判定
-	m_isItem = m_col.IsTypeChageSphereToCapsuleCollision(m_col.m_colPlayer.m_body, itemCol.m_itemCol);
+	Collision enemyCol = m_pEnemy->GetCol();
 
 	// 敵とプレイヤーが当たったかどうかの判定
 	if (m_col.IsTypeChageCupsuleCollision(m_col.m_colPlayer.m_body, enemyCol.m_colEnemy.m_body))
@@ -499,6 +494,8 @@ void Player::UseItem(Input& input)
 		// アイテムを持っていなかったら処理をしない
 		if (m_item[m_useItem] == Item::ItemKind::NoItem)	return;
 
+		useItem = m_useItem;
+
 		// 状態をアイテム使用中にする
 		m_status.situation.isUseItem = true;
 
@@ -542,8 +539,6 @@ void Player::UseItem(Input& input)
 			ChangeAnimNo(PlayerAnim::Drink, m_animSpeed.Drink, false, m_animChangeTime.Drink);
 			if (m_hp < m_chara.maxHp) 
 			{
-				//m_hp += kMedicRecoveryAmount;
-
 				m_hp += std::min(m_chara.maxHp - m_hp, kMedicRecoveryAmount);
 			}
 		}
@@ -555,6 +550,10 @@ void Player::UseItem(Input& input)
 			m_status.situation.isReload = true;
 			// 弾再装填のアニメーションを入れる
 			ChangeAnimNo(PlayerAnim::Reload, m_animSpeed.Reload, false, m_animChangeTime.Reload);
+
+			if (m_remainingBulletsMachinegun < kMachineGunMaxBullet) {
+				m_pShotMachineGun->SetAddBullet(std::min(kMachineGunMaxBullet - m_remainingBulletsMachinegun, 30));
+			}
 		}
 	}
 
@@ -567,7 +566,7 @@ void Player::UseItem(Input& input)
 		m_status.situation.isReload = false;
 		m_status.situation.isUseItem = false;
 
-		m_item[m_useItem] = Item::ItemKind::NoItem;
+		m_item[useItem] = Item::ItemKind::NoItem;
 	}
 }
 
@@ -607,8 +606,7 @@ void Player::AttackGun(Input& input)
 {
 	// TODO:処理の途中
 		// 弾を放つ処理をしたい
-
-	if (m_status.situation.isRoll|| m_status.situation.isDamageReceived) return;
+	if (m_status.situation.isRoll || m_status.situation.isDamageReceived || m_status.situation.isUseItem) return;
 	if (m_useWeapon == WeaponKind::Knife)	return;
 
 	m_status.situation.isGunAttack = false;
@@ -670,7 +668,7 @@ void Player::AttackGun(Input& input)
 void Player::AttackKnife(Input& input)
 {
 	// 回避行動をとっている場合処理しない
-	if (m_status.situation.isRoll || m_status.situation.isDamageReceived) return;
+	if (m_status.situation.isRoll || m_status.situation.isDamageReceived || m_status.situation.isUseItem) return;
 
 	// 武器の種類が銃だった場合処理しない
 	if (m_useWeapon == WeaponKind::HandGun)	return;

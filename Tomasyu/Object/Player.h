@@ -301,6 +301,26 @@ public:
 	void SetRemainingBulletsMachinegun();
 
 	/// <summary>
+	/// アイテムへ当たったかフラグのセット
+	/// </summary>
+	/// <param name="flag">当たったか入力</param>
+	/// <returns>アイテムと当たったか</returns>
+	void SetGetItemFlag(int flag) { m_isItem = flag; }
+
+	/// <summary>
+	///	Enemyポインタを設定する
+	/// </summary>
+	/// <param name="pEnemy"></param>
+	void SetEnemyPointer(std::shared_ptr<Enemy> pEnemy) { m_pEnemy = pEnemy; }
+
+	/// <summary>
+	/// Cameraポインタを設定する
+	/// </summary>
+	/// <param name="pCamera"></param>
+	void SetCameraPointer(std::shared_ptr<Camera> pCamera) { m_pCamera = pCamera; }
+
+
+	/// <summary>
 	/// 敵へ攻撃値を渡す
 	/// </summary>
 	/// <returns></returns>
@@ -357,20 +377,6 @@ public:
 	/// <returns>選択中のアイテムの種類</returns>
 	Item::ItemKind item() const { return m_item[m_useItem]; }
 
-
-	/// <summary>
-	///	Enemyポインタを設定する
-	/// </summary>
-	/// <param name="pEnemy"></param>
-	void SetEnemyPointer(std::shared_ptr<Enemy> pEnemy) { m_pEnemy = pEnemy; }
-
-	/// <summary>
-	/// Cameraポインタを設定する
-	/// </summary>
-	/// <param name="pCamera"></param>
-	void SetCameraPointer(std::shared_ptr<Camera> pCamera) {  m_pCamera = pCamera; }
-
-
 private:
 	int m_remainingBulletsHandgun;		// ハンドガンの残弾数
 	int m_remainingBulletsMachinegun;	// マシンガンの残弾数
@@ -383,11 +389,10 @@ private:
 	int m_getItem;				// アイテムをランダムで獲得する際に使用する
 	int m_getitemCount;			// アイテムを獲得するインターバル用
 	int m_machineGunCount;		// マシンガンの弾が発射されるまでのインターバル用
-	bool m_isItem;				// アイテムとの当たり判定
+	bool m_isItem;				// アイテムと当たったか
 	bool m_isLookOn;			// ロックオンフラグ
 	bool m_isInvincibleTime;	// 被ダメ中の無敵時間
-
-	bool m_isEnemy;				// 敵との当たり判定
+	bool m_isEnemy;				// 敵と当たったか
 	bool m_isAttackToEnemy;		// 敵に攻撃が当たったかの判定
 	bool m_isAttack;
 	bool m_is3Combo;			// ナイフ攻撃の3コンボ目かどうか
@@ -407,7 +412,6 @@ private:
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Shot> m_pShotHandGun;
 	std::shared_ptr<Shot> m_pShotMachineGun;
-	std::shared_ptr<Item> m_pItem;
 	std::shared_ptr<Camera> m_pCamera;
 
 	std::shared_ptr<Score> m_pScore;

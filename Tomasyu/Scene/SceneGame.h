@@ -55,7 +55,7 @@ private:
     // 敵
     std::shared_ptr<Enemy> m_pEnemy;
     // アイテム
-    std::shared_ptr<Item> m_pItem = std::make_shared<Item>();
+    std::shared_ptr<Item> m_pItem;
     // マップ
     std::shared_ptr<Map> m_pMap = std::make_shared<Map>();
     // UI

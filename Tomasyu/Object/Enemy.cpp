@@ -18,9 +18,8 @@ namespace {
 
 	constexpr int kNextAttackTime = 100;			// 次の攻撃をするまでのカウント
 
+	// モデルパス
 	const char* kModelFilePath = "Data/Model/EnemyModel.mv1";
-
-	bool isMove = true;			// 動いているかどうかのフラグ
 
 	// 各攻撃パーツの部位パス
 	const char* const kRightShoulder = "mixamorig:RightShoulder";
@@ -40,10 +39,10 @@ namespace {
 
 Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPlayer):
 	m_attackThePlayer(0),
-	m_targetDistance(0.0f),
-	m_targetMoveDistance(0.0f),
 	m_attackTimeCount(kNextAttackTime),
-	m_isAttackToPlayer(0),
+	m_attackKind(0),
+	m_targetDistance(kInitFloat),
+	m_targetMoveDistance(kInitFloat),
 	m_colPos(kInitVec),
 	m_startPos(kInitVec),
 	m_targetPos(kInitVec),
@@ -54,9 +53,11 @@ Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPla
 	m_leftElbowPos(kInitVec),
 	m_leftHandPos(kInitVec),
 	m_vecToPlayer(kInitVec),
-	m_isNextTargetPosSearch(true),
+	m_isMove(false),
 	m_isAttack(false),
-	m_isSearchPlayer(false), 
+	m_isAttackToPlayer(false),
+	m_isSearchPlayer(false),
+	m_isNextTargetPosSearch(true),
 	m_pMap(pMap),
 	m_pPlayer(pPlayer)
 {
@@ -186,7 +187,27 @@ void Enemy::ColUpdate()
 	m_isSearchPlayer = m_col.IsTypeChageSphereToCapsuleCollision(playerCol.m_colPlayer.m_body, m_col.m_colEnemy.m_search);
 
 	// プレイヤーに敵の攻撃が当たったかどうかの判定
-	m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], playerCol.m_colPlayer.m_body);
+	if (m_attackKind == 1)
+	{
+		m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+	}
+	else if (m_attackKind == 2)
+	{
+		if (m_nextAnimTime <= 28)	return;
+
+		m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+		if (!m_isAttackToPlayer) {
+			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[0], m_pPlayer->GetCol().m_colPlayer.m_body);
+		}
+	}
+	else if (m_attackKind == 3)
+	{
+		m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+	}
+	else if (m_attackKind == 4)
+	{
+		m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+	}
 }
 
 void Enemy::Move()
@@ -198,7 +219,7 @@ void Enemy::Move()
 
 	m_move = kInitVec;
 	
-	if (isMove)
+	if (m_isMove)
 	{
 
 		if (m_isSearchPlayer) {
@@ -289,8 +310,6 @@ void Enemy::SearchNearPosition()
 		target2_1 = abs(target2.x) + abs(target2.z);
 		target3_1 = abs(target3.x) + abs(target3.z);
 		target4_1 = abs(target4.x) + abs(target4.z);
-
-
 
 		std::vector<float> values = { target1_1,target2_1,target3_1,target4_1 };
 
@@ -418,25 +437,30 @@ void Enemy::Attack()
 		std::random_device rd;
 		std::mt19937 mt(rd());
 		std::uniform_real_distribution<> rand(1, 4 + 1);
-		int attackNum = static_cast<int>(rand(mt));
+		m_attackKind = static_cast<int>(rand(mt));
 
 		m_status.situation.isAttack = true;
 
-		if (attackNum == 1)
+		if (m_attackKind == 1)
 		{
-			ChangeAnimNo(EnemyAnim::Attack1, m_animSpeed.Attack1, false, m_animChangeTime.Attack1);
+			ChangeAnimNo(EnemyAnim::AttackRightArm1, m_animSpeed.AttackRightArm1, false, m_animChangeTime.AttackRightArm1);
+			// プレイヤーに敵の攻撃が当たったかどうかの判定
+			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
-		else if (attackNum == 2)
+		else if (m_attackKind == 2)
 		{
-			ChangeAnimNo(EnemyAnim::Attack2, m_animSpeed.Attack2, false, m_animChangeTime.Attack2);
+			ChangeAnimNo(EnemyAnim::AttackLeftArm1, m_animSpeed.AttackLeftArm1, false, m_animChangeTime.AttackLeftArm1);
+			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
-		else if (attackNum == 3)
+		else if (m_attackKind == 3)
 		{
-			ChangeAnimNo(EnemyAnim::Attack3, m_animSpeed.Attack3, false, m_animChangeTime.Attack3);
+			ChangeAnimNo(EnemyAnim::AttackRightArm2, m_animSpeed.AttackRightArm2, false, m_animChangeTime.AttackRightArm2);
+			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
-		else if (attackNum == 4)
+		else if (m_attackKind == 4)
 		{
-			ChangeAnimNo(EnemyAnim::Attack4, m_animSpeed.Attack4, false, m_animChangeTime.Attack4);
+			ChangeAnimNo(EnemyAnim::AttackRightArm3, m_animSpeed.AttackRightArm3, false, m_animChangeTime.AttackRightArm3);
+			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 
 		m_isAttack = true;	

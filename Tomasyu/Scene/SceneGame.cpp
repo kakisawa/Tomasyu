@@ -62,6 +62,7 @@ SceneGame::SceneGame() :
 	m_pUI = std::make_shared<UISceneGame>(m_pPlayer, m_pEnemy);
 
 	m_pPlayer->SetCameraPointer(m_pCamera);
+	m_pItem = std::make_shared<Item>(m_pPlayer, 1);
 }
 
 SceneGame::~SceneGame()
@@ -127,10 +128,10 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 		if (!m_pPlayer->GetDeathFlag() || m_pTime->GetTimeUp()) {
 			m_pFade->FadeIn(true);
 			m_pMap->Update();
+			m_pItem->Update();
 			m_pPlayer->Update(input);
 			m_pEnemy->Update();
 			m_pCamera->Update();
-			m_pItem->Update();
 			m_pUI->Update();
 			m_pTime->Update();
 

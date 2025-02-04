@@ -27,10 +27,10 @@ public:
 		Walk,			// 歩く
 		Run,			// 走る
 		Provocation,	// 挑発
-		Attack1,		// 攻撃1
-		Attack2,		// 攻撃2
-		Attack3,		// 攻撃3
-		Attack4,		// 攻撃4
+		AttackRightArm1,// 攻撃1
+		AttackLeftArm1,	// 攻撃2
+		AttackRightArm2,// 攻撃3
+		AttackRightArm3,// 攻撃4
 		BlownAway,		// 吹っ飛び
 		Hit,			// 被ダメージ
 		Death,			// 死亡
@@ -41,35 +41,42 @@ public:
 	struct AnimChangeTime {
 		int Idle=10;			// 待機
 		int Walk=5;				// 歩く
+		int AttackRightArm1 = 5;// 攻撃1
+		int AttackLeftArm1 = 5;	// 攻撃2
+		int AttackRightArm2 = 5;// 攻撃3
+		int AttackRightArm3 = 5;// 攻撃4
 		int Death = 5;			// 死亡
 		// 下記仮
 		int Run=5;				// 走る
 		int Provocation = 5;	// 挑発
-		int Attack1 = 5;		// 攻撃1
-		int Attack2 = 5;		// 攻撃2
-		int Attack3 = 5;		// 攻撃3
-		int Attack4 = 5;		// 攻撃4
 		int BlownAway = 5;		// 吹っ飛び
 		int Hit = 5;			// 被ダメージ
-		
 	}m_animChangeTime;
 
 	// アニメーションの再生速度
 	struct AnimSpeed {
-		float Default = 0.5f;		// 基本
-		float Idle = 0.5f;			// 待機
-		float Walk = 0.5f;			// 歩く
-		float Death = 0.5f;			// 死亡
+		float Default = 0.5f;			// 基本
+		float Idle = 0.5f;				// 待機
+		float Walk = 0.5f;				// 歩く
+		float AttackRightArm1 = 0.5f;	// 攻撃1
+		float AttackLeftArm1 = 0.5f;	// 攻撃2
+		float AttackRightArm2 = 0.5f;	// 攻撃3
+		float AttackRightArm3 = 0.5f;	// 攻撃4
+		float Death = 0.5f;				// 死亡
 		// 下記仮
-		float Run=0.5f;				// 走る
-		float Provocation = 0.5f;	// 挑発
-		float Attack1 = 0.5f;		// 攻撃1
-		float Attack2 = 0.5f;		// 攻撃2
-		float Attack3 = 0.5f;		// 攻撃3
-		float Attack4 = 0.5f;		// 攻撃4
-		float BlownAway = 0.5f;		// 吹っ飛び
-		float Hit = 0.5f;			// 被ダメージ
+		float Run=0.5f;					// 走る
+		float Provocation = 0.5f;		// 挑発
+		float BlownAway = 0.5f;			// 吹っ飛び
+		float Hit = 0.5f;				// 被ダメージ
 	}m_animSpeed;
+
+
+	enum AttackKind {
+		RightArm1,
+		RightArm2,
+		RightArm3,
+		LeftArm1,
+	};
 
 public:
 	/// <summary>
@@ -202,12 +209,13 @@ private:
 	VECTOR m_vecToPlayer;		// プレイヤーまでの座標
 
 	int m_attackTimeCount;	// 攻撃をするまでにかかる時間
-
 	int m_attackThePlayer;		// プレイヤーへの攻撃力
+	int m_attackKind;			// 攻撃の種類
 
 	float m_targetDistance;		// ターゲットポイントまでの距離
 	float m_targetMoveDistance;	// ターゲットポイントまでの残りの距離
 
+	bool m_isMove;					// 動いているかどうかのフラグ
 	bool m_isAttack;				// 攻撃をしたかの判定
 	bool m_isAttackToPlayer;		// プレイヤーに攻撃が当たったかの判定
 	bool m_isNextTargetPosSearch;	// 次のターゲットポイントを探すフラグ
