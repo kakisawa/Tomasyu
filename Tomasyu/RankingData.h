@@ -65,8 +65,6 @@ public:
 
 private:
 
-
-
 	std::vector<std::tuple<int, int, int, int, int, int>> m_scoreRanking;	// スコアランキング
 	std::vector<std::tuple<int, int, int, int, int, int>> m_timeRanking;	// タイムランキング
 };

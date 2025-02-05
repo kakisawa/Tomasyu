@@ -14,15 +14,6 @@ class IsTime;
 class Item
 {
 public:
-
-	struct PosData
-	{
-		float posX;
-		float posY;
-		float posZ;
-	}m_posData;
-
-
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -93,6 +84,8 @@ private:
 	};
 
 	std::vector<ItemInfo> m_item;		// アイテム(配列)
+
+	std::vector<VECTOR> m_itemPos;
 
 	std::shared_ptr<Player> m_pPlayer;	// プレイヤーポインタ
 };

@@ -17,14 +17,18 @@ namespace {
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);				// ベクトルの初期化値
 
 	const char* kModelFilePath = "Data/Model/ItemBox.mv1";
+
+	const VECTOR kItemPos[2]{
+		VGet(100.0f,0.0f,100.0f),
+		VGet(0.0f,0.0f,100.0f),
+	};
 }
 
 Item::Item(std::shared_ptr<Player> pPlayer, int num) :
 	m_pPlayer(pPlayer),
 	m_maxItem(num)
 {
-	// プレイヤー外部データ読み込み
-	LoadCsv::GetInstance().LoadItemPosData(m_posData);
+	
 }
 
 Item::~Item()
@@ -36,15 +40,18 @@ void Item::Init()
 	m_baseModel= MV1LoadModel(kModelFilePath);
 	assert(m_baseModel != -1);
 
+	m_itemPos.resize(m_maxItem);
+
 	// アイテムの最大配列を指定
 	m_item.resize(m_maxItem);
-	for (auto& item : m_item) 
+	for (size_t i = 0; i < m_item.size(); ++i)
 	{
+		auto& item = m_item[i];
 		// モデルの読み込み
 		item.m_model = MV1DuplicateModel(m_baseModel);
 		assert(item.m_model != -1);
 		// 座標の初期化
-		item.m_pos = VGet(m_posData.posX, m_posData.posY, m_posData.posZ);
+		item.m_pos = kItemPos[i]; // kItemPosの値を設定
 		// 移動量の初期化
 		item.m_move = kInitVec;
 		// 角度の初期化

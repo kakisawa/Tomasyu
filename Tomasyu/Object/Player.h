@@ -387,7 +387,7 @@ private:
 
 	int m_useItem;				// 所持している3つのうち、使用するアイテム
 	int m_getItem;				// アイテムをランダムで獲得する際に使用する
-	int m_getitemCount;			// アイテムを獲得するインターバル用
+	//int m_getitemCount;			// アイテムを獲得するインターバル用
 	int m_machineGunCount;		// マシンガンの弾が発射されるまでのインターバル用
 	bool m_isItem;				// アイテムと当たったか
 	bool m_isLookOn;			// ロックオンフラグ

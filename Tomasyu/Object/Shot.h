@@ -11,7 +11,6 @@ class Score;
 class Shot
 {
 public:
-	
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>

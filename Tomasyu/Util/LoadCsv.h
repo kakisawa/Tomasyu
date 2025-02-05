@@ -4,7 +4,6 @@
 #include <string>
 
 class Player;
-class Item;
 
 /// <summary>
 /// シングルトンを使用してCSVファイル読み込みを行う
@@ -41,13 +40,6 @@ public:
 	/// <param name="charaData"></param>
 	/// <param name="charaName"></param>
 	void LoadPlayerOnlyFileData(std::map<std::string, Player::PlayerOnlyData>& playerData);
-
-	/// <summary>
-	/// アイテム座標csvファイルのロード
-	/// </summary>
-	/// <param name="posData"></param>
-	/// <param name="charaName"></param>
-	void LoadItemPosData(Item::PosData& posData);
 
 private:
 	LoadCsv() = default;

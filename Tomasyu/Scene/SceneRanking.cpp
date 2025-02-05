@@ -51,15 +51,6 @@ void SceneRanking::Init()
 	m_rankingUI_Score= LoadGraph("Data/Image/SceneRanking/スコア.png");
 	m_rankingUI_Time = LoadGraph("Data/Image/SceneRanking/討伐時間.png");
 
-	/*for (int i = 0; i < m_dayNumberHandle.size(); i++)
-	{
-		m_dayNumberHandle[i] = LoadGraph(kDayNumberPath[i]);
-	}
-	for (int i = 0; i < m_scoreTimeHandle.size(); i++)
-	{
-		m_scoreTimeHandle[i] = LoadGraph(kScoreTimeNuberPath[i]);
-	}*/
-
 	m_selectBox1 = kCursorPos;
 	m_rankingSelectUI = m_rankingUI_Score;
 
