@@ -18,6 +18,8 @@ namespace {
 
 	constexpr int kNextAttackTime = 100;			// 次の攻撃をするまでのカウント
 
+	constexpr float kInitAngle = -DX_PI_F / 2.0f * 90.0f;	// プレイヤーの初期角度*90(向きを反対にする)
+
 	// モデルパス
 	const char* kModelFilePath = "Data/Model/EnemyModel.mv1";
 
@@ -70,6 +72,7 @@ Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPla
 	// 座標初期値
 	m_pos = VGet(m_chara.initPosX, m_chara.initPosY, m_chara.initPosZ);
 	MV1SetScale(m_model, VGet(m_chara.modelSize, m_chara.modelSize, m_chara.modelSize));
+	m_angle = kInitAngle;
 
 	// 動かない状態
 	m_status.situation.isMoving = false;
@@ -159,6 +162,8 @@ void Enemy::Draw()
 	//DrawFormatString(0, 920, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
 	//DrawFormatString(0, 940, 0xffffff, "Enemy:m_isAttackToPlayer=%d", m_isAttackToPlayer);
 	//DrawFormatString(0, 960, 0xffffff, "Enemy:m_isAttack=%d", m_isAttack);
+	DrawFormatString(0, 900, 0xffffff, "Enemy:m_angle=%.2f", m_angle);
+	
 
 	DrawFormatString(0, 920, 0xffffff, "target1.x=%.2f:.z=%.2f", target1.x,target1.z);
 	DrawFormatString(0, 940, 0xffffff, "target2.x=%.2f:.z=%.2f", target2.x, target2.z);
@@ -224,7 +229,6 @@ void Enemy::Move()
 
 		if (m_isSearchPlayer) {
 			m_vecToPlayer;
-
 		}
 		else {
 			if (m_pos.x != m_targetPos.x) {
@@ -497,7 +501,6 @@ void Enemy::Death()
 		m_deathFlag = true;
 	}
 }
-
 
 void Enemy::ChangeAnimNo(const EnemyAnim anim, const float animSpeed, const bool isAnimLoop, const int changeTime)
 {
