@@ -39,7 +39,7 @@ namespace {
 	VECTOR target4;
 }
 
-Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPlayer):
+Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPlayer) :
 	m_attackThePlayer(0),
 	m_attackTimeCount(kNextAttackTime),
 	m_attackKind(0),
@@ -96,7 +96,7 @@ void Enemy::Init()
 	m_pSound->LoadSE(SoundManager::SE_Type::kDeathrattle);
 
 	// アニメーションの設定
-	SetAnimation(static_cast<int>(EnemyAnim::Idle), m_animSpeed.Idle,true, false);
+	SetAnimation(static_cast<int>(EnemyAnim::Idle), m_animSpeed.Idle, true, false);
 }
 
 void Enemy::Update()
@@ -141,7 +141,7 @@ void Enemy::Draw()
 	m_col.TypeChangeSphereDraw(m_col.m_colEnemy.m_search, 0x0000ff, false);
 
 	// 攻撃しているときのみ、腕の当たり判定
-	if(m_status.situation.isAttack){
+	if (m_status.situation.isAttack) {
 		m_col.TypeChangeCapsuleDraw(m_col.m_colEnemy.m_rightArm[0], 0x00ff00, false);
 		m_col.TypeChangeCapsuleDraw(m_col.m_colEnemy.m_rightArm[1], 0x00ff00, false);
 
@@ -151,7 +151,7 @@ void Enemy::Draw()
 
 	//DrawFormatString(0, 140, 0xffffff, "Enemy:HP=%d", m_hp);
 	DrawFormatString(0, 700, 0xffffff, "Enemy:m_isCheckPlayer=%d", m_isSearchPlayer);
-	
+
 	DrawFormatString(0, 780, 0xffffff, "Enemy:m_pos.x=%.2f:z=%.2f", m_pos.x, m_pos.z);
 	DrawFormatString(0, 800, 0xffffff, "Enemy:m_targetMoveDistance=%.2f", m_targetMoveDistance);
 	DrawFormatString(0, 820, 0xffffff, "Enemy:m_targetDistance=%.2f", m_targetDistance);
@@ -163,9 +163,9 @@ void Enemy::Draw()
 	//DrawFormatString(0, 940, 0xffffff, "Enemy:m_isAttackToPlayer=%d", m_isAttackToPlayer);
 	//DrawFormatString(0, 960, 0xffffff, "Enemy:m_isAttack=%d", m_isAttack);
 	DrawFormatString(0, 900, 0xffffff, "Enemy:m_angle=%.2f", m_angle);
-	
 
-	DrawFormatString(0, 920, 0xffffff, "target1.x=%.2f:.z=%.2f", target1.x,target1.z);
+
+	DrawFormatString(0, 920, 0xffffff, "target1.x=%.2f:.z=%.2f", target1.x, target1.z);
 	DrawFormatString(0, 940, 0xffffff, "target2.x=%.2f:.z=%.2f", target2.x, target2.z);
 	DrawFormatString(0, 960, 0xffffff, "target3.x=%.2f:.z=%.2f", target3.x, target3.z);
 	DrawFormatString(0, 980, 0xffffff, "target4.x=%.2f:.z=%.2f", target4.x, target4.z);
@@ -223,44 +223,61 @@ void Enemy::Move()
 	if (m_status.situation.isAttack || m_status.situation.isDeath) return;
 
 	m_move = kInitVec;
+
+	bool toPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_body, m_pPlayer->GetCol().m_colPlayer.m_body);
 	
-	if (m_isMove)
-	{
+	if (m_isSearchPlayer && !toPlayer) {
+		m_targetPos = m_pPlayer->GetPos();
+		m_vecToPlayer = VSub( m_targetPos,m_pos);
 
-		if (m_isSearchPlayer) {
-			m_vecToPlayer;
-		}
-		else {
-			if (m_pos.x != m_targetPos.x) {
-				if (m_pos.x >= m_targetPos.x)
-				{
-					m_move.x = -m_chara.walkSpeed;
-				}
-				else if (m_pos.x <= m_targetPos.x)
-				{
-					m_move.x = +m_chara.walkSpeed;
-				}
-			}
-			else if (m_pos.z != m_targetPos.z)
-			{
-				if (m_pos.z >= m_targetPos.z)
-				{
-					m_move.z = -m_chara.walkSpeed;
-				}
-				else if (m_pos.z <= m_targetPos.z)
-				{
-					m_move.z = +m_chara.walkSpeed;
-				}
-			}
-		}
+		m_targetDir = VNorm(m_vecToPlayer);
+		m_move.x = m_targetDir.x * m_chara.walkSpeed;
+		m_move.z = m_targetDir.z * m_chara.walkSpeed;
+
+
+		// atan2 を使用して角度を取得						// 方向用
+		m_angle = atan2(m_targetDir.x, m_targetDir.z);
+
+		// atan2 で取得した角度に３Ｄモデルを正面に向かせるための補正値( DX_PI_F )を
+			// 足した値を３Ｄモデルの Y軸回転値として設定
+		MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + kInitAngle, 0.0f));
+		MV1SetPosition(m_model, m_pos);
 	}
+	else {
+		if (m_pos.x != m_targetPos.x) {
+			if (m_pos.x >= m_targetPos.x)
+			{
+				m_move.x = -m_chara.walkSpeed;
+			}
+			else if (m_pos.x <= m_targetPos.x)
+			{
+				m_move.x = +m_chara.walkSpeed;
+			}
+		}
+		else if (m_pos.z != m_targetPos.z)
+		{
+			if (m_pos.z >= m_targetPos.z)
+			{
+				m_move.z = -m_chara.walkSpeed;
+			}
+			else if (m_pos.z <= m_targetPos.z)
+			{
+				m_move.z = +m_chara.walkSpeed;
+			}
+		}
 
-	// 正規化と移動速度の適用
-	if (VSize(m_move) > 0.0f) 
-	{
-		m_move = VNorm(m_move); // 正規化
-		m_targetDir = m_move;  // 目標方向を保存
-		m_move = VScale(m_move, m_chara.walkSpeed); // 移動速度を適用
+		// 正規化と移動速度の適用
+		if (VSize(m_move) > 0.0f)
+		{
+			m_move = VNorm(m_move); // 正規化
+			m_targetDir = m_move;  // 目標方向を保存
+			m_move = VScale(m_move, m_chara.walkSpeed); // 移動速度を適用
+
+			// 移動方向に向くように角度を設定
+			float targetAngle = static_cast<float>(atan2(m_targetDir.x, m_targetDir.z));
+			m_angle = targetAngle;
+			MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + DX_PI_F, 0.0f));
+		}
 	}
 
 	m_pos = VAdd(m_pos, m_move);
@@ -278,7 +295,7 @@ void Enemy::MoveUpdate()
 	m_status.situation.isMoving = false;
 
 	// 移動値があった場合
-	if (movingSpeed != 0.0f) 
+	if (movingSpeed != 0.0f)
 	{
 		// プレイヤーの移動状態をtrueにする
 		m_status.situation.isMoving = true;
@@ -305,15 +322,10 @@ void Enemy::SearchNearPosition()
 		target3 = VSub(m_pMap->GetPointPos().point3, m_pos);
 		target4 = VSub(m_pMap->GetPointPos().point4, m_pos);
 
-		float target1_1;
-		float target2_1;
-		float target3_1;
-		float target4_1;
-
-		target1_1 = abs(target1.x) + abs(target1.z);
-		target2_1 = abs(target2.x) + abs(target2.z);
-		target3_1 = abs(target3.x) + abs(target3.z);
-		target4_1 = abs(target4.x) + abs(target4.z);
+		float target1_1 = abs(target1.x) + abs(target1.z);
+		float target2_1 = abs(target2.x) + abs(target2.z);
+		float target3_1 = abs(target3.x) + abs(target3.z);
+		float target4_1 = abs(target4.x) + abs(target4.z);
 
 		std::vector<float> values = { target1_1,target2_1,target3_1,target4_1 };
 
@@ -325,23 +337,49 @@ void Enemy::SearchNearPosition()
 		float result = positiveValues.empty() ? 0 : *std::min_element(positiveValues.begin(), positiveValues.end());
 
 
-		if (result == target1_1)
-		{
-			m_targetPos = m_pMap->GetPointPos().point1;
+	//	if (result == target1_1)
+	//	{
+	//		m_targetPos = m_pMap->GetPointPos().point1;
+	//	}
+	//	else if (result == target2_1)
+	//	{
+	//		m_targetPos = m_pMap->GetPointPos().point2;
+	//	}
+	//	else if (result == target3_1)
+	//	{
+	//		m_targetPos = m_pMap->GetPointPos().point3;
+	//	}
+	//	else if (result == target4_1)
+	//	{
+	//		m_targetPos = m_pMap->GetPointPos().point4;
+	//	}
+	//}
+
+
+		 // 最小値を持つターゲットポイントをリストに追加
+		std::vector<VECTOR> minTargets;
+		if (result == target1_1) {
+			minTargets.push_back(m_pMap->GetPointPos().point1);
 		}
-		else if (result == target2_1)
-		{
-			m_targetPos = m_pMap->GetPointPos().point2;
+		if (result == target2_1) {
+			minTargets.push_back(m_pMap->GetPointPos().point2);
 		}
-		else if (result == target3_1)
-		{
-			m_targetPos = m_pMap->GetPointPos().point3;
+		if (result == target3_1) {
+			minTargets.push_back(m_pMap->GetPointPos().point3);
 		}
-		else if (result == target4_1)
-		{
-			m_targetPos = m_pMap->GetPointPos().point4;
+		if (result == target4_1) {
+			minTargets.push_back(m_pMap->GetPointPos().point4);
 		}
+
+		// ランダムで1つ選択
+		std::random_device rd;
+		std::mt19937 mt(rd());
+		std::uniform_int_distribution<> rand(0, minTargets.size() - 1);
+		m_targetPos = minTargets[rand(mt)];
 	}
+
+
+
 
 	m_targetMoveDistance = abs(m_targetPos.x + m_targetPos.z) - abs(m_pos.x + m_pos.z);
 
@@ -393,7 +431,7 @@ void Enemy::Angle()
 		}
 	}
 
-	// 設置アニメーションを再生していないときは角度を変える
+	// 攻撃アニメーションを再生していないときは角度を変える
 	if (!m_status.situation.isAttack)
 	{
 		// モデルの角度を更新
@@ -409,7 +447,7 @@ void Enemy::Attack()
 
 	// 攻撃に使用する腕の場所の獲得
 	int rightShoulder = MV1SearchFrame(m_model, kRightShoulder);
-	int rightElbow= MV1SearchFrame(m_model, kRightElbow);
+	int rightElbow = MV1SearchFrame(m_model, kRightElbow);
 	int rightHand = MV1SearchFrame(m_model, kRightHand);
 
 	int leftShoulder = MV1SearchFrame(m_model, kLeftShoulder);
@@ -430,7 +468,7 @@ void Enemy::Attack()
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_rightArm[1], m_rightElbowPos, m_rightHandPos, 6);
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_leftArm[0], m_leftShoulderPos, m_leftElbowPos, 6);
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_leftArm[1], m_leftElbowPos, m_leftHandPos, 6);
-	
+
 	// 攻撃してくるまでの間隔
 	m_attackTimeCount--;
 
@@ -467,7 +505,7 @@ void Enemy::Attack()
 			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 
-		m_isAttack = true;	
+		m_isAttack = true;
 	}
 
 	// 攻撃アニメーションが終了したら、再度攻撃までのカウントを行う
@@ -487,7 +525,7 @@ void Enemy::OnDamage(int damage)
 void Enemy::Death()
 {
 	// 死亡時処理
-	if (m_hp <= 0) 
+	if (m_hp <= 0)
 	{
 		m_status.situation.isDeath = true;
 		ChangeAnimNo(EnemyAnim::Death, m_animSpeed.Death, false, m_animChangeTime.Death);
@@ -513,7 +551,7 @@ void Enemy::ChangeAnimNo(const EnemyAnim anim, const float animSpeed, const bool
 void Enemy::ChangeAnimIdle()
 {
 	// 待機アニメーションに変更する
-	if (!m_status.situation.isMoving&&!m_status.situation.isDeath&&!m_status.situation.isAttack) 
+	if (!m_status.situation.isMoving && !m_status.situation.isDeath && !m_status.situation.isAttack)
 	{
 		ChangeAnimNo(EnemyAnim::Idle, m_animSpeed.Idle, true, m_animChangeTime.Idle);
 	}
@@ -528,7 +566,7 @@ void Enemy::PlaySE()
 	}
 
 	// エネミーが死亡したら断末魔SEを鳴らす
-	if (m_status.situation.isDeath) 
+	if (m_status.situation.isDeath)
 	{
 		m_pSound->PlaySE(SoundManager::SE_Type::kDeathrattle, DX_PLAYTYPE_BACK);
 	}

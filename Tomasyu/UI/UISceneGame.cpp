@@ -105,7 +105,7 @@ UISceneGame::UISceneGame(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy>
 	m_useItemChara(0),
 	m_playerHp_Green(1205),
 	m_playerHp_Red(1205),
-	m_playerStamina(0),
+	m_playerStamina(1172),
 	m_enemyHp(1205),
 	m_cursorUI1Pos(kWeaponSelectPos[0]),
 	m_cursorUI2Pos(kItemSelectPos[0]),
@@ -149,6 +149,7 @@ void UISceneGame::Init()
 {
 	m_playerHp_Red = static_cast<float>(m_pPlayer->GetHp());
 	m_enemyHp = static_cast<float>(m_pPlayer->GetHp());
+	m_playerStamina = static_cast<float>(m_pPlayer->GetStamina());
 }
 
 void UISceneGame::Update()
@@ -172,7 +173,7 @@ void UISceneGame::Draw()
 	DrawGraphF(kBarPos[2].x, kBarPos[2].y, m_barUIHandle[3], true);
 	// HPバー・スタミナバーUI
 	DrawRectGraphF2(kBarPos[3].x, kBarPos[3].y, 0.0f, 0.0f,
-		1172.0f, 37.0f, m_barUIHandle[4], true);
+		std::max(0.0f, (1172.0f * (m_playerStamina * 0.01f))), 37.0f, m_barUIHandle[4], true);
 	DrawRectGraphF2(kBarPos[1].x, kBarPos[1].y, 0, 0,
 		std::max(0.0f, (1205.0f * (m_playerHp_Red * 0.01f))), 37.0f, m_barUIHandle[1], true);
 	DrawRectGraphF2(kBarPos[1].x, kBarPos[1].y, 0.0f, 0.0f,
@@ -183,6 +184,9 @@ void UISceneGame::Draw()
 	// 敵HPバー
 	DrawRectGraphF2(kBarPos[5].x, kBarPos[5].y, 0.0f, 0.0f,
 		std::max(0.0f, (1205 * (m_enemyHp * 0.001f))), 37.0f, m_barUIHandle[6], true);
+
+	
+
 
 	// 選択中のアイテム・武器名背景UI
 	for (int i = 0; i < 2; i++)
@@ -264,6 +268,9 @@ void UISceneGame::UpdateBarUI()
 	{
 		m_playerHp_Red -= 0.5f;
 	}
+
+	// プレイヤーのスタミナバー管理
+	m_playerStamina = m_pPlayer->GetStamina();
 
 	// 敵のHPバー管理
 	m_enemyHp = static_cast<float>(m_pEnemy->GetHp());

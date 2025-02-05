@@ -2,10 +2,10 @@
 #include <cassert>
 
 namespace {
-	const VECTOR kPointPos1 = VGet(-100.0f, 0.0f, -100.0f);	// 左前
-	const VECTOR kPointPos2 = VGet(-100.0f, 0.0f, 100.0f);	// 左後
-	const VECTOR kPointPos3 = VGet(100.0f, 0.0f, 100.0f);	// 右後
-	const VECTOR kPointPos4 = VGet(100.0f, 0.0f, -100.0f);	// 右前
+	const VECTOR kPointPos1 = VGet(-200.0f, 0.0f, -200.0f);	// 左前
+	const VECTOR kPointPos2 = VGet(-200.0f, 0.0f, 200.0f);	// 左後
+	const VECTOR kPointPos3 = VGet(200.0f, 0.0f, 200.0f);	// 右後
+	const VECTOR kPointPos4 = VGet(200.0f, 0.0f, -200.0f);	// 右前
 }
 
 

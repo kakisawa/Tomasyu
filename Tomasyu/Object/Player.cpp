@@ -56,6 +56,7 @@ Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, s
 	m_machineGunCount(0),
 	m_inputX(0),
 	m_inputY(0),
+	m_gravity(0.0f),
 	m_is3Combo(false),
 	m_isItem(false),
 	m_isLookOn(false),
@@ -109,6 +110,7 @@ void Player::Init(std::shared_ptr<Score> score)
 	m_pScore = score;
 
 	m_hp = m_chara.maxHp;		// HPに最大値を入れる
+	m_stamina = 100.0f;
 	m_attack = m_playerData["knife"].attack;	// 攻撃力にナイフの攻撃力を入れる
 
 
@@ -132,6 +134,17 @@ void Player::Update(Input& input)
 	// 敵への攻撃力の初期化
 	m_attackTheEnemy = 0;
 	m_isEnemy = false;
+
+	// スタミナ回復処理
+	if (m_stamina < 100) {
+		m_stamina += 0.1f;
+	}
+
+	// 重力簡易処理
+	if (m_pos.y > 0.0f) {
+		m_gravity = 0.0f;
+		m_gravity++;
+	}
 
 	SetRemainingBulletsHandgun();
 	SetRemainingBulletsMachinegun();
@@ -192,6 +205,7 @@ void Player::Draw()
 
 #ifdef _DEBUG
 	//DrawFormatString(0, 60, 0xffffff, "Playe:HP=%d", m_hp);
+	DrawFormatString(0, 200, 0xffffff, "Playe:m_stamina=%.2f", m_stamina);
 	//DrawFormatString(0, 100, 0xffffff, "Player:m_pos.x=%.2f:z=%.2f", m_pos.x,m_pos.z);
 	//DrawFormatString(0, 220, 0xffffff, "Player:m_attack=%d", m_attack);
 	//DrawFormatString(0, 240, 0xffffff, "Player:m_remainingBullets_handgun=%d", m_remainingBullets_handgun);
@@ -223,7 +237,7 @@ void Player::Draw()
 
 	// ナイフ当たり判定の描画
 	if (m_status.situation.isKnifeAttack) {
-		m_col.TypeChangeCapsuleDraw(m_col.m_colPlayer.m_weapon, 0xff00ff, false);
+		m_col.TypeChangeCapsuleDraw(m_col.m_colPlayer.m_weapon, 0xffff00, true);
 	}
 #endif // DEBUG
 }
@@ -319,6 +333,8 @@ void Player::Move()
 	// 設置アニメーションを再生していないときは移動する
 	m_pos = VAdd(m_pos, m_move);
 
+	m_pos.y = m_pos.y + m_gravity;
+
 	// 移動処理の更新
 	MoveUpdate();
 }
@@ -348,6 +364,9 @@ void Player::MoveUpdate()
 
 void Player::Angle()
 {
+	// ロックオン中は向きを変更しない
+	if (m_isLookOn)	return;
+
 	// プレイヤーの移動方向にモデルの方向を近づける
 	float targetAngle;		// 目標角度
 	float difference;		// 目標角度と現在の角度の差
@@ -450,23 +469,23 @@ void Player::ItemChange()
 {
 	if (m_getItem == 1)
 	{
-		m_setItem = Item::ItemKind::IceFloor;
+		m_setItem = Item::ItemKind::RecoveryMedic;
 	}
 	if (m_getItem == 2)
 	{
-		m_setItem = Item::ItemKind::landmine;
+		m_setItem = Item::ItemKind::Ammunition;
 	}
 	if (m_getItem == 3)
 	{
-		m_setItem = Item::ItemKind::SurpriseBox;
+		m_setItem = Item::ItemKind::IceFloor;
 	}
 	if (m_getItem == 4)
 	{
-		m_setItem = Item::ItemKind::RecoveryMedic;
+		m_setItem = Item::ItemKind::landmine;
 	}
 	if (m_getItem == 5)
 	{
-		m_setItem = Item::ItemKind::Ammunition;
+		m_setItem = Item::ItemKind::SurpriseBox;
 	}
 }
 
@@ -571,6 +590,27 @@ void Player::LockOn(Input& input)
 	{
 		m_targetLockPos = m_pEnemy->GetPos();
 		m_isLookOn = true;
+
+		// プレイヤーの向きを敵の方向に向ける
+		VECTOR playerPos = GetPos();
+		VECTOR enemyPos = m_pEnemy->GetPos();
+
+		// プレイヤーから敵へのベクトルを計算
+		VECTOR directionToEnemy = VSub(enemyPos, playerPos);
+
+		// ベクトルから角度を計算
+		float targetAngle = static_cast<float>(atan2(directionToEnemy.x, directionToEnemy.z));
+
+		// プレイヤーの向きを更新
+		m_angle = targetAngle;
+		MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + DX_PI_F, 0.0f));
+
+		// カメラの注視点を敵の位置に設定
+		m_pCamera->SetTarget(enemyPos);
+	}
+	else if (input.IsRelease(InputInfo::TargetLockOn))
+	{
+		m_isLookOn = false;
 	}
 }
 
@@ -634,7 +674,17 @@ void Player::AttackGun(Input& input)
 					m_pSound->PlaySE(SoundManager::SE_Type::kHandGunSE, DX_PLAYTYPE_BACK);
 					m_isHandGunAnim = true;
 					kGun = true;
-					m_pShotHandGun->CreateBullet();
+
+					// ロックオン状態の場合、弾の発射方向を敵の方向に設定
+					VECTOR shotDirection = m_targetDir;
+					if (m_isLookOn)
+					{
+						VECTOR enemyPos = m_pEnemy->GetPos();
+						VECTOR playerPos = GetPos();
+						shotDirection = VNorm(VSub(enemyPos, playerPos));
+					}
+
+					m_pShotHandGun->CreateBullet(shotDirection);
 				}
 			}
 		}
@@ -652,7 +702,17 @@ void Player::AttackGun(Input& input)
 				{
 					m_pSound->PlaySE(SoundManager::SE_Type::kHandGunSE, DX_PLAYTYPE_BACK);
 					m_machineGunCount = 0;
-					m_pShotMachineGun->CreateBullet();
+
+					// ロックオン状態の場合、弾の発射方向を敵の方向に設定
+					VECTOR shotDirection = m_targetDir;
+					if (m_isLookOn)
+					{
+						VECTOR enemyPos = m_pEnemy->GetPos();
+						VECTOR playerPos = GetPos();
+						shotDirection = VNorm(VSub(enemyPos, playerPos));
+					}
+
+					m_pShotMachineGun->CreateBullet(shotDirection);
 				}
 			}
 		}
@@ -742,8 +802,11 @@ void Player::Roll(Input& input)
 	if (m_status.situation.isDamageReceived)return;
 
 	// 回避ボタンを押したら処理を行う
-	if (input.IsTrigger(InputInfo::Roll))
+	if (!m_status.situation.isRoll && input.IsTrigger(InputInfo::Roll) && m_stamina >= 25.0f)
 	{
+		m_stamina -= 25.0f;
+		m_stamina = std::max(m_stamina, 0.0f);
+
 		// 回避のアニメーションを再生
 		ChangeAnimNo(PlayerAnim::Roll, m_animSpeed.Roll, false, m_animChangeTime.Roll);
 		m_status.situation.isRoll = true;

@@ -1,6 +1,7 @@
 ﻿#include "SceneOption.h"
 #include "SceneSelect.h"
 #include "SceneDebug.h"
+#include "../Util/Fade.h"
 
 using namespace MyInputInfo;
 
@@ -89,9 +90,17 @@ void SceneOption::Init()
 
 std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 {
-	if (m_select == Select::Back && input.IsTrigger(InputInfo::OK)){
+	m_pFade->FadeIn(m_pFade->GatFadeInFlag());
+	m_pFade->FadeOut(m_isNextSceneFlag);
 
-		return std::make_shared<SceneSelect>();	//セレクトシーンへ向かう
+	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::OK))
+	{
+		m_isNextSceneFlag = true;
+	}
+
+	if (m_isNextSceneFlag && m_pFade->GatNextSceneFlag())						// 次のシーン
+	{
+		return std::make_shared<SceneSelect>();	// セレクトシーンへ行く
 	}
 
 	if (input.IsTrigger(InputInfo::Down)) {
@@ -213,6 +222,9 @@ void SceneOption::Draw()
 	{
 		DrawGraphF(kSEVolumePos[i].x, kSEVolumePos[i].y, m_seVolumeUI[i], true);
 	}
+
+	// フェード処理
+	m_pFade->Draw();
 
 #ifdef _DEBUG
 	//DrawFormatString(0, 460, 0xffffff, "m_selectWindow=%d", m_selectWindow);

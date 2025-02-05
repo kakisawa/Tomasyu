@@ -2,6 +2,7 @@
 #include "SceneSelect.h"
 #include "SceneDebug.h"
 #include "../Util/Input.h"
+#include "../Util/Fade.h"
 
 using namespace MyInputInfo;
 
@@ -53,8 +54,17 @@ void SceneExplanation::Init()
 
 std::shared_ptr<SceneBase> SceneExplanation::Update(Input& input)
 {
-	if (input.IsTrigger(InputInfo::Back)) {			// Bボタン
+	m_pFade->FadeIn(m_pFade->GatFadeInFlag());
+	m_pFade->FadeOut(m_isNextSceneFlag);
 
+
+	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::Back))
+	{
+		m_isNextSceneFlag = true;
+	}
+
+	if (m_isNextSceneFlag && m_pFade->GatNextSceneFlag())						// 次のシーン
+	{
 		return std::make_shared<SceneSelect>();	// セレクトシーンへ行く
 	}
 
@@ -90,11 +100,34 @@ void SceneExplanation::Draw()
 {
 	DrawGraphF(kExplanationGraphPos.x, kExplanationGraphPos.y, m_explanationHandle, true);	// 説明画像
 
+	
+
+	static int m_fadeAlpha;
+	static bool isFade;
+
+	if (isFade) {
+		m_fadeAlpha += 3;
+
+		if (m_fadeAlpha >= 255) {
+			isFade = false;
+		}
+	}
+	else {
+		m_fadeAlpha -= 5;
+		if (m_fadeAlpha <= 0) {
+			isFade = true;
+		}
+	}
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_fadeAlpha);	// 半透明で表示開始
 	for (int i = 0; i < 2; i++)
 	{
 		DrawGraphF(kTrianglePos[i].x, kTrianglePos[i].y, m_triangleUIHandle[i], true);	// 三角形
 	}
-	
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);		// 不透明に戻しておく	
+
+	// フェード処理
+	m_pFade->Draw();
 
 #ifdef _DEBUG
 	DrawString(0, 0, "SceneExplanation", 0xffffff);

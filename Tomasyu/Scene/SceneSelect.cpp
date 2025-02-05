@@ -32,8 +32,6 @@ namespace {
 			VGet(753.0f,762.0f,0.0f),	// ゲームを終了する
 	};
 
-
-
 	const char* const kSceneSelectUI[5]{
 		"Data/Image/SceneSelect/GameStartUI.png",		// ゲームを始める
 		"Data/Image/SceneSelect/RankingUI.png",			// ランキング
@@ -113,14 +111,21 @@ void SceneSelect::Init()
 std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 {
 	m_pFade->FadeIn(m_pFade->GatFadeInFlag());
+	m_pFade->FadeOut(m_isNextSceneFlag);
 
-	if (input.IsTrigger(InputInfo::OK)) {			// STARTボタン
+	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::OK)) {
 		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
 		m_isNextSceneFlag = true;
 	}
 
+	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::Back)) {
+		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
+		m_nextScene = nextScene::TitleScene;
+		m_isNextSceneFlag = true;
+	}
 
-	if (m_isNextSceneFlag)						// 次のシーン
+
+	if (m_isNextSceneFlag&& m_pFade->GatNextSceneFlag())						// 次のシーン
 	{
 		if (m_nextScene == nextScene::TitleScene)
 		{

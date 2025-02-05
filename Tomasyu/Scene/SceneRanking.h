@@ -3,6 +3,7 @@
 
 
 class RankingData;
+class Fade;
 class SceneRanking :
     public SceneBase
 {
@@ -45,5 +46,7 @@ private:
 
     std::vector<std::tuple<int, int, int, int, int, int>> m_scoreRanking;	// スコアランキング
     std::vector<std::tuple<int, int, int, int, int, int>> m_timeRanking;	// タイムランキング
+
+    std::shared_ptr<Fade> m_pFade = std::make_shared<Fade>();
 };
 

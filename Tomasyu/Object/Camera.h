@@ -44,6 +44,8 @@ public:
 	/// <param name="player">プレイヤー情報</param>
 	void LeftstickCameraUpdate();
 
+	void SetTarget(const VECTOR& target);
+
 	/// <summary>
 	/// 座標渡し
 	/// </summary>

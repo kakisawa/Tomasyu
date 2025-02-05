@@ -1,7 +1,8 @@
 ﻿#include "SceneRanking.h"
 #include "SceneSelect.h"
-#include "../RankingData.h"
 #include "SceneDebug.h"
+#include "../RankingData.h"
+#include "../Util/Fade.h"
 #include <iostream>
 #include <tuple>
 
@@ -65,6 +66,8 @@ void SceneRanking::Init()
 
 std::shared_ptr<SceneBase> SceneRanking::Update(Input& input)
 {
+	m_pFade->FadeIn(m_pFade->GatFadeInFlag());
+	m_pFade->FadeOut(m_isNextSceneFlag);
 
 	SelectRanking(input);
 
@@ -73,12 +76,15 @@ std::shared_ptr<SceneBase> SceneRanking::Update(Input& input)
 	m_timeRanking = m_pRankingData->GetTimeRanking();
 
 
-	if (input.IsTrigger(InputInfo::Back)) {			// Bボタン
-
-		return std::make_shared<SceneSelect>();	// セレクトシーンへ行く
+	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::Back)) 
+	{
+		m_isNextSceneFlag = true;
 	}
 
-
+	if (m_isNextSceneFlag && m_pFade->GatNextSceneFlag())						// 次のシーン
+	{
+		return std::make_shared<SceneSelect>();	// セレクトシーンへ行く
+	}
 
 #ifdef _DEBUG
 	//if (input.IsTrigger(InputInfo::DebugStart)) {	// STARTボタン
@@ -141,6 +147,9 @@ void SceneRanking::Draw()
 	}
 
 	SetFontSize(14);
+
+	// フェード処理
+	m_pFade->Draw();
 
 #ifdef _DEBUG
 #endif // DEBUG

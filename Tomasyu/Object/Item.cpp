@@ -19,8 +19,8 @@ namespace {
 	const char* kModelFilePath = "Data/Model/ItemBox.mv1";
 
 	const VECTOR kItemPos[2]{
-		VGet(100.0f,0.0f,100.0f),
-		VGet(0.0f,0.0f,100.0f),
+		VGet(100.0f,0.0f,-300.0f),
+		VGet(-100.0f,0.0f,-300.0f),
 	};
 }
 

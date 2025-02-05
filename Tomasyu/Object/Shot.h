@@ -49,7 +49,7 @@ public:
 	/// <summary>
 	/// 弾生成
 	/// </summary>
-	void CreateBullet();
+	void CreateBullet(const VECTOR& direction);
 
 	/// <summary>
 	/// 弾更新

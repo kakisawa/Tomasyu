@@ -320,6 +320,8 @@ public:
 	void SetCameraPointer(std::shared_ptr<Camera> pCamera) { m_pCamera = pCamera; }
 
 
+	int GetStamina()const { return m_stamina; }
+
 	/// <summary>
 	/// 敵へ攻撃値を渡す
 	/// </summary>
@@ -384,11 +386,11 @@ private:
 	std::array<int, 3> m_weapon{};	// 武器
 
 	int m_attackTheEnemy;		// 敵への攻撃力
-
 	int m_useItem;				// 所持している3つのうち、使用するアイテム
 	int m_getItem;				// アイテムをランダムで獲得する際に使用する
-	//int m_getitemCount;			// アイテムを獲得するインターバル用
 	int m_machineGunCount;		// マシンガンの弾が発射されるまでのインターバル用
+	float m_stamina;			// スタミナ
+	float m_gravity;			// 重力
 	bool m_isItem;				// アイテムと当たったか
 	bool m_isLookOn;			// ロックオンフラグ
 	bool m_isInvincibleTime;	// 被ダメ中の無敵時間

@@ -112,7 +112,7 @@ void Shot::End()
 	}
 }
 
-void Shot::CreateBullet()
+void Shot::CreateBullet(const VECTOR& direction)
 {
 	for (auto& bullet : m_bullet)
 	{
@@ -128,7 +128,12 @@ void Shot::CreateBullet()
 			bullet.m_pos = m_pPlayer->GetPos();
 			bullet.m_pos.y += 50.0f;
 			// 発射する向きの設定
-			bullet.m_direction = m_pPlayer->GetTargetDir();
+			if (m_pPlayer->GetLockOn()) {
+				bullet.m_direction = direction;
+			}
+			else {
+				bullet.m_direction = m_pPlayer->GetTargetDir();
+			}
 			bullet.m_move = VScale(VNorm(bullet.m_direction), kBulletSpeed);
 
 			// モデルの向きを発射する方向へセットする

@@ -36,7 +36,6 @@ void Camera::Init()
 
 void Camera::Update()
 {
-
 	// カメラの角度手動入力/更新
 	LeftstickCameraUpdate();
 	RightstickCameraUpdate();
@@ -44,19 +43,25 @@ void Camera::Update()
 	// カメラの注視点を設定
 	if (m_pPlayer->GetLockOn()) 
 	{
-		m_targetPos = VAdd(m_pPlayer->GetTargetPos(), VGet(0.0f, kCameraHeight, 0.0f));
+		// プレイヤーの位置取得
+		VECTOR playerPos = m_pPlayer->GetPos();
+
+		// カメラの位置をプレイヤーの後ろに設定
+		VECTOR cameraPos=VAdd(playerPos, VGet(0.0f, kCameraHeight, 0.0f));
+
+		// カメラの注視点を更新
+		SetCameraPositionAndTarget_UpVecY(cameraPos, m_targetPos);
 	}
 	else 
 	{
 		m_targetPos = VAdd(m_pPlayer->GetPos(), VGet(0.0f, kCameraHeight, 0.0f));
+
+		// カメラ位置補正
+		FixCameraPos();
+
+		// カメラの情報をライブラリのカメラに反映させる
+		SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
 	}
-
-	// カメラ位置補正
-	FixCameraPos();
-
-	// カメラの情報をライブラリのカメラに反映させる
-	SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
-
 
 	ChangeLightTypeDir(VGet(20.0f, -50.0f, 0.0f));
 
@@ -97,6 +102,8 @@ void Camera::FixCameraPos()
 
 void Camera::RightstickCameraUpdate()
 {
+	if (m_pPlayer->GetLockOn())	return;
+
 	//入力状態初期化
 	input.Rx = 0;
 	input.Ry = 0;
@@ -112,13 +119,13 @@ void Camera::RightstickCameraUpdate()
 	{
 		m_angleH += kAngle;
 	}
-	if (input.Ry > 0.0f)			// 右スティックを下に倒したら上方向に回る
+	if (input.Ry < 0.0f)			// 右スティックを下に倒したら上方向に回る
 	{
 		m_angleV -= kAngle;
 		// ある一定角度以上にならないようにする
 		m_angleV = (std::max)(m_angleV, kMaxAngleV);
 	}
-	if (input.Ry < 0.0f)			// 右スティックを上に倒したら下方向に回る
+	if (input.Ry > 0.0f)			// 右スティックを上に倒したら下方向に回る
 	{
 		m_angleV += kAngle;
 		// ある一定角度以下にならないようにする
@@ -137,7 +144,6 @@ void Camera::LeftstickCameraUpdate()
 
 	if (m_pPlayer->GetLockOn()) 
 	{
-
 		if (input2.X < 0.0f)			// 右スティックを右に倒したら右回転する
 		{
 			m_angleH -= 0.05f;
@@ -158,4 +164,9 @@ void Camera::LeftstickCameraUpdate()
 			m_angleH += 0.01f;
 		}
 	}
+}
+
+void Camera::SetTarget(const VECTOR& target)
+{
+	m_targetPos = target;
 }

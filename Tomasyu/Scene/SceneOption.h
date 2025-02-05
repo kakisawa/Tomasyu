@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "SceneBase.h"
+
+class Fade;
 class SceneOption :
     public SceneBase
 {
@@ -55,4 +57,6 @@ private:
     };
 
     int m_selectWindow;
+
+    std::shared_ptr<Fade> m_pFade = std::make_shared<Fade>();
 };
