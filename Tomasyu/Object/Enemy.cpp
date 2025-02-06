@@ -225,6 +225,8 @@ void Enemy::Move()
 	m_move = kInitVec;
 
 	bool toPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_body, m_pPlayer->GetCol().m_colPlayer.m_body);
+
+	if (toPlayer)return;
 	
 	if (m_isSearchPlayer && !toPlayer) {
 		m_targetPos = m_pPlayer->GetPos();
@@ -234,12 +236,11 @@ void Enemy::Move()
 		m_move.x = m_targetDir.x * m_chara.walkSpeed;
 		m_move.z = m_targetDir.z * m_chara.walkSpeed;
 
-
 		// atan2 を使用して角度を取得						// 方向用
 		m_angle = atan2(m_targetDir.x, m_targetDir.z);
 
 		// atan2 で取得した角度に３Ｄモデルを正面に向かせるための補正値( DX_PI_F )を
-			// 足した値を３Ｄモデルの Y軸回転値として設定
+		// 足した値を３Ｄモデルの Y軸回転値として設定
 		MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + kInitAngle, 0.0f));
 		MV1SetPosition(m_model, m_pos);
 	}
