@@ -1,6 +1,7 @@
 ﻿#include "Item.h"
 #include "../Time/IsTime.h"
 #include "../Util/LoadCsv.h"
+#include "../Manager/Effect.h"
 #include "Player.h"
 #include <DxLib.h>
 #include <cassert>
@@ -18,10 +19,13 @@ namespace {
 
 	const char* kModelFilePath = "Data/Model/ItemBox.mv1";
 
-	const VECTOR kItemPos[2]{
-		VGet(100.0f,0.0f,-300.0f),
-		VGet(-100.0f,0.0f,-300.0f),
+	const VECTOR kItemPos[3]{
+		VGet(150.0f,0.0f,-300.0f),
+		VGet(-150.0f,0.0f,-300.0f),
+		VGet(0.0f,0.0f,0.0f),
 	};
+
+	bool kEffect = false;
 }
 
 Item::Item(std::shared_ptr<Player> pPlayer, int num) :
@@ -65,6 +69,8 @@ void Item::Init()
 		item.m_col.TypeChangeSphereUpdate(item.m_col.m_itemCol, item.m_pos, kBodyColRad);
 		// 復活までにかかる時間
 		item.m_respawnTime = std::make_shared<IsTime>(kItemRespawnTime);
+
+		
 	}
 }
 
@@ -79,6 +85,12 @@ void Item::Update()
 			item.m_isExist = true;
 			item.m_respawnTime->Reset();
 		}
+
+		if (!item.m_isEfect) {
+			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kItem, item.m_pos);
+			item.m_isEfect = true;
+		}
+		
 	}
 
 

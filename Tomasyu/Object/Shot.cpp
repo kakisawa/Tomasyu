@@ -142,6 +142,8 @@ void Shot::CreateBullet(const VECTOR& direction)
 			// 残弾数を減らす
 			m_bulletNum--;
 
+			
+
 			break;
 		}
 	}

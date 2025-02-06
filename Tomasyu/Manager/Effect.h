@@ -10,6 +10,9 @@ namespace EffectKind{
 	enum class kEffectKind {
 		kKnife,			// ナイフ
 		kShot,			// 銃
+		kDrink,			// 回復薬
+		kItem,			// アイテムBox
+		kEnemyAttack,	// 敵攻撃
 	};
 }
 

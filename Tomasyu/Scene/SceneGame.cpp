@@ -62,7 +62,7 @@ SceneGame::SceneGame() :
 	m_pUI = std::make_shared<UISceneGame>(m_pPlayer, m_pEnemy);
 
 	m_pPlayer->SetCameraPointer(m_pCamera);
-	m_pItem = std::make_shared<Item>(m_pPlayer, 2);
+	m_pItem = std::make_shared<Item>(m_pPlayer, 3);
 }
 
 SceneGame::~SceneGame()

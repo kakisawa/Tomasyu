@@ -546,6 +546,8 @@ void Player::UseItem(Input& input)
 		// 使用するアイテムが体力回復だった場合
 		if (m_item[m_useItem] == Item::ItemKind::RecoveryMedic)
 		{
+			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kDrink, m_pos);
+
 			// プレイヤーの飲む状態をtrueにする
 			m_status.situation.isDrink = true;
 			// 飲むアニメーションを入れる
@@ -565,7 +567,10 @@ void Player::UseItem(Input& input)
 			ChangeAnimNo(PlayerAnim::Reload, m_animSpeed.Reload, false, m_animChangeTime.Reload);
 
 			if (m_remainingBulletsMachinegun < kMachineGunMaxBullet) {
-				m_pShotMachineGun->SetAddBullet(std::min(kMachineGunMaxBullet - m_remainingBulletsMachinegun, 30));
+				m_pShotMachineGun->SetAddBullet(std::min(kMachineGunMaxBullet - m_remainingBulletsMachinegun, 50));
+			}
+			else {
+				m_pShotHandGun->SetAddBullet(std::min(kHandGunMaxBullet - m_remainingBulletsHandgun, 20));
 			}
 		}
 	}
@@ -653,10 +658,16 @@ void Player::AttackGun(Input& input)
 
 	if (input.IsPress(InputInfo::Attack) && (m_useWeapon == WeaponKind::HandGun || m_useWeapon == WeaponKind::MachineGun))
 	{
+		
 		m_status.situation.isGunAttack = true;
 
 		if (m_useWeapon == WeaponKind::HandGun)
 		{
+			if (m_pShotHandGun->GetBulletNum() > 0 )
+			{
+				StartJoypadVibration(input.IsPress(InputInfo::Attack), 30, 5);
+			}
+
 			SetModelFramePosition(m_model, kModelRightHandRing3, m_weapon[0], m_weaponSize[0], m_weaponRota[0]);
 			MV1SetVisible(m_weapon[0], true);
 
@@ -690,6 +701,11 @@ void Player::AttackGun(Input& input)
 		}
 		else if (m_useWeapon == WeaponKind::MachineGun)
 		{
+			if (m_pShotMachineGun->GetBulletNum() > 0)
+			{
+				StartJoypadVibration(input.IsPress(InputInfo::Attack), 50, 5);
+			}
+
 			SetModelFramePosition(m_model, kModelRightHandRing3, m_weapon[1], m_weaponSize[1], m_weaponRota[1]);
 			MV1SetVisible(m_weapon[1], true);
 

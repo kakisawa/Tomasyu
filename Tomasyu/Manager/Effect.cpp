@@ -60,12 +60,24 @@ void Effect::Load()
 {
 	m_effectData[EffectKind::kEffectKind::kShot].m_handle = LoadEffekseerEffect("Data/Effect/Shot.efk");
 	m_effectData[EffectKind::kEffectKind::kKnife].m_handle = LoadEffekseerEffect("Data/Effect/Knife.efk");
+	m_effectData[EffectKind::kEffectKind::kDrink].m_handle = LoadEffekseerEffect("Data/Effect/Drink.efk");
+	m_effectData[EffectKind::kEffectKind::kItem].m_handle = LoadEffekseerEffect("Data/Effect/Item.efk");
+	m_effectData[EffectKind::kEffectKind::kEnemyAttack].m_handle = LoadEffekseerEffect("Data/Effect/EnemyAttack.efk");
 
 	m_effectData[EffectKind::kEffectKind::kKnife].m_scale = 30.0f;
 	m_effectData[EffectKind::kEffectKind::kKnife].m_totalTime = 60;
 
 	m_effectData[EffectKind::kEffectKind::kShot].m_scale = 30.0f;
 	m_effectData[EffectKind::kEffectKind::kShot].m_totalTime = 60;
+
+	m_effectData[EffectKind::kEffectKind::kDrink].m_scale = 15.0f;
+	m_effectData[EffectKind::kEffectKind::kDrink].m_totalTime = 60;
+
+	m_effectData[EffectKind::kEffectKind::kItem].m_scale = 10.0f;
+	m_effectData[EffectKind::kEffectKind::kItem].m_totalTime = 600;
+
+	m_effectData[EffectKind::kEffectKind::kEnemyAttack].m_scale = 10.0f;
+	m_effectData[EffectKind::kEffectKind::kEnemyAttack].m_totalTime = 600;
 }
 
 void Effect::ClearEffect(const EffectKind::kEffectKind kind)
@@ -88,11 +100,11 @@ void Effect::AddEffect(EffectKind::kEffectKind kind, VECTOR pos)
 		data.m_isPlaying = true;
 		data.m_playingHandle = PlayEffekseer3DEffect(data.m_handle);
 
-		//// 　エフェクトが〇〇だったらループ再生させる
-		//if (kind == EffectKind::)
-		//{
-		//	data.m_isLoop = true;
-		//}
+		// 　エフェクトが〇〇だったらループ再生させる
+		if (kind == EffectKind::kEffectKind::kItem)
+		{
+			data.m_isLoop = true;
+		}
 
 		m_effects.push_back(data);
 	}

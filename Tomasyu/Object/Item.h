@@ -75,6 +75,7 @@ private:
 		int m_model = -1;						// モデル
 		float m_angle = 0.0f;					// 移動角度
 		bool m_isExist = false;				// 存在しているかのフラグ
+		bool m_isEfect = false;
 		VECTOR m_pos = VGet(0.0f, 0.0f, 0.0);	// 座標
 		VECTOR m_size = VGet(0.0f, 0.0f, 0.0);	// サイズ
 		VECTOR m_colPos = VGet(0.0f, 0.0f, 0.0);// 当たり判定座標

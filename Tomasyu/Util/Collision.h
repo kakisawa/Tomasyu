@@ -20,10 +20,11 @@ public:
 
 	struct Enemy
 	{
-		ColType m_body;
-		ColType m_rightArm[2];
-		ColType m_leftArm[2];
-		ColType m_search;
+		ColType m_body;			// 体
+		ColType m_rightArm[2];	// 右腕
+		ColType m_leftArm[2];	// 左腕
+		ColType m_search;		// 索敵範囲
+		ColType m_hitting;		// 接触範囲
 	}m_colEnemy;
 
 	ColType m_itemCol;

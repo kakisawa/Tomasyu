@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "../Object/Map.h"
 #include "../Util/LoadCsv.h"
+#include "../Manager/Effect.h"
 #include <cassert>
 #include <cmath>
 #include <random>
@@ -46,7 +47,6 @@ Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPla
 	m_targetDistance(kInitFloat),
 	m_targetMoveDistance(kInitFloat),
 	m_colPos(kInitVec),
-	m_startPos(kInitVec),
 	m_targetPos(kInitVec),
 	m_rightShoulderPos(kInitVec),
 	m_rightElbowPos(kInitVec),
@@ -122,6 +122,7 @@ void Enemy::Update()
 	// 攻撃が当たっていたらプレイヤーへ攻撃値を渡す
 	if (m_isAttack && m_isAttackToPlayer)
 	{
+		Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kEnemyAttack, m_col.m_colEnemy.m_rightArm->m_pos);
 		m_attackThePlayer = m_attack;
 		m_isAttack = false;
 	}
@@ -156,7 +157,6 @@ void Enemy::Draw()
 	DrawFormatString(0, 800, 0xffffff, "Enemy:m_targetMoveDistance=%.2f", m_targetMoveDistance);
 	DrawFormatString(0, 820, 0xffffff, "Enemy:m_targetDistance=%.2f", m_targetDistance);
 	DrawFormatString(0, 840, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
-	DrawFormatString(0, 860, 0xffffff, "Enemy:m_startPos.x=%.2f:z=%.2f", m_startPos.x, m_startPos.z);
 	DrawFormatString(0, 880, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_move.x=%.2f:z=%.2f", m_move.x, m_move.z);
 	//DrawFormatString(0, 920, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
@@ -184,6 +184,9 @@ void Enemy::ColUpdate()
 
 	// 索敵範囲当たり判定更新
 	m_col.TypeChangeSphereUpdate(m_col.m_colEnemy.m_search, m_pos, m_chara.searchRad);
+
+	// 接触範囲当たり判定更新
+	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_hitting, m_pos, m_colPos, 30.0f);
 
 	// プレイヤーの当たり判定獲得
 	Collision playerCol = m_pPlayer->GetCol();
@@ -224,64 +227,73 @@ void Enemy::Move()
 
 	m_move = kInitVec;
 
-	bool toPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_body, m_pPlayer->GetCol().m_colPlayer.m_body);
-
-	if (toPlayer)return;
+	bool toPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_hitting, m_pPlayer->GetCol().m_colPlayer.m_body);
 	
-	if (m_isSearchPlayer && !toPlayer) {
-		m_targetPos = m_pPlayer->GetPos();
-		m_vecToPlayer = VSub( m_targetPos,m_pos);
-
-		m_targetDir = VNorm(m_vecToPlayer);
-		m_move.x = m_targetDir.x * m_chara.walkSpeed;
-		m_move.z = m_targetDir.z * m_chara.walkSpeed;
-
-		// atan2 を使用して角度を取得						// 方向用
-		m_angle = atan2(m_targetDir.x, m_targetDir.z);
-
-		// atan2 で取得した角度に３Ｄモデルを正面に向かせるための補正値( DX_PI_F )を
-		// 足した値を３Ｄモデルの Y軸回転値として設定
-		MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + kInitAngle, 0.0f));
-		MV1SetPosition(m_model, m_pos);
-	}
-	else {
-		if (m_pos.x != m_targetPos.x) {
-			if (m_pos.x >= m_targetPos.x)
-			{
-				m_move.x = -m_chara.walkSpeed;
-			}
-			else if (m_pos.x <= m_targetPos.x)
-			{
-				m_move.x = +m_chara.walkSpeed;
-			}
-		}
-		else if (m_pos.z != m_targetPos.z)
+	if (!toPlayer) {
+		if (m_isSearchPlayer)
 		{
-			if (m_pos.z >= m_targetPos.z)
-			{
-				m_move.z = -m_chara.walkSpeed;
-			}
-			else if (m_pos.z <= m_targetPos.z)
-			{
-				m_move.z = +m_chara.walkSpeed;
-			}
+			m_isNextTargetPosSearch = true;
+
+			m_targetPos = m_pPlayer->GetPos();
+			m_vecToPlayer = VSub(m_targetPos, m_pos);
+
+			m_targetDir = VNorm(m_vecToPlayer);
+			m_move.x = m_targetDir.x * m_chara.walkSpeed;
+			m_move.z = m_targetDir.z * m_chara.walkSpeed;
+
+			// atan2 を使用して角度を取得						// 方向用
+			m_angle = atan2(m_targetDir.x, m_targetDir.z);
+
+			// atan2 で取得した角度に３Ｄモデルを正面に向かせるための補正値( DX_PI_F )を
+			// 足した値を３Ｄモデルの Y軸回転値として設定
+			MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + kInitAngle, 0.0f));
+			MV1SetPosition(m_model, m_pos);
 		}
+		else {
 
-		// 正規化と移動速度の適用
-		if (VSize(m_move) > 0.0f)
-		{
-			m_move = VNorm(m_move); // 正規化
-			m_targetDir = m_move;  // 目標方向を保存
-			m_move = VScale(m_move, m_chara.walkSpeed); // 移動速度を適用
+			SearchNearPosition();
 
-			// 移動方向に向くように角度を設定
-			float targetAngle = static_cast<float>(atan2(m_targetDir.x, m_targetDir.z));
-			m_angle = targetAngle;
-			MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + DX_PI_F, 0.0f));
+			m_pos.x = std::ceil(m_pos.x);
+			m_pos.z = std::ceil(m_pos.z);
+
+			if (m_pos.x != m_targetPos.x) {
+				if (m_pos.x >= m_targetPos.x)
+				{
+					m_move.x = -m_chara.walkSpeed;
+				}
+				else if (m_pos.x <= m_targetPos.x)
+				{
+					m_move.x = +m_chara.walkSpeed;
+				}
+			}
+			else if (m_pos.z != m_targetPos.z)
+			{
+				if (m_pos.z >= m_targetPos.z)
+				{
+					m_move.z = -m_chara.walkSpeed;
+				}
+				else if (m_pos.z <= m_targetPos.z)
+				{
+					m_move.z = +m_chara.walkSpeed;
+				}
+			}
+
+			// 正規化と移動速度の適用
+			if (VSize(m_move) > 0.0f)
+			{
+				m_move = VNorm(m_move); // 正規化
+				m_targetDir = m_move;  // 目標方向を保存
+				m_move = VScale(m_move, m_chara.walkSpeed); // 移動速度を適用
+
+				// 移動方向に向くように角度を設定
+				float targetAngle = static_cast<float>(atan2(m_targetDir.x, m_targetDir.z));
+				m_angle = targetAngle;
+				MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + DX_PI_F, 0.0f));
+			}
 		}
 	}
-
 	m_pos = VAdd(m_pos, m_move);
+	
 
 	// 移動処理の更新
 	MoveUpdate();
@@ -314,9 +326,6 @@ void Enemy::SearchNearPosition()
 	if (m_isNextTargetPosSearch)
 	{
 		m_isNextTargetPosSearch = false;
-
-		m_startPos = m_pos;
-
 
 		target1 = VSub(m_pMap->GetPointPos().point1, m_pos);
 		target2 = VSub(m_pMap->GetPointPos().point2, m_pos);
@@ -378,9 +387,6 @@ void Enemy::SearchNearPosition()
 		std::uniform_int_distribution<> rand(0, minTargets.size() - 1);
 		m_targetPos = minTargets[rand(mt)];
 	}
-
-
-
 
 	m_targetMoveDistance = abs(m_targetPos.x + m_targetPos.z) - abs(m_pos.x + m_pos.z);
 

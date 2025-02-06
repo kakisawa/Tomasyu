@@ -192,8 +192,6 @@ public:
 	int GetAttack() const { return m_attackThePlayer; }
 
 private:
-
-	VECTOR m_startPos;	// 移動開始座標
 	VECTOR m_targetPos;	// 目標座標
 
 	VECTOR m_colPos;			// 当たり判定用座標
@@ -220,7 +218,7 @@ private:
 	bool m_isAttackToPlayer;		// プレイヤーに攻撃が当たったかの判定
 	bool m_isNextTargetPosSearch;	// 次のターゲットポイントを探すフラグ
 	bool m_isSearchPlayer;			// 索敵範囲内にプレイヤーを見つけたかどうかのフラグ
-
+	
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Map> m_pMap;
 };
