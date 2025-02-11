@@ -12,7 +12,7 @@ namespace {
 	const char* kModelFilePath = "Data/Model/Weapon/bullet.mv1";	// 弾のモデルパス
 
 	constexpr int kBulletExistTime = 150;	// 弾が消えるまでの時間
-	constexpr float kBulletSpeed = 3.0f; // 弾の速度
+	constexpr float kBulletSpeed = 10.0f; // 弾の速度
 	constexpr float kBulletRad = 2.0f; // 弾の半径
 
 	const VECTOR kBulletScale = VGet(1.0f, 1.0f, 1.0f);	// 弾のサイズ

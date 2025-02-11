@@ -299,10 +299,7 @@ void Player::SetModelFramePosition(int ModelHandle, const char* FrameName, int S
 
 void Player::Move()
 {
-	if (m_status.situation.isUseItem || m_status.situation.isReload ||
-		m_status.situation.isDamageReceived ||
-		m_status.situation.isKnifeAttack ||
-		m_status.situation.isRoll)	return;
+	if (m_status.situation.isUseItem ||	m_status.situation.isKnifeAttack||	m_status.situation.isRoll)	return;
 
 	// カメラの向きベクトルを取得
 	VECTOR cameraForwardVec = VSub(m_pCamera->GetTarget(), m_pCamera->GetPosition());
