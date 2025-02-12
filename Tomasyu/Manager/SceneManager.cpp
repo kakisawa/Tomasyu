@@ -11,21 +11,23 @@ SceneManager::SceneManager() :
 
 void SceneManager::Init()
 {
+	// 最初のシーンのメモリを確保する
 #ifdef _DEBUG
 
+	// デバッグ時はデバッグシーンへ遷移する
 	m_pScene = std::make_shared<SceneDebug>();
 #else
-	// 最初のシーンのメモリを確保する
+	// タイトルシーンへ遷移
 	m_pScene = std::make_shared<SceneTitle>();
-
 #endif // DEBUG
 
-	m_pScene->Init();					// シーンのInitを呼び出す
+	m_pScene->Init();	// シーンのInitを呼び出す
 }
 
 void SceneManager::Update(Input& input)
 {
-	std::shared_ptr<SceneBase> pNext = m_pScene->Update(input);	// シーンのUpdateを呼び出す
+	// シーンのUpdateを呼び出す
+	std::shared_ptr<SceneBase> pNext = m_pScene->Update(input);	
 	if (pNext != m_pScene)
 	{
 		// 現在のシーンの終了処理
@@ -39,7 +41,7 @@ void SceneManager::Update(Input& input)
 
 void SceneManager::Draw()
 {
-	m_pScene->Draw();
+	m_pScene->Draw();	// シーンのDrawを呼び出す
 }
 
 void SceneManager::End()

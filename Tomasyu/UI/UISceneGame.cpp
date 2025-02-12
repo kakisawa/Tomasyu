@@ -17,7 +17,7 @@ namespace {
 	const VECTOR kItemSelectPos[3]{		// アイテムセレクトカーソルUI座標
 		VGet(1741.0f, 660.0f,0.0f),		// 一つ目
 		VGet(1741.0f, 796.0f,0.0f),		// 二つ目
-		VGet(1741.0f, 932.0f,0.0f),	// 三つ目
+		VGet(1741.0f, 932.0f,0.0f),		// 三つ目
 	};
 
 	const VECTOR kItemPos[3]{			// アイテムUI座標
@@ -101,6 +101,8 @@ namespace {
 }
 
 UISceneGame::UISceneGame(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy>pEnemy) :
+	m_playerRemainingBullets_handgun(0),
+	m_playerRemainingBullets_machinegun(0),
 	m_useWeaponChara(0),
 	m_useItemChara(0),
 	m_playerHp_Green(1205),

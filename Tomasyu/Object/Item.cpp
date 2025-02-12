@@ -30,7 +30,8 @@ namespace {
 
 Item::Item(std::shared_ptr<Player> pPlayer, int num) :
 	m_pPlayer(pPlayer),
-	m_maxItem(num)
+	m_maxItem(num),
+	m_baseModel(-1)
 {
 	
 }
@@ -87,7 +88,7 @@ void Item::Update()
 		}
 
 		if (!item.m_isEfect) {
-			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kItem, item.m_pos);
+			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kItemBox, item.m_pos);
 			item.m_isEfect = true;
 		}
 		

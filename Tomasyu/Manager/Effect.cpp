@@ -4,6 +4,24 @@
 
 Effect* Effect::m_instance = nullptr;
 
+namespace {
+	// エフェクトパス
+	const char* const kEffectShot = "Data/Effect/Shot.efk";			// 銃
+	const char* const kEffectKnife = "Data/Effect/Knife.efk";		// ナイフ
+	const char* const kEffectRecovery = "Data/Effect/Drink.efk";	// 回復
+	const char* const kEffectItemBox = "Data/Effect/Item.efk";		// アイテム
+	const char* const kEffectHit = "Data/Effect/EnemyAttack.efk";	// 殴る
+
+	// サイズ
+	const float kScale30 = 30.0f;
+	const float kScale15 = 15.0f;
+	const float kScale10 = 10.0f;
+
+	// 総合時間
+	const int kTotalTime60 = 60;
+	const int kTotalTime600 = 600;
+}
+
 void Effect::Init()
 {
 	Effekseer_InitDistortion();	// エフェクトの歪みを適用する
@@ -58,26 +76,26 @@ void Effect::Draw()
 
 void Effect::Load()
 {
-	m_effectData[EffectKind::kEffectKind::kShot].m_handle = LoadEffekseerEffect("Data/Effect/Shot.efk");
-	m_effectData[EffectKind::kEffectKind::kKnife].m_handle = LoadEffekseerEffect("Data/Effect/Knife.efk");
-	m_effectData[EffectKind::kEffectKind::kDrink].m_handle = LoadEffekseerEffect("Data/Effect/Drink.efk");
-	m_effectData[EffectKind::kEffectKind::kItem].m_handle = LoadEffekseerEffect("Data/Effect/Item.efk");
-	m_effectData[EffectKind::kEffectKind::kEnemyAttack].m_handle = LoadEffekseerEffect("Data/Effect/EnemyAttack.efk");
+	// エフェクト読み込み
+	m_effectData[EffectKind::kEffectKind::kShot].m_handle = LoadEffekseerEffect(kEffectShot);
+	m_effectData[EffectKind::kEffectKind::kKnife].m_handle = LoadEffekseerEffect(kEffectKnife);
+	m_effectData[EffectKind::kEffectKind::kRecovery].m_handle = LoadEffekseerEffect(kEffectRecovery);
+	m_effectData[EffectKind::kEffectKind::kItemBox].m_handle = LoadEffekseerEffect(kEffectItemBox);
+	m_effectData[EffectKind::kEffectKind::kHit].m_handle = LoadEffekseerEffect(kEffectHit);
 
-	m_effectData[EffectKind::kEffectKind::kKnife].m_scale = 30.0f;
-	m_effectData[EffectKind::kEffectKind::kKnife].m_totalTime = 60;
+	// サイズセット
+	m_effectData[EffectKind::kEffectKind::kKnife].m_scale = kScale30;
+	m_effectData[EffectKind::kEffectKind::kShot].m_scale = kScale30;
+	m_effectData[EffectKind::kEffectKind::kRecovery].m_scale = kScale15;
+	m_effectData[EffectKind::kEffectKind::kItemBox].m_scale = kScale10;
+	m_effectData[EffectKind::kEffectKind::kHit].m_scale = kScale10;
 
-	m_effectData[EffectKind::kEffectKind::kShot].m_scale = 30.0f;
-	m_effectData[EffectKind::kEffectKind::kShot].m_totalTime = 60;
-
-	m_effectData[EffectKind::kEffectKind::kDrink].m_scale = 15.0f;
-	m_effectData[EffectKind::kEffectKind::kDrink].m_totalTime = 60;
-
-	m_effectData[EffectKind::kEffectKind::kItem].m_scale = 10.0f;
-	m_effectData[EffectKind::kEffectKind::kItem].m_totalTime = 600;
-
-	m_effectData[EffectKind::kEffectKind::kEnemyAttack].m_scale = 10.0f;
-	m_effectData[EffectKind::kEffectKind::kEnemyAttack].m_totalTime = 600;
+	// 総合時間セット
+	m_effectData[EffectKind::kEffectKind::kShot].m_totalTime = kTotalTime60;
+	m_effectData[EffectKind::kEffectKind::kKnife].m_totalTime = kTotalTime60;
+	m_effectData[EffectKind::kEffectKind::kRecovery].m_totalTime = kTotalTime60;
+	m_effectData[EffectKind::kEffectKind::kItemBox].m_totalTime = kTotalTime600;
+	m_effectData[EffectKind::kEffectKind::kHit].m_totalTime = kTotalTime600;
 }
 
 void Effect::ClearEffect(const EffectKind::kEffectKind kind)
@@ -100,8 +118,8 @@ void Effect::AddEffect(EffectKind::kEffectKind kind, VECTOR pos)
 		data.m_isPlaying = true;
 		data.m_playingHandle = PlayEffekseer3DEffect(data.m_handle);
 
-		// 　エフェクトが〇〇だったらループ再生させる
-		if (kind == EffectKind::kEffectKind::kItem)
+		// 　エフェクトがアイテムボックスだったらループ再生させる
+		if (kind == EffectKind::kEffectKind::kItemBox)
 		{
 			data.m_isLoop = true;
 		}

@@ -122,7 +122,7 @@ void Enemy::Update()
 	// 攻撃が当たっていたらプレイヤーへ攻撃値を渡す
 	if (m_isAttack && m_isAttackToPlayer)
 	{
-		Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kEnemyAttack, m_col.m_colEnemy.m_rightArm->m_pos);
+		Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kHit, m_col.m_colEnemy.m_rightArm->m_pos);
 		m_attackThePlayer = m_attack;
 		m_isAttack = false;
 	}

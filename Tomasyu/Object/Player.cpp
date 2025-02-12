@@ -543,7 +543,7 @@ void Player::UseItem(Input& input)
 		// 使用するアイテムが体力回復だった場合
 		if (m_item[m_useItem] == Item::ItemKind::RecoveryMedic)
 		{
-			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kDrink, m_pos);
+			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kRecovery, m_pos);
 
 			// プレイヤーの飲む状態をtrueにする
 			m_status.situation.isDrink = true;

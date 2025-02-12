@@ -27,7 +27,6 @@
     <ClCompile Include="Util\Input.cpp" />
     <ClCompile Include="Util\LoadCsv.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Manager\ColorManager.cpp" />
     <ClCompile Include="Manager\SceneManager.cpp" />
     <ClCompile Include="Manager\SoundManager.cpp" />
     <ClCompile Include="Object\Camera.cpp" />
@@ -57,7 +56,6 @@
     <ClInclude Include="Util\Fade.h" />
     <ClInclude Include="Util\Input.h" />
     <ClInclude Include="Util\LoadCsv.h" />
-    <ClInclude Include="Manager\ColorManager.h" />
     <ClInclude Include="Manager\SceneManager.h" />
     <ClInclude Include="Manager\SoundManager.h" />
     <ClInclude Include="Object\Camera.h" />

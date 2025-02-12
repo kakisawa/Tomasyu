@@ -319,8 +319,11 @@ public:
 	/// <param name="pCamera"></param>
 	void SetCameraPointer(std::shared_ptr<Camera> pCamera) { m_pCamera = pCamera; }
 
-
-	int GetStamina()const { return m_stamina; }
+	/// <summary>
+	/// スタミナの値を渡す
+	/// </summary>
+	/// <returns>スタミナ</returns>
+	float GetStamina()const { return m_stamina; }
 
 	/// <summary>
 	/// 敵へ攻撃値を渡す
