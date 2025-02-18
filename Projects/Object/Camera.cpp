@@ -47,7 +47,7 @@ void Camera::Update()
 		VECTOR playerPos = m_pPlayer->GetPos();
 
 		// カメラの位置をプレイヤーの後ろに設定
-		VECTOR cameraPos=VAdd(playerPos, VGet(0.0f, kCameraHeight, 0.0f));
+		VECTOR cameraPos = VAdd(playerPos, VGet(0.0f, kCameraHeight, 0.0f));
 
 		// カメラの注視点を更新
 		SetCameraPositionAndTarget_UpVecY(cameraPos, m_targetPos);
@@ -90,14 +90,7 @@ void Camera::FixCameraPos()
 	m_pos = VTransform(m_pos, rotY);
 
 	// 注視点の座標を足す
-	if (m_pPlayer->GetLockOn()) 
-	{
-		m_pos = VAdd(m_pos, m_pPlayer->GetPos());
-	}
-	else
-	{
-		m_pos = VAdd(m_pos, m_targetPos);
-	}
+	m_pos = VAdd(m_pos, m_targetPos);
 }
 
 void Camera::RightstickCameraUpdate()
@@ -135,6 +128,8 @@ void Camera::RightstickCameraUpdate()
 
 void Camera::LeftstickCameraUpdate()
 {
+	if (m_pPlayer->GetLockOn())return;
+
 	//入力状態初期化
 	input2.X = 0;
 	input2.Y = 0;
