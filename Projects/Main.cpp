@@ -1,4 +1,5 @@
 ﻿#include "DxLib.h"
+#include "Game.h"
 #include "Manager/SceneManager.h"
 #include "EffekseerForDXLib.h"
 #include "../Manager/Effect.h"
@@ -12,9 +13,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ChangeWindowMode(false);
 	// ウインドウ名設定
 	SetMainWindowText("Tomasyu");
-
 	// 画面サイズの設定
-	SetGraphMode(1920, 1080, 32);
+	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorBitDepth);
 	
 
 	SetWindowSizeExtendRate(1.0);
@@ -26,7 +26,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	// Effekseerの初期化
-	Effekseer_Init(8000);
+	Effekseer_Init(Game::kParticleMax);
 
 	// フルスクリーン切り替え時におかしくならないように
 	SetChangeScreenModeGraphicsSystemResetFlag(false);

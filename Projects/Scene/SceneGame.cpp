@@ -10,8 +10,8 @@
 #include "../Manager/Effect.h"
 #include "../Time/Time.h"
 #include "../Util/Fade.h"
-#include "../Score.h"
-#include"../RankingData.h"
+#include "../Util/Score.h"
+#include "../Util/RankingData.h"
 #include "DxLib.h"
 #include <ctime>
 

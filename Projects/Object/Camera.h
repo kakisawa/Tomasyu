@@ -24,13 +24,11 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="player"></param>
 	void Update();
 
 	/// <summary>
 	/// カメラ位置補正
 	/// </summary>
-	/// <param name="player">プレイヤー情報</param>
 	void FixCameraPos();
 
 	/// <summary>
@@ -41,7 +39,6 @@ public:
 	/// <summary>
 	/// 左スティックを使用したカメラの更新
 	/// </summary>
-	/// <param name="player">プレイヤー情報</param>
 	void LeftstickCameraUpdate();
 
 	void SetTarget(const VECTOR& target);

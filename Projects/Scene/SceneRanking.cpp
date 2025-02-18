@@ -1,7 +1,7 @@
 ﻿#include "SceneRanking.h"
 #include "SceneSelect.h"
 #include "SceneDebug.h"
-#include "../RankingData.h"
+#include "../Util/RankingData.h"
 #include "../Util/Fade.h"
 #include <iostream>
 #include <tuple>

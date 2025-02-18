@@ -2,11 +2,11 @@
 #include "Enemy.h"
 #include "Camera.h"
 #include "Shot.h"
-#include "../Util/LoadCsv.h"
+#include "../Util/Score.h"
 #include "../Util/Input.h"
-#include "../Manager/SoundManager.h"
+#include "../Util/LoadCsv.h"
 #include "../Manager/Effect.h"
-#include "../Score.h"
+#include "../Manager/SoundManager.h"
 #include <cmath>
 #include <random>
 #include <cassert>
@@ -42,7 +42,8 @@ namespace
 
 	constexpr int kMedicRecoveryAmount = 10;	// 回復量
 
-	bool kGun = false;
+	constexpr int kMaxItemNum = 3;				// 所持できるアイテムの最大数
+
 	int useItem = 0;
 
 	constexpr float kInitFloat = 0.0f;				// float値初期化
@@ -140,17 +141,14 @@ void Player::Update(Input& input)
 		m_stamina += 0.1f;
 	}
 
-	// 重力簡易処理
-	if (m_pos.y > 0.0f) {
-		m_gravity = 0.0f;
-		m_gravity++;
-	}
+	Gravity();
 
 	SetRemainingBulletsHandgun();
 	SetRemainingBulletsMachinegun();
 
 	// 当たり判定の更新
 	ColUpdate();
+	// アイテムの獲得
 	GetItem();
 
 	// 更新処理
@@ -205,7 +203,7 @@ void Player::Draw()
 
 #ifdef _DEBUG
 	//DrawFormatString(0, 60, 0xffffff, "Playe:HP=%d", m_hp);
-	DrawFormatString(0, 200, 0xffffff, "Playe:m_stamina=%.2f", m_stamina);
+	//DrawFormatString(0, 200, 0xffffff, "Playe:m_stamina=%.2f", m_stamina);
 	//DrawFormatString(0, 100, 0xffffff, "Player:m_pos.x=%.2f:z=%.2f", m_pos.x,m_pos.z);
 	//DrawFormatString(0, 220, 0xffffff, "Player:m_attack=%d", m_attack);
 	//DrawFormatString(0, 240, 0xffffff, "Player:m_remainingBullets_handgun=%d", m_remainingBullets_handgun);
@@ -216,7 +214,7 @@ void Player::Draw()
 	//DrawFormatString(0, 360, 0xffffff, "Player:inputX=%d", m_inputX);
 	//DrawFormatString(0, 380, 0xffffff, "Player:inputY=%d", m_inputY);
 	//DrawFormatString(0, 400, 0xffffff, "Player:item=%d", m_useItem);
-	DrawFormatString(0, 420, 0xffffff, "Player:m_isItem=%d", m_isItem);
+	//DrawFormatString(0, 420, 0xffffff, "Player:m_isItem=%d", m_isItem);
 	//DrawFormatString(0, 440, 0xffffff, "Player:m_getItem=%d", m_getItem);
 	//DrawFormatString(0, 460, 0xffffff, "Player:itemCount=%d", m_getitemCount);
 	//DrawFormatString(0, 480, 0xffffff, "Player:m_useItem[0]=%d", m_item[0]);
@@ -230,7 +228,6 @@ void Player::Draw()
 	//DrawFormatString(0, 680, 0xffffff, "Player:m_isAttackToEnemy=%d", m_isAttackToEnemy);
 	//DrawFormatString(0, 700, 0xffffff, "Player:m_isAttack=%d", m_isAttack);
 	//DrawFormatString(0, 720, 0xffffff, "Player:m_attackTheEnemy=%d", m_attackTheEnemy);
-	//DrawFormatString(0, 520, 0xffffff, "kGun=%d", kGun);
 
 	// 体の当たり判定描画
 	m_col.TypeChangeCapsuleDraw(m_col.m_colPlayer.m_body, 0xffff00, false);
@@ -257,12 +254,10 @@ void Player::LoadData()
 		assert(m_weapon[i] != -1);
 	}
 
-
 	// SEの初期化・読み込み
 	m_pSound->InitSE();
 	m_pSound->LoadSE(SoundManager::SE_Type::kKnifeSE);
 	m_pSound->LoadSE(SoundManager::SE_Type::kHandGunSE);
-
 }
 
 void Player::End()
@@ -299,7 +294,12 @@ void Player::SetModelFramePosition(int ModelHandle, const char* FrameName, int S
 
 void Player::Move()
 {
-	if (m_status.situation.isUseItem ||	m_status.situation.isKnifeAttack||	m_status.situation.isRoll)	return;
+	// 移動できる条件の時
+	bool isItem = m_status.situation.isUseItem && !m_status.situation.isReload;
+
+	bool isNotMove = isItem || m_status.situation.isKnifeAttack || m_status.situation.isRoll;
+
+	if (isNotMove)	return;
 
 	// カメラの向きベクトルを取得
 	VECTOR cameraForwardVec = VSub(m_pCamera->GetTarget(), m_pCamera->GetPosition());
@@ -356,6 +356,15 @@ void Player::MoveUpdate()
 		{
 			ChangeAnimNo(PlayerAnim::Run, m_animSpeed.Run, true, m_animChangeTime.Idle);
 		}
+	}
+}
+
+void Player::Gravity()
+{
+	// 重力簡易処理
+	if (m_pos.y > 0.0f) {
+		m_gravity = 0.0f;
+		m_gravity++;
 	}
 }
 
@@ -446,43 +455,21 @@ void Player::GetItem()
 	m_getItem = static_cast<int>(rand(mt));
 
 	ItemChange();
-
-	// 空いているアイテム欄に獲得したアイテムを入れる
-	if (m_item[0] == Item::ItemKind::NoItem)
-	{
-		m_item[0] = m_setItem;
-	}
-	else if (m_item[1] == Item::ItemKind::NoItem)
-	{
-		m_item[1] = m_setItem;
-	}
-	else if (m_item[2] == Item::ItemKind::NoItem)
-	{
-		m_item[2] = m_setItem;
-	}
 }
 
 void Player::ItemChange()
 {
-	if (m_getItem == 1)
+	// 獲得したアイテムの値をセット用の値の中に入れる
+	m_setItem = static_cast<Item::ItemKind>(m_getItem);
+
+	// 空のアイテムに獲得したアイテムを入れる
+	for (int i = 0; i < kMaxItemNum; i++)
 	{
-		m_setItem = Item::ItemKind::RecoveryMedic;
-	}
-	if (m_getItem == 2)
-	{
-		m_setItem = Item::ItemKind::Ammunition;
-	}
-	if (m_getItem == 3)
-	{
-		m_setItem = Item::ItemKind::IceFloor;
-	}
-	if (m_getItem == 4)
-	{
-		m_setItem = Item::ItemKind::landmine;
-	}
-	if (m_getItem == 5)
-	{
-		m_setItem = Item::ItemKind::SurpriseBox;
+		if (m_item[i] == Item::ItemKind::NoItem)
+		{
+			m_item[i] = m_setItem;
+			break;
+		}
 	}
 }
 
@@ -492,7 +479,7 @@ void Player::UseItem(Input& input)
 	if (input.IsTrigger(InputInfo::UseItemChange))
 	{
 		m_useItem++;
-		if (m_useItem >= 3)
+		if (m_useItem >= kMaxItemNum)
 		{
 			m_useItem = 0;
 		}
@@ -640,13 +627,11 @@ void Player::ChangeWeapon(Input& input)
 
 void Player::AttackGun(Input& input)
 {
-	// TODO:処理の途中
-		// 弾を放つ処理をしたい
+	// 
 	if (m_status.situation.isRoll || m_status.situation.isDamageReceived || m_status.situation.isUseItem) return;
 	if (m_useWeapon == WeaponKind::Knife)	return;
 
 	m_status.situation.isGunAttack = false;
-	kGun = false;
 
 	if (input.IsRelease(InputInfo::Attack))
 	{
@@ -655,7 +640,6 @@ void Player::AttackGun(Input& input)
 
 	if (input.IsPress(InputInfo::Attack) && (m_useWeapon == WeaponKind::HandGun || m_useWeapon == WeaponKind::MachineGun))
 	{
-		
 		m_status.situation.isGunAttack = true;
 
 		if (m_useWeapon == WeaponKind::HandGun)
@@ -681,7 +665,6 @@ void Player::AttackGun(Input& input)
 				{
 					m_pSound->PlaySE(SoundManager::SE_Type::kHandGunSE, DX_PLAYTYPE_BACK);
 					m_isHandGunAnim = true;
-					kGun = true;
 
 					// ロックオン状態の場合、弾の発射方向を敵の方向に設定
 					VECTOR shotDirection = m_targetDir;

@@ -123,11 +123,11 @@
     <ClCompile Include="Util\Fade.cpp">
       <Filter>ソース ファイル\Util</Filter>
     </ClCompile>
-    <ClCompile Include="Score.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Util\Score.cpp">
+      <Filter>ソース ファイル\Util</Filter>
     </ClCompile>
-    <ClCompile Include="RankingData.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Util\RankingData.cpp">
+      <Filter>ソース ファイル\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,10 +206,13 @@
     <ClInclude Include="Util\LoadCsv.h">
       <Filter>ヘッダー ファイル\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Score.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Util\RankingData.h">
+      <Filter>ヘッダー ファイル\Util</Filter>
     </ClInclude>
-    <ClInclude Include="RankingData.h">
+    <ClInclude Include="Util\Score.h">
+      <Filter>ヘッダー ファイル\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

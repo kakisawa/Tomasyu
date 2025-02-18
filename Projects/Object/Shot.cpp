@@ -4,7 +4,7 @@
 #include "../Manager/Effect.h"
 #include "../Util/Collision.h"
 #include "../Time/IsTime.h"
-#include "../Score.h"
+#include "../Util/Score.h"
 #include <cassert>
 #include <iostream>
 

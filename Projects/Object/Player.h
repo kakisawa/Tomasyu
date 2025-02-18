@@ -196,6 +196,11 @@ public:
 	void MoveUpdate();
 
 	/// <summary>
+	/// 重力処理
+	/// </summary>
+	void Gravity();
+
+	/// <summary>
 	/// 回転処理
 	/// </summary>
 	void Angle();
