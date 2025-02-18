@@ -1,0 +1,15 @@
+マシンガン
+mixamorig:RightHandRing3	54
+回転...x=2.693,y=2.738,z=1.661
+拡大...0.07倍
+
+ハンドガン
+mixamorig:RightHandMiddle4	55
+回転...x=5.7,y=1.436,z=4.219
+拡大...3倍
+
+ナイフ
+mixamorig:RightHandRing4	60
+回転...1,2コンボ目
+	3コンボ目...x=4.443,y=3.231,z=5.386
+拡大...1.0f
