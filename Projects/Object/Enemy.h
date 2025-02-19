@@ -99,7 +99,7 @@ public:
 	/// </summary>
 	/// <param name="map">マップ情報</param>
 	/// <param name="player">プレイヤー情報</param>
-	void Update();
+	void Update() override;
 
 	/// <summary>
 	/// 描画

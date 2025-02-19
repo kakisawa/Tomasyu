@@ -5,18 +5,20 @@
 
 namespace {
 	// カメラ情報
-	constexpr float kCameraHeight = 70.0f;	// カメラの注視点
-	constexpr float kCameraNear = 1.0f;		// カメラ手前クリップ距離
-	constexpr float kCameraFar = 10000.0f;	// カメラ最奥クリップ距離
-	constexpr float kDist = -80.0f;			// カメラからプレイヤーまでの距離
-	constexpr float kAngle = 0.03f;			// カメラを動かす角度
+	constexpr float kCameraNear = 1.0f;			// カメラ手前クリップ距離
+	constexpr float kCameraFar = 10000.0f;		// カメラ最奥クリップ距離
+	constexpr float kDist = -80.0f;				// カメラからプレイヤーまでの距離
+	constexpr float kRightStickAngle = 0.03f;	// カメラを動かす角度
+	constexpr float kLeftStickAngle = 0.01f;	// カメラを動かす角度
 
 	constexpr float kInitAngleH = 1.7f;		// カメラの初期平行角度
 	constexpr float kInitAngleV = 0.3f;		// カメラの初期垂直角度
 	constexpr float kMinAngleV = DX_PI_F * 0.5f - 0.5f;	// 最小の垂直角度
-	constexpr float kMaxAngleV = -DX_PI_F * 0.5f+1.0f;	// 最大の垂直角度
+	constexpr float kMaxAngleV = -DX_PI_F * 0.5f + 1.0f;	// 最大の垂直角度
 
-	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);		// ベクトルの初期価値
+	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);				// ベクトルの初期価値
+	const VECTOR kLightDirection = VGet(20.0f, -50.0f, 0.0f);	// ライトの指向性
+	const VECTOR kTargetHeightPos = VGet(0.0f, 70.0f, 0.0f);	// カメラの注視点座標(高さ調整用)
 }
 
 Camera::Camera(std::shared_ptr<Player> pPlayer) :
@@ -38,23 +40,24 @@ void Camera::Update()
 {
 	// カメラの角度手動入力/更新
 	LeftstickCameraUpdate();
-	RightstickCameraUpdate();
+	RightStickCameraUpdate();
 
 	// カメラの注視点を設定
-	if (m_pPlayer->GetLockOn()) 
+	if (m_pPlayer->GetLockOn())
 	{
 		// プレイヤーの位置取得
 		VECTOR playerPos = m_pPlayer->GetPos();
 
 		// カメラの位置をプレイヤーの後ろに設定
-		VECTOR cameraPos = VAdd(playerPos, VGet(0.0f, kCameraHeight, 0.0f));
+		VECTOR cameraPos = VAdd(playerPos, kTargetHeightPos);
 
 		// カメラの注視点を更新
 		SetCameraPositionAndTarget_UpVecY(cameraPos, m_targetPos);
 	}
-	else 
+	else
 	{
-		m_targetPos = VAdd(m_pPlayer->GetPos(), VGet(0.0f, kCameraHeight, 0.0f));
+		// 注視点をプレイヤーの座標+高さにする
+		m_targetPos = VAdd(m_pPlayer->GetPos(), kTargetHeightPos);
 
 		// カメラ位置補正
 		FixCameraPos();
@@ -63,16 +66,14 @@ void Camera::Update()
 		SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
 	}
 
-	ChangeLightTypeDir(VGet(20.0f, -50.0f, 0.0f));
+	ChangeLightTypeDir(kLightDirection);
 
 #ifdef _DEBUG
 	//DrawFormatString(0, 100, 0xffffff, "Camera:m_pos.x/y/z=%.2f/%.2f/%.2f", m_pos.x, m_pos.y, m_pos.z);
 	//DrawFormatString(0, 120, 0xffffff, "Camera:m_targetPos.x/y/z=%.2f/%.2f/%.2f",
 	//	m_targetPos.x, m_targetPos.y, m_targetPos.z);
-
 	//DrawFormatString(0, 140, 0xffffff, "Player:m_pos.x/y/z=%.2f/%.2f/%.2f",
 	//	m_pPlayer->GetPos().x, m_pPlayer->GetPos().y, m_pPlayer->GetPos().z);
-
 	//DrawFormatString(0, 160, 0xffffff, "m_angleH=%.2f", m_angleH);
 #endif // DEBUG
 }
@@ -93,8 +94,9 @@ void Camera::FixCameraPos()
 	m_pos = VAdd(m_pos, m_targetPos);
 }
 
-void Camera::RightstickCameraUpdate()
+void Camera::RightStickCameraUpdate()
 {
+	// プレイヤーがロックオンしているときは処理しない
 	if (m_pPlayer->GetLockOn())	return;
 
 	//入力状態初期化
@@ -106,21 +108,21 @@ void Camera::RightstickCameraUpdate()
 
 	if (input.Rx < 0.0f)			// 右スティックを右に倒したら右回転する
 	{
-		m_angleH -= kAngle;
+		m_angleH -= kRightStickAngle;
 	}
 	if (input.Rx > 0.0f)			// 右スティックを左に倒したら左回転する
 	{
-		m_angleH += kAngle;
+		m_angleH += kRightStickAngle;
 	}
 	if (input.Ry < 0.0f)			// 右スティックを下に倒したら上方向に回る
 	{
-		m_angleV -= kAngle;
+		m_angleV -= kRightStickAngle;
 		// ある一定角度以上にならないようにする
 		m_angleV = (std::max)(m_angleV, kMaxAngleV);
 	}
 	if (input.Ry > 0.0f)			// 右スティックを上に倒したら下方向に回る
 	{
-		m_angleV += kAngle;
+		m_angleV += kRightStickAngle;
 		// ある一定角度以下にならないようにする
 		m_angleV = (std::min)(kMinAngleV, m_angleV);
 	}
@@ -128,6 +130,7 @@ void Camera::RightstickCameraUpdate()
 
 void Camera::LeftstickCameraUpdate()
 {
+	// プレイヤーがロックオンしているときは処理しない
 	if (m_pPlayer->GetLockOn())return;
 
 	//入力状態初期化
@@ -137,31 +140,12 @@ void Camera::LeftstickCameraUpdate()
 	// 入力状態を取得
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input2);
 
-	if (m_pPlayer->GetLockOn()) 
+	if (input2.X < 0.0f)
 	{
-		if (input2.X < 0.0f)			// 右スティックを右に倒したら右回転する
-		{
-			m_angleH -= 0.05f;
-		}
-		if (input2.X > 0.0f)			// 右スティックを左に倒したら左回転する
-		{
-			m_angleH += 0.05f;
-		}
+		m_angleH -= kLeftStickAngle;	// 左スティックを右に倒したら右回転する
 	}
-	else 
+	if (input2.X > 0.0f)
 	{
-		if (input2.X < 0.0f)			// 右スティックを右に倒したら右回転する
-		{
-			m_angleH -= 0.01f;
-		}
-		if (input2.X > 0.0f)			// 右スティックを左に倒したら左回転する
-		{
-			m_angleH += 0.01f;
-		}
+		m_angleH += kLeftStickAngle;	// 左スティックを左に倒したら左回転する
 	}
-}
-
-void Camera::SetTarget(const VECTOR& target)
-{
-	m_targetPos = target;
 }

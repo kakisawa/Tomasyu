@@ -12,7 +12,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Windowモード設定(フルスクリーン)
 	ChangeWindowMode(false);
 	// ウインドウ名設定
-	SetMainWindowText("Tomasyu");
+	SetMainWindowText(Game::kTitle);
 	// 画面サイズの設定
 	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorBitDepth);
 	

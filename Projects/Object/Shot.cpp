@@ -205,7 +205,7 @@ void Shot::Attack()
 
 			// 敵にダメージを与える
 			m_pEnemy->OnDamage(m_attack);
-
+			// スコアを加算する
 			m_pScore->AddScore(m_score);
 
 			// 存在を消す

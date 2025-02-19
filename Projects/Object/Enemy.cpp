@@ -9,30 +9,23 @@
 #include <algorithm>
 
 namespace {
-	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// Vector値初期価値
-	constexpr float kInitFloat = 0.0f;				// float値初期化
-
-	const VECTOR kBodyColUpPos = VGet(0.0f, 70.0f, 0.0f);	// 体当たり判定頂点
-
-	constexpr int kAttackHandArm = 30;				// 右腕攻撃力
-	constexpr int kAttackMachineArm = 30;			// 左腕攻撃力
-
-	constexpr int kNextAttackTime = 100;			// 次の攻撃をするまでのカウント
-
+	constexpr int kAttackHandArm = 30;						// 右腕攻撃力
+	constexpr int kAttackMachineArm = 30;					// 左腕攻撃力
+	constexpr int kNextAttackTime = 100;					// 次の攻撃をするまでのカウント
 	constexpr float kInitAngle = -DX_PI_F / 2.0f * 90.0f;	// プレイヤーの初期角度*90(向きを反対にする)
 
+	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);			// Vector値初期価値
+	const VECTOR kBodyColUpPos = VGet(0.0f, 70.0f, 0.0f);	// 体当たり判定頂点
+	
 	// モデルパス
 	const char* kModelFilePath = "Data/Model/EnemyModel.mv1";
-
 	// 各攻撃パーツの部位パス
-	const char* const kRightShoulder = "mixamorig:RightShoulder";
-	const char* const kRightElbow = "mixamorig:RightForeArm";
-	const char* const kRightHand = "mixamorig:RightHandMiddle4";
-
-	const char* const kLeftShoulder = "mixamorig:LeftShoulder";
-	const char* const kLeftElbow = "mixamorig:LeftForeArm";
-	const char* const kLeftHand = "mixamorig:LeftHandMiddle4";
-
+	const char* const kRightShoulder = "mixamorig:RightShoulder";	// 右肩
+	const char* const kRightElbow = "mixamorig:RightForeArm";		// 右肘
+	const char* const kRightHand = "mixamorig:RightHandMiddle4";	// 右手指
+	const char* const kLeftShoulder = "mixamorig:LeftShoulder";		// 左肩
+	const char* const kLeftElbow = "mixamorig:LeftForeArm";			// 左肘
+	const char* const kLeftHand = "mixamorig:LeftHandMiddle4";		// 左手指
 
 	VECTOR target1;
 	VECTOR target2;
@@ -41,11 +34,11 @@ namespace {
 }
 
 Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPlayer) :
+	m_attackKind(0),
 	m_attackThePlayer(0),
 	m_attackTimeCount(kNextAttackTime),
-	m_attackKind(0),
-	m_targetDistance(kInitFloat),
-	m_targetMoveDistance(kInitFloat),
+	m_targetDistance(0.0f),
+	m_targetMoveDistance(0.0f),
 	m_colPos(kInitVec),
 	m_targetPos(kInitVec),
 	m_rightShoulderPos(kInitVec),
@@ -151,24 +144,21 @@ void Enemy::Draw()
 	}
 
 	//DrawFormatString(0, 140, 0xffffff, "Enemy:HP=%d", m_hp);
-	DrawFormatString(0, 700, 0xffffff, "Enemy:m_isCheckPlayer=%d", m_isSearchPlayer);
-
-	DrawFormatString(0, 780, 0xffffff, "Enemy:m_pos.x=%.2f:z=%.2f", m_pos.x, m_pos.z);
-	DrawFormatString(0, 800, 0xffffff, "Enemy:m_targetMoveDistance=%.2f", m_targetMoveDistance);
-	DrawFormatString(0, 820, 0xffffff, "Enemy:m_targetDistance=%.2f", m_targetDistance);
-	DrawFormatString(0, 840, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
-	DrawFormatString(0, 880, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
+	//DrawFormatString(0, 700, 0xffffff, "Enemy:m_isCheckPlayer=%d", m_isSearchPlayer);
+	//DrawFormatString(0, 780, 0xffffff, "Enemy:m_pos.x=%.2f:z=%.2f", m_pos.x, m_pos.z);
+	//DrawFormatString(0, 800, 0xffffff, "Enemy:m_targetMoveDistance=%.2f", m_targetMoveDistance);
+	//DrawFormatString(0, 820, 0xffffff, "Enemy:m_targetDistance=%.2f", m_targetDistance);
+	//DrawFormatString(0, 840, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
+	//DrawFormatString(0, 880, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_move.x=%.2f:z=%.2f", m_move.x, m_move.z);
 	//DrawFormatString(0, 920, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
 	//DrawFormatString(0, 940, 0xffffff, "Enemy:m_isAttackToPlayer=%d", m_isAttackToPlayer);
 	//DrawFormatString(0, 960, 0xffffff, "Enemy:m_isAttack=%d", m_isAttack);
-	DrawFormatString(0, 900, 0xffffff, "Enemy:m_angle=%.2f", m_angle);
-
-
-	DrawFormatString(0, 920, 0xffffff, "target1.x=%.2f:.z=%.2f", target1.x, target1.z);
-	DrawFormatString(0, 940, 0xffffff, "target2.x=%.2f:.z=%.2f", target2.x, target2.z);
-	DrawFormatString(0, 960, 0xffffff, "target3.x=%.2f:.z=%.2f", target3.x, target3.z);
-	DrawFormatString(0, 980, 0xffffff, "target4.x=%.2f:.z=%.2f", target4.x, target4.z);
+	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_angle=%.2f", m_angle);
+	//DrawFormatString(0, 920, 0xffffff, "target1.x=%.2f:.z=%.2f", target1.x, target1.z);
+	//DrawFormatString(0, 940, 0xffffff, "target2.x=%.2f:.z=%.2f", target2.x, target2.z);
+	//DrawFormatString(0, 960, 0xffffff, "target3.x=%.2f:.z=%.2f", target3.x, target3.z);
+	//DrawFormatString(0, 980, 0xffffff, "target4.x=%.2f:.z=%.2f", target4.x, target4.z);
 #endif // DEBUG
 }
 
@@ -346,26 +336,6 @@ void Enemy::SearchNearPosition()
 
 		float result = positiveValues.empty() ? 0 : *std::min_element(positiveValues.begin(), positiveValues.end());
 
-
-	//	if (result == target1_1)
-	//	{
-	//		m_targetPos = m_pMap->GetPointPos().point1;
-	//	}
-	//	else if (result == target2_1)
-	//	{
-	//		m_targetPos = m_pMap->GetPointPos().point2;
-	//	}
-	//	else if (result == target3_1)
-	//	{
-	//		m_targetPos = m_pMap->GetPointPos().point3;
-	//	}
-	//	else if (result == target4_1)
-	//	{
-	//		m_targetPos = m_pMap->GetPointPos().point4;
-	//	}
-	//}
-
-
 		 // 最小値を持つターゲットポイントをリストに追加
 		std::vector<VECTOR> minTargets;
 		if (result == target1_1) {
@@ -537,7 +507,7 @@ void Enemy::Death()
 		m_status.situation.isDeath = true;
 		ChangeAnimNo(EnemyAnim::Death, m_animSpeed.Death, false, m_animChangeTime.Death);
 		// 体当たり判定更新
-		m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_body, kInitVec, kInitVec, kInitFloat);
+		m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_body, kInitVec, kInitVec, 0.0f);
 	}
 
 	// 死亡アニメーションが終わったら死亡フラグをtrueにする

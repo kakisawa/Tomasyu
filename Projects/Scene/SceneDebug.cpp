@@ -20,7 +20,7 @@ namespace {
 
 	constexpr int kSceneNum = 6;						// 選択できるシーンの数
 
-	constexpr float ks = kSelectBoxY + kSelectMoveY * kSceneNum;
+	constexpr int kInitSelectPosY = kSelectBasePosY + kSelectMoveY * 5;	// 選択中シーンの初期Y座標
 }
 
 SceneDebug::SceneDebug() :
@@ -31,7 +31,7 @@ SceneDebug::SceneDebug() :
 void SceneDebug::Init()
 {
 	// 選択中のシーンを表示するBoxの初期位置
-	m_selectBox.selectPos = VGet(kSelectBoxX, kSelectBasePosY + kSelectMoveY * 5, 0.0f);
+	m_selectBox.selectPos = VGet(kSelectBoxX, kInitSelectPosY, 0.0f);
 }
 
 std::shared_ptr<SceneBase> SceneDebug::Update(Input &input)

@@ -34,14 +34,18 @@ public:
 	/// <summary>
 	/// 右スティックを使用したカメラの更新
 	/// </summary>
-	void RightstickCameraUpdate();
+	void RightStickCameraUpdate();
 
 	/// <summary>
 	/// 左スティックを使用したカメラの更新
 	/// </summary>
 	void LeftstickCameraUpdate();
 
-	void SetTarget(const VECTOR& target);
+	/// <summary>
+	/// ターゲットの座標をセットする
+	/// </summary>
+	/// <param name="target">ターゲットの座標</param>
+	void SetTarget(const VECTOR& target){ m_targetPos = target; }
 
 	/// <summary>
 	/// 座標渡し
@@ -66,5 +70,5 @@ private:
 	VECTOR m_targetPos;			// 注視点座標
 	VECTOR m_enemyTargetPos;	// ターゲット座標
 
-	std::shared_ptr<Player> m_pPlayer;
+	std::shared_ptr<Player> m_pPlayer;		// プレイヤーのポインタ
 };
