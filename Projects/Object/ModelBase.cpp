@@ -14,7 +14,6 @@ ModelBase::ModelBase() :
 	m_model(-1),
 	m_hp(kInitInt),
 	m_attack(kInitInt),
-	m_attackThePlayer(kInitInt),
 	m_angle(kInitFloat),
 	m_nextAnimTime(kInitFloat),
 	m_pos(kInitVec),

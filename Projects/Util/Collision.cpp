@@ -4,7 +4,7 @@ namespace {
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// ベクトルの初期化
 }
 
-Collision::Collision()
+void Collision::Init()
 {
 	// 敵初期化
 	m_colEnemy.m_body.m_pos = kInitVec;
@@ -24,7 +24,7 @@ Collision::Collision()
 
 	// プレイヤー初期化
 	m_colPlayer.m_body.m_pos = kInitVec;
-	m_colPlayer.m_body.m_vertexPos= kInitVec;
+	m_colPlayer.m_body.m_vertexPos = kInitVec;
 	m_colPlayer.m_body.m_radius = 0.0f;
 
 	m_colPlayer.m_weapon.m_pos = kInitVec;
@@ -35,14 +35,6 @@ Collision::Collision()
 	m_itemCol.m_pos = kInitVec;
 	m_itemCol.m_vertexPos = kInitVec;
 	m_itemCol.m_radius = 0.0f;
-}
-
-Collision::~Collision()
-{
-}
-
-void Collision::Init()
-{
 }
 
 void Collision::TypeChangeSphereUpdate(ColType& colType, const VECTOR pos, const float radius)
@@ -58,12 +50,12 @@ void Collision::TypeChangeCapsuleUpdate(ColType& colType, const VECTOR pos, cons
 	colType.m_radius = radius;
 }
 
-void Collision::TypeChangeSphereDraw(ColType& colType, unsigned int color, bool isFill)
+void Collision::TypeChangeSphereDraw(const ColType& colType, unsigned int color, bool isFill)
 {
 	DrawSphere3D(colType.m_pos, colType.m_radius, 32, color, color, isFill);
 }
 
-void Collision::TypeChangeCapsuleDraw(ColType& colType, unsigned int color, bool isFill)
+void Collision::TypeChangeCapsuleDraw(const ColType& colType, unsigned int color, bool isFill)
 {
 	DrawCapsule3D(colType.m_pos, colType.m_vertexPos, colType.m_radius, 32, color, color, isFill);
 }

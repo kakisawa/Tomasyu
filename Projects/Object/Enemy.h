@@ -70,7 +70,6 @@ public:
 		float Hit = 0.5f;				// 被ダメージ
 	}m_animSpeed;
 
-
 	enum AttackKind {
 		RightArm1,
 		RightArm2,
@@ -87,7 +86,7 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~Enemy();
+	virtual ~Enemy(){}
 
 	/// <summary>
 	/// 初期化
@@ -97,14 +96,22 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="map">マップ情報</param>
-	/// <param name="player">プレイヤー情報</param>
 	void Update() override;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw() override;
+
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	void Load();
+
+	/// <summary>
+	/// データの削除関係
+	/// </summary>
+	void End() override;
 
 	/// <summary>
 	/// Playerのポインタを設定する
@@ -115,13 +122,11 @@ public:
 	/// <summary>
 	/// 当たり判定の更新
 	/// </summary>
-	/// <param name="player">プレイヤー情報</param>
 	void ColUpdate();
 	
 	/// <summary>
 	/// 移動
 	/// </summary>
-	/// <param name="map">マップ情報</param>
 	void Move();
 
 	/// <summary>
@@ -132,7 +137,6 @@ public:
 	/// <summary>
 	/// 一番近い座標を出す
 	/// </summary>
-	/// <param name="map">マップ情報</param>
 	void SearchNearPosition();
 
 	/// <summary>
@@ -148,7 +152,6 @@ public:
 	/// <summary>
 	/// 被ダメージ処理
 	/// </summary>
-	/// <param name="damage">受けるダメージ量</param>
 	void OnDamage(int damage);
 
 	/// <summary>
@@ -185,39 +188,30 @@ public:
 	/// <returns>当たり判定</returns>
 	Collision GetCol() const { return m_col; }
 
-	/// <summary>
-	/// プレイヤーへ攻撃値を渡す
-	/// </summary>
-	/// <returns></returns>
-	int GetAttack() const { return m_attackThePlayer; }
-
 private:
-	VECTOR m_targetPos;	// 目標座標
-
-	VECTOR m_colPos;			// 当たり判定用座標
-
-	VECTOR m_rightShoulderPos;	// 右肩座標
-	VECTOR m_rightElbowPos;		// 右肘座標
-	VECTOR m_rightHandPos;		// 右手座標
-
-	VECTOR m_leftShoulderPos;	// 左肩座標
-	VECTOR m_leftElbowPos;		// 左肘座標
-	VECTOR m_leftHandPos;		// 左手座標
-
-	VECTOR m_vecToPlayer;		// プレイヤーまでの座標
-
 	int m_attackTimeCount;	// 攻撃をするまでにかかる時間
-	int m_attackThePlayer;		// プレイヤーへの攻撃力
-	int m_attackKind;			// 攻撃の種類
+	int m_attackKind;		// 攻撃の種類
 
 	float m_targetDistance;		// ターゲットポイントまでの距離
 	float m_targetMoveDistance;	// ターゲットポイントまでの残りの距離
 
 	bool m_isMove;					// 動いているかどうかのフラグ
 	bool m_isAttack;				// 攻撃をしたかの判定
-	bool m_isAttackToPlayer;		// プレイヤーに攻撃が当たったかの判定
+	bool m_isColAttack;				// プレイヤーに攻撃が当たったかの判定
 	bool m_isNextTargetPosSearch;	// 次のターゲットポイントを探すフラグ
 	bool m_isSearchPlayer;			// 索敵範囲内にプレイヤーを見つけたかどうかのフラグ
+
+	VECTOR m_colPos;			// 当たり判定用座標
+
+	VECTOR m_rightShoulderPos;	// 右肩座標
+	VECTOR m_rightElbowPos;		// 右肘座標
+	VECTOR m_rightHandPos;		// 右手座標
+	VECTOR m_leftShoulderPos;	// 左肩座標
+	VECTOR m_leftElbowPos;		// 左肘座標
+	VECTOR m_leftHandPos;		// 左手座標
+
+	VECTOR m_targetPos;		// 目標座標
+	VECTOR m_vecToPlayer;	// プレイヤーまでの座標
 	
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Map> m_pMap;

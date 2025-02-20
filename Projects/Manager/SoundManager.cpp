@@ -1,15 +1,16 @@
 ﻿#include "SoundManager.h"
 #include "../Util/Input.h"
 #include "DxLib.h"
+#include <cassert>
 
 namespace {
-	// 音量の最大
-	constexpr int kMaxVolume = 255;
+	constexpr int kMaxVolume = 255;						// 音量の最大値
+	constexpr int kChangeVolumeMaxNum = 7;				// 音量増減の最大数
+	constexpr int kVolumeStepSize = kMaxVolume / kChangeVolumeMaxNum;	// 一回当たりの音量増減値
 
 	// 音量の初期値
-	constexpr int kInitBgmVolume = (kMaxVolume / 7) * 5;	// BGM初期音量
-	constexpr int kInitSeVolume = (kMaxVolume / 7) * 5;// SE初期音量
-
+	constexpr int kInitBgmVolume = kVolumeStepSize * 5;	// BGM初期音量
+	constexpr int kInitSeVolume = kVolumeStepSize * 5;	// SE初期音量
 
 	// 変更後音量保存
 	int kChangeBgm = kInitBgmVolume;
@@ -30,21 +31,23 @@ void SoundManager::Init()
 
 void SoundManager::ChangeSEVolume(Input& input)
 {
+	// 右ボタンで音量を上げる
 	if (input.IsTrigger(InputInfo::Right))
 	{
-		m_seVolume += (kMaxVolume / 7) * 1;
+		m_seVolume += kVolumeStepSize;
 		SetSeVolume();
 		PlaySE(SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
-		if (m_seVolume >= kMaxVolume - (kMaxVolume / 7) * 1)
+		if (m_seVolume >= kMaxVolume - kVolumeStepSize)
 		{
 			m_seVolume = kMaxVolume;
 		}
 		kChangeSe = m_seVolume;
 	}
 
+	// 左ボタンで音量を下げる
 	if (input.IsTrigger(InputInfo::Left))
 	{
-		m_seVolume -= (kMaxVolume / 7) * 1;
+		m_seVolume -= kVolumeStepSize;
 		SetSeVolume();
 		PlaySE(SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
 		if (m_seVolume <= 0)
@@ -57,19 +60,22 @@ void SoundManager::ChangeSEVolume(Input& input)
 
 void SoundManager::ChangeBGMVolume(Input& input)
 {
+	// 右ボタンで音量を上げる
 	if (input.IsTrigger(InputInfo::Right))
 	{
-		m_bgmVolume += (kMaxVolume / 7) * 1;
+		m_bgmVolume += kVolumeStepSize;
 		SetBgmVolume();
-		if (m_bgmVolume >= kMaxVolume- (kMaxVolume / 7) * 1)
+		if (m_bgmVolume >= kMaxVolume- kVolumeStepSize)
 		{
 			m_bgmVolume = kMaxVolume;
 		}
 		kChangeBgm = m_bgmVolume;
 	}
-	else if (input.IsTrigger(InputInfo::Left))
+
+	// 左ボタンで音量を下げる
+	if (input.IsTrigger(InputInfo::Left))
 	{
-		m_bgmVolume -= (kMaxVolume / 7) * 1;
+		m_bgmVolume -= kVolumeStepSize;
 		SetBgmVolume();
 		if (m_bgmVolume <= 0)
 		{
@@ -104,6 +110,7 @@ void SoundManager::LoadBGM(BGM_Type bgm)
 {
 	// BGMを読み込む
 	m_bgm[bgm] = LoadSoundMem(("Data/Sound/BGM/" + m_bgmPass[bgm]).c_str());
+	assert(m_bgm[bgm] != -1);
 }
 
 void SoundManager::InitSE(void)
@@ -132,6 +139,7 @@ void SoundManager::LoadSE(SE_Type se)
 	// SEを読み込む
 	SetCreateSoundDataType(DX_SOUNDDATATYPE_MEMNOPRESS);
 	m_se[se] = LoadSoundMem(("Data/Sound/SE/" + m_sePass[se]).c_str(), 6);
+	assert(m_se[se] != -1);
 }
 
 void SoundManager::PlayBGM(BGM_Type bgm, int playType, int volumePar, bool topPositionFlag)
@@ -168,11 +176,13 @@ void SoundManager::StopSE(SE_Type se)
 
 void SoundManager::ReleaseSound(void)
 {
+	// BGMの解放
 	for (int b = 0; b < static_cast<int>(BGM_Type::MAX); b++)
 	{
 		DeleteSoundMem(m_bgm[static_cast<BGM_Type>(b)]);
 	}
 
+	// SEの解放
 	for (int s = 0; s < static_cast<int>(SE_Type::MAX); s++)
 	{
 		DeleteSoundMem(m_se[static_cast<SE_Type>(s)]);
@@ -193,9 +203,4 @@ void SoundManager::SetSeVolume()
 	{
 		ChangeVolumeSoundMem(static_cast<int>(m_seVolume), entry.second);
 	}
-}
-
-void SoundManager::Draw()
-{
-	DrawFormatString(0, 500, 0xffffff, "Volume=%.2f", m_seVolume);
 }

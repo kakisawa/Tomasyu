@@ -3,9 +3,9 @@
 #include "../Object/Map.h"
 #include "../Util/LoadCsv.h"
 #include "../Manager/Effect.h"
-#include <cassert>
 #include <cmath>
 #include <random>
+#include <cassert>
 #include <algorithm>
 
 namespace {
@@ -26,16 +26,10 @@ namespace {
 	const char* const kLeftShoulder = "mixamorig:LeftShoulder";		// 左肩
 	const char* const kLeftElbow = "mixamorig:LeftForeArm";			// 左肘
 	const char* const kLeftHand = "mixamorig:LeftHandMiddle4";		// 左手指
-
-	VECTOR target1;
-	VECTOR target2;
-	VECTOR target3;
-	VECTOR target4;
 }
 
 Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPlayer) :
 	m_attackKind(0),
-	m_attackThePlayer(0),
 	m_attackTimeCount(kNextAttackTime),
 	m_targetDistance(0.0f),
 	m_targetMoveDistance(0.0f),
@@ -50,43 +44,27 @@ Enemy::Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPla
 	m_vecToPlayer(kInitVec),
 	m_isMove(false),
 	m_isAttack(false),
-	m_isAttackToPlayer(false),
+	m_isColAttack(false),
 	m_isSearchPlayer(false),
 	m_isNextTargetPosSearch(true),
 	m_pMap(pMap),
 	m_pPlayer(pPlayer)
 {
-	// プレイヤー外部データ読み込み
-	LoadCsv::GetInstance().LoadCommonFileData(m_chara, "enemy");
-	// モデルの読み込み
-	m_model = MV1LoadModel(kModelFilePath);
-	assert(m_model != -1);
-
-	// 座標初期値
-	m_pos = VGet(m_chara.initPosX, m_chara.initPosY, m_chara.initPosZ);
-	MV1SetScale(m_model, VGet(m_chara.modelSize, m_chara.modelSize, m_chara.modelSize));
-	m_angle = kInitAngle;
-
-	// 動かない状態
-	m_status.situation.isMoving = false;
-}
-
-Enemy::~Enemy()
-{
-	// サウンドの解放
-	m_pSound->ReleaseSound();
 }
 
 void Enemy::Init()
 {
+	// 素材・データの読み込み
+	Load();
+
 	ModelBase::Init();
+	m_pos = VGet(m_chara.initPosX, m_chara.initPosY, m_chara.initPosZ);
+	MV1SetScale(m_model, VGet(m_chara.modelSize, m_chara.modelSize, m_chara.modelSize));
+	m_angle = kInitAngle;
+	m_status.situation.isMoving = false;
+
 	m_hp = m_chara.maxHp;		// HPに最大値を入れる
 	m_attack = kAttackHandArm;	// 攻撃力を入れる
-
-	// SEの初期化・ロード
-	m_pSound->InitSE();
-	m_pSound->LoadSE(SoundManager::SE_Type::kPunchSE2);
-	m_pSound->LoadSE(SoundManager::SE_Type::kDeathrattle);
 
 	// アニメーションの設定
 	SetAnimation(static_cast<int>(EnemyAnim::Idle), m_animSpeed.Idle, true, false);
@@ -94,34 +72,27 @@ void Enemy::Init()
 
 void Enemy::Update()
 {
-	// プレイヤーへの攻撃力を初期化
-	m_attackThePlayer = 0;
-
-	// エネミーが死んでいなかったら、プレイヤーが攻撃してきた際体力を減らす
-	if (!m_status.situation.isDeath && m_pPlayer != nullptr)
-	{
-		m_hp -= m_pPlayer->GetAttack();
-	}
-
-	// 更新処理
 	Death();
+	PlaySE();
+	ModelBase::Update();
+
+	if (m_status.situation.isDeath) return;
+
 	Attack();
 	ColUpdate();
 	SearchNearPosition();
 	Move();
 	Angle();
-	PlaySE();
 
 	// 攻撃が当たっていたらプレイヤーへ攻撃値を渡す
-	if (m_isAttack && m_isAttackToPlayer)
+	if (m_isAttack && m_isColAttack)
 	{
 		Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kHit, m_col.m_colEnemy.m_rightArm->m_pos);
-		m_attackThePlayer = m_attack;
+		m_pPlayer->OnDamage(m_attack);
 		m_isAttack = false;
 	}
 
 	ChangeAnimIdle();
-	ModelBase::Update();
 }
 
 void Enemy::Draw()
@@ -162,6 +133,27 @@ void Enemy::Draw()
 #endif // DEBUG
 }
 
+void Enemy::Load()
+{
+	// プレイヤー外部データ読み込み
+	LoadCsv::GetInstance().LoadCommonFileData(m_chara, "enemy");
+	// モデルの読み込み
+	m_model = MV1LoadModel(kModelFilePath);
+	assert(m_model != -1);
+
+	// SEの初期化・ロード
+	m_pSound->InitSE();
+	m_pSound->LoadSE(SoundManager::SE_Type::kPunchSE2);
+	m_pSound->LoadSE(SoundManager::SE_Type::kDeathrattle);
+}
+
+void Enemy::End()
+{
+	ModelBase::End();
+	// サウンドの解放
+	m_pSound->ReleaseSound();
+}
+
 void Enemy::ColUpdate()
 {
 	// 死んだら処理しない
@@ -187,31 +179,29 @@ void Enemy::ColUpdate()
 	// プレイヤーに敵の攻撃が当たったかどうかの判定
 	if (m_attackKind == 1)
 	{
-		m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 	}
 	else if (m_attackKind == 2)
 	{
 		if (m_nextAnimTime <= 28)	return;
 
-		m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
-		if (!m_isAttackToPlayer) {
-			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[0], m_pPlayer->GetCol().m_colPlayer.m_body);
+		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+		if (!m_isColAttack) {
+			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[0], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 	}
 	else if (m_attackKind == 3)
 	{
-		m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 	}
 	else if (m_attackKind == 4)
 	{
-		m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 	}
 }
 
 void Enemy::Move()
 {
-	// DOTO:↓はまだ挑戦中
-		// 出来ることなら、複数ポイントをグルグル回りつつ一定範囲にプレイヤーが近づいたら接近して攻撃するようにしたい
 	// 攻撃中もしくは死亡時は処理を通さない
 	if (m_status.situation.isAttack || m_status.situation.isDeath) return;
 
@@ -316,6 +306,8 @@ void Enemy::SearchNearPosition()
 	if (m_isNextTargetPosSearch)
 	{
 		m_isNextTargetPosSearch = false;
+
+		VECTOR target1, target2, target3, target4;
 
 		target1 = VSub(m_pMap->GetPointPos().point1, m_pos);
 		target2 = VSub(m_pMap->GetPointPos().point2, m_pos);
@@ -446,8 +438,11 @@ void Enemy::Attack()
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_leftArm[0], m_leftShoulderPos, m_leftElbowPos, 6);
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_leftArm[1], m_leftElbowPos, m_leftHandPos, 6);
 
-	// 攻撃してくるまでの間隔
-	m_attackTimeCount--;
+	if (m_isSearchPlayer)
+	{
+		// 攻撃してくるまでの間隔
+		m_attackTimeCount--;
+	}
 
 	// 攻撃までのカウントが0になったら攻撃をする
 	if (m_attackTimeCount == 0)
@@ -464,22 +459,22 @@ void Enemy::Attack()
 		{
 			ChangeAnimNo(EnemyAnim::AttackRightArm1, m_animSpeed.AttackRightArm1, false, m_animChangeTime.AttackRightArm1);
 			// プレイヤーに敵の攻撃が当たったかどうかの判定
-			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 		else if (m_attackKind == 2)
 		{
 			ChangeAnimNo(EnemyAnim::AttackLeftArm1, m_animSpeed.AttackLeftArm1, false, m_animChangeTime.AttackLeftArm1);
-			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 		else if (m_attackKind == 3)
 		{
 			ChangeAnimNo(EnemyAnim::AttackRightArm2, m_animSpeed.AttackRightArm2, false, m_animChangeTime.AttackRightArm2);
-			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 		else if (m_attackKind == 4)
 		{
 			ChangeAnimNo(EnemyAnim::AttackRightArm3, m_animSpeed.AttackRightArm3, false, m_animChangeTime.AttackRightArm3);
-			m_isAttackToPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 
 		m_isAttack = true;
@@ -501,14 +496,14 @@ void Enemy::OnDamage(int damage)
 
 void Enemy::Death()
 {
+	// HPが0以上の時は処理しない
+	if (m_hp > 0)return;
+
 	// 死亡時処理
-	if (m_hp <= 0)
-	{
-		m_status.situation.isDeath = true;
-		ChangeAnimNo(EnemyAnim::Death, m_animSpeed.Death, false, m_animChangeTime.Death);
-		// 体当たり判定更新
-		m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_body, kInitVec, kInitVec, 0.0f);
-	}
+	m_status.situation.isDeath = true;
+	ChangeAnimNo(EnemyAnim::Death, m_animSpeed.Death, false, m_animChangeTime.Death);
+	// 体当たり判定更新
+	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_body, kInitVec, kInitVec, 0.0f);
 
 	// 死亡アニメーションが終わったら死亡フラグをtrueにする
 	if (m_status.situation.isDeath && IsAnimEnd())
@@ -537,7 +532,7 @@ void Enemy::ChangeAnimIdle()
 void Enemy::PlaySE()
 {
 	// プレイヤーへ攻撃が当たったら殴りSEを鳴らす
-	if (m_isAttack && m_isAttackToPlayer)
+	if (m_isAttack && m_isColAttack)
 	{
 		m_pSound->PlaySE(SoundManager::SE_Type::kPunchSE2, DX_PLAYTYPE_BACK);
 	}

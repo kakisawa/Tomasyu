@@ -1,7 +1,7 @@
 ﻿#include "Camera.h"
 #include "Player.h"
-#include <algorithm>
 #include <cmath>
+#include <algorithm>
 
 namespace {
 	// カメラ情報

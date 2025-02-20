@@ -261,8 +261,13 @@ public:
 	/// <summary>
 	/// 被ダメージ処理
 	/// </summary>
-	/// <param name="input">入力</param>
-	void Hit(Input& input);
+	void Hit();
+
+	/// <summary>
+	/// 被ダメージ処理
+	/// </summary>
+	/// <param name="damage">受けるダメージ量</param>
+	void OnDamage(int damage);
 
 	/// <summary>
 	/// アニメーションの変更
@@ -330,12 +335,6 @@ public:
 	/// <returns>スタミナ</returns>
 	float GetStamina()const { return m_stamina; }
 
-	/// <summary>
-	/// 敵へ攻撃値を渡す
-	/// </summary>
-	/// <returns></returns>
-	int GetAttack() const { return m_attackTheEnemy; }
-
 	// 選択中のアイテムを渡す関数
 	int GetItemFrame() const { return m_useItem; }
 
@@ -393,7 +392,6 @@ private:
 
 	std::array<int, 3> m_weapon{};	// 武器
 
-	int m_attackTheEnemy;		// 敵への攻撃力
 	int m_useItem;				// 所持している3つのうち、使用するアイテム
 	int m_getItem;				// アイテムをランダムで獲得する際に使用する
 	int m_machineGunCount;		// マシンガンの弾が発射されるまでのインターバル用

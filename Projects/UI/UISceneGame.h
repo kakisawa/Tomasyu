@@ -41,6 +41,11 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// 読み込み
+	/// </summary>
+	void Load();
+
+	/// <summary>
 	/// 終了
 	/// </summary>
 	void End();
@@ -89,21 +94,19 @@ public:
 private:
 	int m_useWeaponChara;		// 使用中の武器の表示文字
 	int m_useItemChara;			// 使用中のアイテムの表示文字
-	
 	int m_playerRemainingBullets_handgun;		// プレイヤーのハンドガン残弾
 	int m_playerRemainingBullets_machinegun;	// プレイヤーのマシンガン残弾
 	
 	float m_playerHp_Green;		// プレイヤーの緑HPバー表示用
 	float m_playerHp_Red;		// プレイヤーの赤HPバー表示用
 	float m_playerStamina;		// プレイヤーのスタミナバー表示用
-
 	float m_enemyHp;			// 敵のHPバー表示用
 
 	std::array<int, 3>m_itemUI{};	// 獲得したアイテムのUIを入れる容器
 	
 	std::map<GunType, BalanceBullet> balanceBullets = {};	// 銃の残弾管理
 	
-	std::array<int, 9>m_itemCharaUIHnadle{};		// 文字画像UI用ハンドル
+	std::array<int, 9>m_itemCharaUIHnadle{};	// 文字画像UI用ハンドル
 	std::array<int, 12>m_playerToolUIHandle{};	// 武器・アイテム画像UI用ハンドル
 	std::array<int, 7>m_barUIHandle{};			// HP・スタミナバー画像UI用ハンドル
 

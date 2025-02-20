@@ -52,7 +52,6 @@ namespace
 
 Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Item> pItem) :
 	m_useItem(0),
-	m_attackTheEnemy(0),
 	m_getItem(0),
 	m_machineGunCount(0),
 	m_inputX(0),
@@ -132,8 +131,6 @@ void Player::Init(std::shared_ptr<Score> score)
 
 void Player::Update(Input& input)
 {
-	// 敵への攻撃力の初期化
-	m_attackTheEnemy = 0;
 	m_isEnemy = false;
 
 	// スタミナ回復処理
@@ -157,7 +154,7 @@ void Player::Update(Input& input)
 	Angle();
 	LockOn(input);
 	Roll(input);
-	Hit(input);
+	Hit();
 	Death();
 
 	SetModelFramePosition(m_model, kModelRightHandMiddle, m_weapon[0], m_weaponSize[0], m_weaponRota[0]);
@@ -181,8 +178,7 @@ void Player::Update(Input& input)
 		Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kKnife, m_KnifeTipPos);
 
 		m_pScore->AddScore(500);
-
-		m_attackTheEnemy = m_attack;
+		m_pEnemy->OnDamage(m_attack);
 		m_isAttack = false;
 	}
 
@@ -228,6 +224,9 @@ void Player::Draw()
 	//DrawFormatString(0, 680, 0xffffff, "Player:m_isAttackToEnemy=%d", m_isAttackToEnemy);
 	//DrawFormatString(0, 700, 0xffffff, "Player:m_isAttack=%d", m_isAttack);
 	//DrawFormatString(0, 720, 0xffffff, "Player:m_attackTheEnemy=%d", m_attackTheEnemy);
+
+	DrawFormatString(0, 640, 0xffffff, "Player:m_status.situation.isRoll=%d", m_status.situation.isRoll);
+	DrawFormatString(0, 660, 0xffffff, "Player:m_status.situation.isDamageReceived=%d", m_status.situation.isDamageReceived);
 
 	// 体の当たり判定描画
 	m_col.TypeChangeCapsuleDraw(m_col.m_colPlayer.m_body, 0xffff00, false);
@@ -297,7 +296,7 @@ void Player::Move()
 	// 移動できる条件の時
 	bool isItem = m_status.situation.isUseItem && !m_status.situation.isReload;
 
-	bool isNotMove = isItem || m_status.situation.isKnifeAttack || m_status.situation.isRoll;
+	bool isNotMove = isItem || m_status.situation.isKnifeAttack || m_status.situation.isRoll || m_status.situation.isDamageReceived;
 
 	if (isNotMove)	return;
 
@@ -361,10 +360,9 @@ void Player::MoveUpdate()
 
 void Player::Gravity()
 {
-	// 重力簡易処理
-	if (m_pos.y > 0.0f) {
+	// 地面に埋まったり宙に浮かないようにする
+	if (m_pos.y > 0.0f|| m_pos.y < 0.0f) {
 		m_gravity = 0.0f;
-		m_gravity++;
 	}
 }
 
@@ -797,6 +795,11 @@ void Player::Roll(Input& input)
 	// ダメージを受けている間は処理しない
 	if (m_status.situation.isDamageReceived)return;
 
+	m_isInvincibleTime = false;
+	if (m_status.situation.isRoll && (m_nextAnimTime <= 15.0f)) {
+		m_isInvincibleTime = true;
+	}
+
 	// 回避ボタンを押したら処理を行う
 	if (!m_status.situation.isRoll && input.IsTrigger(InputInfo::Roll) && m_stamina >= 25.0f)
 	{
@@ -818,6 +821,8 @@ void Player::Roll(Input& input)
 		}
 	}
 
+	if (!m_status.situation.isRoll) return;
+
 	// 座標の設定
 	m_pos = VAdd(m_pos, m_roll);
 
@@ -830,31 +835,29 @@ void Player::Roll(Input& input)
 	}
 }
 
-void Player::Hit(Input& input)
+void Player::Hit()
 {
 	if (m_status.situation.isDeath) return;
 
 	/*回避開始から15フレームの間は以下の処理に進まないようにする*/
 	if (m_status.situation.isRoll && (m_nextAnimTime <= 15.0f))return;
 
-	// 敵からの攻撃が当たったらの処理
-	if (m_pEnemy->GetAttack() > 0)
-	{
-		ChangeAnimNo(PlayerAnim::DamageReceived, m_animSpeed.DamageReceived, false, m_animChangeTime.DamageReceived);
-		m_status.situation.isDamageReceived = true;
-		m_status.situation.isRoll = false;
-
-		if (!m_isInvincibleTime)
-		{
-			m_hp -= m_pEnemy->GetAttack();
-			m_isInvincibleTime = true;
-		}
-	}
-
 	if (m_status.situation.isDamageReceived && IsAnimEnd())
 	{
 		m_status.situation.isDamageReceived = false;
 		m_isInvincibleTime = false;
+	}
+}
+
+void Player::OnDamage(int damage)
+{
+	if (!m_isInvincibleTime)
+	{
+		m_hp -= damage;
+
+		ChangeAnimNo(PlayerAnim::DamageReceived, m_animSpeed.DamageReceived, false, m_animChangeTime.DamageReceived);
+		m_status.situation.isDamageReceived = true;
+		m_status.situation.isRoll = false;
 	}
 }
 

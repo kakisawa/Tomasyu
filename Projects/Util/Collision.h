@@ -7,18 +7,18 @@ public:
 
 	struct ColType
 	{
-		VECTOR m_pos;
-		VECTOR m_vertexPos;
-		float m_radius;
+		VECTOR m_pos;		// 座標
+		VECTOR m_vertexPos;	// 頂点座標
+		float m_radius;		// 半径
 	};
 
-	struct Player
+	struct Player			// プレイヤーの当たり判定部位
 	{
-		ColType m_body;
-		ColType m_weapon;
+		ColType m_body;		// 体
+		ColType m_weapon;	// 武器
 	}m_colPlayer;
 
-	struct Enemy
+	struct Enemy			// 敵の当たり判定部位
 	{
 		ColType m_body;			// 体
 		ColType m_rightArm[2];	// 右腕
@@ -27,19 +27,18 @@ public:
 		ColType m_hitting;		// 接触範囲
 	}m_colEnemy;
 
-	ColType m_itemCol;
-
-	ColType m_bulletCol;
+	ColType m_itemCol;		// アイテムの当たり判定
+	ColType m_bulletCol;	// 弾の当たり判定
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Collision();
+	Collision() {}
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~Collision();
+	virtual ~Collision() {}
 
 	/// <summary>
 	/// 初期化
@@ -69,7 +68,7 @@ public:
 	/// <param name="colType">当たり判定の属性</param>
 	/// <param name="color">色</param>
 	/// <param name="isFill">色を塗りつぶすか</param>
-	void TypeChangeSphereDraw(ColType& colType, unsigned int color, bool isFill);
+	void TypeChangeSphereDraw(const ColType& colType, unsigned int color, bool isFill);
 
 	/// <summary>
 	/// カプセルの当たり判定描画
@@ -77,7 +76,7 @@ public:
 	/// <param name="colType">当たり判定の属性</param>
 	/// <param name="color">色</param>
 	/// <param name="isFill">色を塗りつぶすか</param>
-	void TypeChangeCapsuleDraw(ColType& colType, unsigned int color, bool isFill);
+	void TypeChangeCapsuleDraw(const ColType& colType, unsigned int color, bool isFill);
 
 	/// <summary>
 	/// 球体の当たり判定

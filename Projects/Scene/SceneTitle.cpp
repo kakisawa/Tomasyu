@@ -38,7 +38,7 @@ void SceneTitle::Init()
 	m_titleBgHandle= LoadGraph("Data/Image/SceneTitle/TitleBg.png");
 	m_wantedHandle = LoadGraph("Data/Image/SceneTitle/Wanted.png");
 
-	m_pSound->InitBGM();
+	m_pSound->InitSound();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kTitleBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
 	m_pSound->PlayBGM(SoundManager::BGM_Type::kTitleBGM, DX_PLAYTYPE_LOOP);

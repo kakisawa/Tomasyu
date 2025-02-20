@@ -99,12 +99,6 @@ public:
 	/// <returnsHP></returns>
 	int GetHp() const { return m_hp; }
 
-	/// <summary>
-	/// 敵へ攻撃値を渡す
-	/// </summary>
-	/// <returns></returns>
-	int GetAttack() const { return m_attackThePlayer; }
-
 	// 死亡しているかどうかのフラグを渡す
 	bool GetDeathFlag() const { return m_deathFlag; }
 
@@ -121,8 +115,6 @@ protected:
 	int m_model;			// モデル
 	int m_hp;				// HP
 	int m_attack;			// 攻撃力
-	/*要修正*/
-	int m_attackThePlayer;	// 敵への攻撃力
 
 	float m_angle;			// プレイヤー向き角度
 	float m_nextAnimTime;	// 新しいアニメーションの再生時間

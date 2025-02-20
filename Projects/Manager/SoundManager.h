@@ -10,13 +10,13 @@ public:
 	//BGMの種類
 	enum class BGM_Type
 	{
-		kTitleBGM,		// タイトルBGM
-		kSelectBGM,		// セレクトBGM
-		kRankingBGM,	// ランキングBGM
-		kOptionBGM,		// 設定BGM
-		kGameBGM,		// ゲームBGM
-		kGameClearBGM,	// ゲームクリアBGM
-		kGameOverBGM,	// ゲームオーバーBGM
+		kTitleBGM,		// タイトル
+		kSelectBGM,		// セレクト
+		kRankingBGM,	// ランキング
+		kOptionBGM,		// 設定
+		kGameBGM,		// ゲーム
+		kGameClearBGM,	// ゲームクリア
+		kGameOverBGM,	// ゲームオーバー
 		MAX
 	};
 
@@ -24,22 +24,22 @@ public:
 	enum class SE_Type
 	{
 		// 全体
-		kSelectSE,		// セレクトSE
-		kButtonSE,		// 決定SE
-		kBackSE,		// キャンセルSE
+		kSelectSE,		// セレクト
+		kButtonSE,		// 決定
+		kBackSE,		// キャンセル
 
 		// プレイヤー
-		kHandGunSE,		// ハンドガンSE
-		kMachineGunSE,	// マシンガンSE
-		kKnifeSE,		// ナイフSE
-		kInstallationSE,// 罠アイテムSE
-		kDrinkSE,		// 回復SE
-		kSummonSE,		// 召喚SE
-		kDamageReceivedSE,	// 被ダメージSE
+		kHandGunSE,		// ハンドガン
+		kMachineGunSE,	// マシンガン
+		kKnifeSE,		// ナイフ
+		kInstallationSE,// 罠アイテム
+		kDrinkSE,		// 回復
+		kSummonSE,		// 召喚
+		kDamageReceivedSE,	// 被ダメージ
 
 		// エネミー
-		kPunchSE1,		// 殴りSE1
-		kPunchSE2,		// 殴りSE2
+		kPunchSE1,		// 殴り1
+		kPunchSE2,		// 殴り2
 		kDeathrattle,	// 死亡時
 
 		// TODO:↑全体・プレイヤー・敵でSE分けるのもあり
@@ -57,7 +57,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(){}
 
 	/// <summary>
 	/// BGMを調整した音量に変換する

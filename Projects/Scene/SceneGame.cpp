@@ -256,6 +256,7 @@ void SceneGame::End()
 
 	m_pPlayer->End();
 	m_pScore->End();
+	m_pEnemy->End();
 
 	DeleteGraph(m_gameClearHandle);
 	DeleteGraph(m_pressAHandle);
