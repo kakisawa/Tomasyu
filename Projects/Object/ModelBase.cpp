@@ -14,6 +14,7 @@ ModelBase::ModelBase() :
 	m_model(-1),
 	m_hp(kInitInt),
 	m_attack(kInitInt),
+	m_gravity(kInitFloat),
 	m_angle(kInitFloat),
 	m_nextAnimTime(kInitFloat),
 	m_pos(kInitVec),
@@ -21,8 +22,10 @@ ModelBase::ModelBase() :
 	m_targetDir(kInitVec),
 	m_animChangeFrame(kInitInt),
 	m_animChangeFrameTotal(kInitInt),
+	m_isAttack(false),
 	m_isLoopFinish(false),
-	m_deathFlag(false)
+	m_deathFlag(false),
+	m_colPos(kInitVec)
 {
 	m_pSound = std::make_shared<SoundManager>();
 }

@@ -85,12 +85,11 @@ public:
 	/// <returns></returns>
 	bool IsLoopAnimEnd();
 
-
 	/// <summary>
 	/// デバッグ用:敵が死亡したかをセットする
 	/// </summary>
 	/// <param name="flag"></param>
-	/// <returns>志望しているかのフラグ</returns>
+	/// <returns>死亡しているかのフラグ</returns>
 	bool SetDeathFlag(bool flag) { return m_deathFlag = flag; }
 
 	/// <summary>
@@ -99,16 +98,31 @@ public:
 	/// <returnsHP></returns>
 	int GetHp() const { return m_hp; }
 
+	/// <summary>
+	/// アングル渡し
+	/// </summary>
+	/// <returns>プレイヤーの向き角度</returns>
+	float GetAngle() const { return m_angle; }
+
 	// 死亡しているかどうかのフラグを渡す
 	bool GetDeathFlag() const { return m_deathFlag; }
 
-	// 向いている方向を渡す
+	/// <summary>
+	/// 座標渡し
+	/// </summary>
+	/// <returns>座標</returns>
+	VECTOR GetPos() const { return m_pos; }
+
+	/// <summary>
+	/// 向いている方向を渡す
+	/// </summary>
+	/// <returns></returns>
 	VECTOR GetTargetDir() const { return m_targetDir; }
 
 	/// <summary>
-	/// 当たり判定の値渡し
+	/// 当たり判定渡し
 	/// </summary>
-	/// <returns>プレイヤーの当たり判定の値</returns>
+	/// <returns>当たり判定</returns>
 	Collision GetCol() const { return m_col; }
 
 protected:
@@ -117,13 +131,16 @@ protected:
 	int m_attack;			// 攻撃力
 
 	float m_angle;			// プレイヤー向き角度
+	float m_gravity;			// 重力
 	float m_nextAnimTime;	// 新しいアニメーションの再生時間
 
+	bool m_isAttack;			// 攻撃をしたかの判定
 	bool m_deathFlag;		// 死亡しているかのフラグ
 
 	VECTOR m_pos;			// 座標
 	VECTOR m_move;			// 移動量
 	VECTOR m_targetDir;		// プレイヤーが向くべき方向のベクトル
+	VECTOR m_colPos;		// 当たり判定用座標
 
 	Collision m_col;		// 当たり判定
 
@@ -159,7 +176,6 @@ protected:
 	/// アニメーションの更新
 	/// </summary>
 	/// <param name="anim">アニメーション情報</param>
-	/// <param name="dt"></param>
 	void UpdateAnim(const AnimData& anim);
 
 	/// <summary>

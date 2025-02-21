@@ -56,16 +56,13 @@ Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, s
 	m_machineGunCount(0),
 	m_inputX(0),
 	m_inputY(0),
-	m_gravity(0.0f),
 	m_is3Combo(false),
 	m_isItem(false),
 	m_isLookOn(false),
 	m_isEnemy(false),
 	m_isAttackToEnemy(false),
-	m_isAttack(false),
 	m_isInvincibleTime(false),
 	m_isHandGunAnim(false),
-	m_colPos(kInitVec),
 	m_roll(kInitVec),
 	m_targetLockPos(kInitVec),
 	m_rightHandPos(kInitVec),
@@ -200,7 +197,7 @@ void Player::Draw()
 #ifdef _DEBUG
 	//DrawFormatString(0, 60, 0xffffff, "Playe:HP=%d", m_hp);
 	//DrawFormatString(0, 200, 0xffffff, "Playe:m_stamina=%.2f", m_stamina);
-	//DrawFormatString(0, 100, 0xffffff, "Player:m_pos.x=%.2f:z=%.2f", m_pos.x,m_pos.z);
+	DrawFormatString(0, 300, 0xffffff, "Player:m_pos.x=%.2f:z=%.2f", m_pos.x,m_pos.z);
 	//DrawFormatString(0, 220, 0xffffff, "Player:m_attack=%d", m_attack);
 	//DrawFormatString(0, 240, 0xffffff, "Player:m_remainingBullets_handgun=%d", m_remainingBullets_handgun);
 	//DrawFormatString(0, 260, 0xffffff, "Player:m_remainingBullets_machinegun=%d", m_remainingBullets_machinegun);

@@ -351,22 +351,10 @@ public:
 	int GetRemainingBulletsMachinegun() const { return m_remainingBulletsMachinegun; }
 
 	/// <summary>
-	/// アングル渡し
-	/// </summary>
-	/// <returns>プレイヤーの向き角度</returns>
-	float GetAngle() const { return m_angle; }
-
-	/// <summary>
 	/// ロックオンフラグ渡し
 	/// </summary>
 	/// <returns>ロックオンフラグ</returns>
 	bool GetLockOn() const { return m_isLookOn; }
-
-	/// <summary>
-	/// 座標渡し
-	/// </summary>
-	/// <returns>プレイヤーの座標</returns>
-	VECTOR GetPos() const { return m_pos; }
 
 	/// <summary>
 	/// 照準座標渡し
@@ -389,30 +377,24 @@ public:
 private:
 	int m_remainingBulletsHandgun;		// ハンドガンの残弾数
 	int m_remainingBulletsMachinegun;	// マシンガンの残弾数
-
-	std::array<int, 3> m_weapon{};	// 武器
-
 	int m_useItem;				// 所持している3つのうち、使用するアイテム
 	int m_getItem;				// アイテムをランダムで獲得する際に使用する
 	int m_machineGunCount;		// マシンガンの弾が発射されるまでのインターバル用
 	float m_stamina;			// スタミナ
-	float m_gravity;			// 重力
 	bool m_isItem;				// アイテムと当たったか
 	bool m_isLookOn;			// ロックオンフラグ
 	bool m_isInvincibleTime;	// 被ダメ中の無敵時間
 	bool m_isEnemy;				// 敵と当たったか
 	bool m_isAttackToEnemy;		// 敵に攻撃が当たったかの判定
-	bool m_isAttack;
 	bool m_is3Combo;			// ナイフ攻撃の3コンボ目かどうか
-
 	bool m_isHandGunAnim;		// ハンドガンのアニメーションが終了したかどうか
 
-	VECTOR m_colPos;			// 当たり判定用座標
 	VECTOR m_roll;				// 回転時の移動量
 	VECTOR m_targetLockPos;		// ロックオン時の照準座標
-
 	VECTOR m_rightHandPos;		// 右手当たり判定用座標
 	VECTOR m_KnifeTipPos;		// 武器先端当たり判定用座標
+
+	std::array<int, 3> m_weapon{};	// 武器
 
 	std::array<VECTOR, 3> m_weaponSize{};
 	std::array<VECTOR, 3> m_weaponRota{};

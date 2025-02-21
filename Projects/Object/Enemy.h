@@ -176,18 +176,6 @@ public:
 	// SEを鳴らす
 	void PlaySE();
 
-	/// <summary>
-	/// 座標渡し
-	/// </summary>
-	/// <returns>座標</returns>
-	VECTOR GetPos() const { return m_pos; }
-
-	/// <summary>
-	/// 当たり判定渡し
-	/// </summary>
-	/// <returns>当たり判定</returns>
-	Collision GetCol() const { return m_col; }
-
 private:
 	int m_attackTimeCount;	// 攻撃をするまでにかかる時間
 	int m_attackKind;		// 攻撃の種類
@@ -196,12 +184,9 @@ private:
 	float m_targetMoveDistance;	// ターゲットポイントまでの残りの距離
 
 	bool m_isMove;					// 動いているかどうかのフラグ
-	bool m_isAttack;				// 攻撃をしたかの判定
 	bool m_isColAttack;				// プレイヤーに攻撃が当たったかの判定
 	bool m_isNextTargetPosSearch;	// 次のターゲットポイントを探すフラグ
 	bool m_isSearchPlayer;			// 索敵範囲内にプレイヤーを見つけたかどうかのフラグ
-
-	VECTOR m_colPos;			// 当たり判定用座標
 
 	VECTOR m_rightShoulderPos;	// 右肩座標
 	VECTOR m_rightElbowPos;		// 右肘座標
