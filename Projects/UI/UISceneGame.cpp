@@ -159,7 +159,7 @@ void UISceneGame::Update()
 void UISceneGame::Draw()
 {
 	// アイテム・武器大本UI
-	DrawGraph(kBaseUI.x, kBaseUI.y, m_playerToolUIHandle[0], true);
+	DrawGraphF(kBaseUI.x, kBaseUI.y, m_playerToolUIHandle[0], true);
 
 	// HPバー・スタミナ背景バーUI
 	DrawGraphF(kBarPos[0].x, kBarPos[0].y, m_barUIHandle[0], true);
@@ -216,12 +216,12 @@ void UISceneGame::Draw()
 	DrawGraphF(m_cursorUI2Pos.x, m_cursorUI2Pos.y, m_playerToolUIHandle[2], true);
 
 	// 残弾数UI
-	DrawGraph(kGunUIPos[0].x, kGunUIPos[0].y, balanceBullets[GunType::HandGun].m_playerHundredsHandle, true);
-	DrawGraph(kGunUIPos[1].x, kGunUIPos[1].y, balanceBullets[GunType::HandGun].m_playerTensHandle, true);
-	DrawGraph(kGunUIPos[2].x, kGunUIPos[2].y, balanceBullets[GunType::HandGun].m_playerOneHandle, true);
-	DrawGraph(kGunUIPos[3].x, kGunUIPos[3].y, balanceBullets[GunType::MachineGun].m_playerHundredsHandle, true);
-	DrawGraph(kGunUIPos[4].x, kGunUIPos[4].y, balanceBullets[GunType::MachineGun].m_playerTensHandle, true);
-	DrawGraph(kGunUIPos[5].x, kGunUIPos[5].y, balanceBullets[GunType::MachineGun].m_playerOneHandle, true);
+	DrawGraphF(kGunUIPos[0].x, kGunUIPos[0].y, balanceBullets[GunType::HandGun].m_playerHundredsHandle, true);
+	DrawGraphF(kGunUIPos[1].x, kGunUIPos[1].y, balanceBullets[GunType::HandGun].m_playerTensHandle, true);
+	DrawGraphF(kGunUIPos[2].x, kGunUIPos[2].y, balanceBullets[GunType::HandGun].m_playerOneHandle, true);
+	DrawGraphF(kGunUIPos[3].x, kGunUIPos[3].y, balanceBullets[GunType::MachineGun].m_playerHundredsHandle, true);
+	DrawGraphF(kGunUIPos[4].x, kGunUIPos[4].y, balanceBullets[GunType::MachineGun].m_playerTensHandle, true);
+	DrawGraphF(kGunUIPos[5].x, kGunUIPos[5].y, balanceBullets[GunType::MachineGun].m_playerOneHandle, true);
 
 #ifdef _DEBUG
 	//DrawFormatString(0, 0, 0xffffff, "m_playerRemainingBullets_handgun=%d", m_playerRemainingBullets_handgun);

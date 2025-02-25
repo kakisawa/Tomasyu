@@ -18,7 +18,7 @@ namespace {
 	const VECTOR kBodyColUpPos = VGet(0.0f, 70.0f, 0.0f);	// 体当たり判定頂点
 	
 	// モデルパス
-	const char* kModelFilePath = "Data/Model/EnemyModel.mv1";
+	const char* kPlayerModelFilePath = "Data/Model/EnemyModel.mv1";
 	// 各攻撃パーツの部位パス
 	const char* const kRightShoulder = "mixamorig:RightShoulder";	// 右肩
 	const char* const kRightElbow = "mixamorig:RightForeArm";		// 右肘
@@ -136,7 +136,7 @@ void Enemy::Load()
 	// プレイヤー外部データ読み込み
 	LoadCsv::GetInstance().LoadCommonFileData(m_chara, "enemy");
 	// モデルの読み込み
-	m_model = MV1LoadModel(kModelFilePath);
+	m_model = MV1LoadModel(kPlayerModelFilePath);
 	assert(m_model != -1);
 
 	// SEの初期化・ロード

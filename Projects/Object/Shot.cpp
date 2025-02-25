@@ -9,7 +9,7 @@
 #include <iostream>
 
 namespace {
-	const char* kModelFilePath = "Data/Model/Weapon/bullet.mv1";	// 弾のモデルパス
+	const char* kPlayerModelFilePath = "Data/Model/Weapon/bullet.mv1";	// 弾のモデルパス
 
 	constexpr int kBulletExistTime = 150;	// 弾が消えるまでの時間
 	constexpr float kBulletSpeed = 10.0f; // 弾の速度
@@ -30,7 +30,7 @@ Shot::Shot(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, int a
 	m_pEnemy(pEnemy)
 {
 	// ベースモデルの読み込み
-	m_baseModel = MV1LoadModel(kModelFilePath);
+	m_baseModel = MV1LoadModel(kPlayerModelFilePath);
 
 	// 弾の最大数配列を指定
 	m_bullet.resize(m_maxBullet);

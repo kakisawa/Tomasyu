@@ -1,5 +1,9 @@
 ﻿#pragma once
 #include "SceneBase.h"
+
+class Player;
+class Map;
+class TitleCamera;
 class Fade;
 class SceneTitle :
     public SceneBase
@@ -19,6 +23,18 @@ private:
     int m_titleBgHandle;
     int m_wantedHandle;
 
+	int m_playerModel;      // プレイヤーモデル
+	int m_boardModel;       // 掲示板モデル
+
+    VECTOR m_playerPos;
+	VECTOR m_boardPos;
+
+    // プレイヤー
+	std::shared_ptr<Player> m_pPlayer;
+    // マップ
+    std::shared_ptr<Map> m_pMap = std::make_shared<Map>();
+    // カメラ
+    std::shared_ptr <TitleCamera> m_pCamera = std::make_shared<TitleCamera>();
+    // フェード
     std::shared_ptr<Fade> m_pFade=std::make_shared<Fade>();
 };
-

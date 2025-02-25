@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MiniWindow.cpp" />
+    <ClCompile Include="Object\Camera\TitleCamera.cpp" />
     <ClCompile Include="Util\RankingData.cpp" />
     <ClCompile Include="Util\Score.cpp" />
     <ClCompile Include="Util\Collision.cpp" />
@@ -29,7 +31,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Manager\SceneManager.cpp" />
     <ClCompile Include="Manager\SoundManager.cpp" />
-    <ClCompile Include="Object\Camera.cpp" />
+    <ClCompile Include="Object\Camera\Camera.cpp" />
     <ClCompile Include="Object\Enemy.cpp" />
     <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\Map.cpp" />
@@ -50,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MiniWindow.h" />
+    <ClInclude Include="Object\Camera\TitleCamera.h" />
     <ClInclude Include="Util\RankingData.h" />
     <ClInclude Include="Util\Score.h" />
     <ClInclude Include="Util\Collision.h" />
@@ -59,7 +63,7 @@
     <ClInclude Include="Util\LoadCsv.h" />
     <ClInclude Include="Manager\SceneManager.h" />
     <ClInclude Include="Manager\SoundManager.h" />
-    <ClInclude Include="Object\Camera.h" />
+    <ClInclude Include="Object\Camera\Camera.h" />
     <ClInclude Include="Object\Enemy.h" />
     <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\Map.h" />

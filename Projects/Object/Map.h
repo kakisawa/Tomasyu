@@ -29,6 +29,11 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	void End();
+
 	// エネミーが移動するためのポイント
 	struct PointPos {
 		VECTOR point1;
@@ -44,6 +49,6 @@ public:
 	PointPos GetPointPos() const { return m_pointPos; }
 
 private:
-	int m_model1;	// モデル
+	int m_model;	// モデル
 };
 

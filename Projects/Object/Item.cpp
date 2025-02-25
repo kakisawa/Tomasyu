@@ -17,7 +17,7 @@ namespace {
 	constexpr float kInitFloat = 0.0f;							// Floatの初期化値
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);				// ベクトルの初期化値
 
-	const char* kModelFilePath = "Data/Model/ItemBox.mv1";
+	const char* kPlayerModelFilePath = "Data/Model/ItemBox.mv1";
 
 	const VECTOR kItemPos[3]{
 		VGet(150.0f,0.0f,-300.0f),
@@ -42,7 +42,7 @@ Item::~Item()
 
 void Item::Init()
 {
-	m_baseModel= MV1LoadModel(kModelFilePath);
+	m_baseModel= MV1LoadModel(kPlayerModelFilePath);
 	assert(m_baseModel != -1);
 
 	m_itemPos.resize(m_maxItem);

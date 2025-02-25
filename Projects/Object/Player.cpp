@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
 #include "Enemy.h"
-#include "Camera.h"
+#include "Camera/Camera.h"
 #include "Shot.h"
 #include "../Util/Score.h"
 #include "../Util/Input.h"
@@ -15,7 +15,7 @@ using namespace MyInputInfo;
 
 namespace
 {
-	const char* kModelFilePath = "Data/Model/PlayerModel.mv1";			// プレイヤーモデルパス
+	const char* kPlayerModelFilePath = "Data/Model/PlayerModel.mv1";			// プレイヤーモデルパス
 	const char* kModelRightHandMiddle = "mixamorig:RightHandMiddle4";	// ハンドガン用右手パス
 	const char* kModelRightHandRing3 = "mixamorig:RightHandRing3";		// マシンガン用右手パス
 	const char* kModelRightHandRing4 = "mixamorig:RightHandRing4";		// ナイフ用右手パス
@@ -241,7 +241,7 @@ void Player::LoadData()
 	LoadCsv::GetInstance().LoadCommonFileData(m_chara, "player");
 	LoadCsv::GetInstance().LoadPlayerOnlyFileData(m_playerData);
 	// プレイヤーモデルの読み込み
-	m_model = MV1LoadModel(kModelFilePath);
+	m_model = MV1LoadModel(kPlayerModelFilePath);
 	assert(m_model != -1);
 
 	// 武器モデルの読み込み

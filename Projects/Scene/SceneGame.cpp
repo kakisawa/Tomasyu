@@ -4,7 +4,7 @@
 #include "../Object/Player.h"
 #include "../Object/Enemy.h"
 #include "../Object/Item.h"
-#include "../Object/Camera.h"
+#include "../Object/Camera/Camera.h"
 #include "../Object/Map.h"
 #include "../UI/UISceneGame.h"
 #include "../Manager/Effect.h"
@@ -20,13 +20,9 @@ using namespace MyInputInfo;
 namespace
 {
 	const VECTOR  kLogoPos = { 564.0f, 134.0f ,0.0f };	// ゲームクリア・オーバー時ロゴ画像座標
-
 	const VECTOR kScorePos = { 560.0f, 730.0f, 0.0f };	// スコア画像座標
-
 	const VECTOR kDefeatedTimePos = { 493.0f, 850.0f, 0.0f };	// ゲームクリア時間画像座標
-
 	const VECTOR kPressAPos = { 795.0f, 1005.0f, 0.0f };	// 「Aボタンで進む」画像座標
-
 	const VECTOR kLogoBgPos = { 0.0f, 0.0f, 0.0f };	// ゲームクリア・オーバー背景画像座標
 	const VECTOR kScoreBgPos = { 0.0f, 642.0f, 0.0f };	// スコア背景画像座標
 }
