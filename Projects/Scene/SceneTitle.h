@@ -18,13 +18,14 @@ public:
     virtual void End() override;
 
 private:
-    int m_titleLogoHandle;   // タイトルロゴ画像
+	int m_titleLogoHandle; // タイトルロゴ画像
     int m_buttonHandle;  // Press...画像
-    int m_titleBgHandle;
-    int m_wantedHandle;
 
 	int m_playerModel;      // プレイヤーモデル
 	int m_boardModel;       // 掲示板モデル
+
+	float m_plyerAngle;     // プレイヤーの角度
+	float m_boardAngle;     // 掲示板の角度
 
     VECTOR m_playerPos;
 	VECTOR m_boardPos;

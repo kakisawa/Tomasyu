@@ -20,11 +20,11 @@ namespace {
 
 	constexpr int kSceneNum = 6;						// 選択できるシーンの数
 
-	constexpr int kInitSelectPosY = kSelectBasePosY + kSelectMoveY * 5;	// 選択中シーンの初期Y座標
+	constexpr int kInitSelectPosY = kSelectBasePosY + kSelectMoveY * 0;	// 選択中シーンの初期Y座標
 }
 
 SceneDebug::SceneDebug() :
-	m_nextScene(nextScene::kGameScene)
+	m_nextScene(nextScene::kTitleScene)
 {
 }
 

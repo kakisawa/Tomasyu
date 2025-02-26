@@ -6,6 +6,9 @@ namespace {
 	const VECTOR kPointPos2 = VGet(200.0f, 0.0f, 1300.0f);	// 左後
 	const VECTOR kPointPos3 = VGet(-200.0f, 0.0f, 1300.0f);	// 右後
 	const VECTOR kPointPos4 = VGet(200.0f, 0.0f, 800.0f);	// 右前
+
+	const VECTOR kMapPos = VGet(0.0f, -20.0f, 0.0f);	// マップ座標
+	const VECTOR kMapSize = VGet(0.5f, 0.5f, 0.5f);	// マップサイズ
 }
 
 
@@ -27,8 +30,8 @@ void Map::Init()
 	assert(m_model != -1);
 
 	// モデルの座標・サイズセット
-	MV1SetPosition(m_model,VGet(0.0f, -20.0f, 0.0f));
-	MV1SetScale(m_model, VGet(0.5f, 0.5f, 0.5f));
+	MV1SetPosition(m_model, kMapPos);
+	MV1SetScale(m_model, kMapSize);
 
 	// ポイントセット
 	m_pointPos.point1 = kPointPos1;

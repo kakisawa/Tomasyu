@@ -12,30 +12,27 @@ namespace {
 	const char* kPlayerModelFilePath = "Data/Model/PlayerModel.mv1";	// プレイヤーモデルパス
 	const char* kBoardModelFilePath = "Data/Model/BulletinBoard.mv1";	// 掲示板モデルパス
 
-
-	constexpr int kTitlePosX = 798;	// タイトルロゴ座標X
-	constexpr int kTitlePosY = 180;	// タイトルロゴ座標Y
-
 	constexpr int kTitlePosX_Tentative = 250;
 
-	constexpr int kButtonX = 650;	// Press...画像座標X
-	constexpr int kButtonY = 880;	// Press...画像座標Y
+	constexpr float kPlayerAngle = 0.0f+ DX_PI_F;	// プレイヤーの角度
 
-	const VECTOR kPlayerPos = VGet(0.0f, 50.0f, 500.0f);	// プレイヤー座標
-	const VECTOR kBoardPos = VGet(-10.0f, 0.0f, 80.0f);		// 掲示板座標
-	const VECTOR kPlayerSize = VGet(10.0f, 10.0f, 10.0f);	// プレイヤーサイズ
-	const VECTOR kBoardSize = VGet(0.5f, 0.5f, 0.5f);		// 掲示板サイズ
+
+	const VECTOR kTitleLogoPos = VGet(130.0f, 152.0f, 0.0f);	// タイトルロゴ座標
+	const VECTOR kButtonPos = VGet(650.0f, 880.0f, 0.0f);	// タイトルロゴサイズ
+	const VECTOR kPlayerPos = VGet(40.0f, 0.0f, 270.0f);	// プレイヤー座標
+	const VECTOR kBoardPos = VGet(0.0f, 0.0f, 300.0f);		// 掲示板座標
+	const VECTOR kPlayerSize = VGet(0.5f, 0.5f, 0.5f);	// プレイヤーサイズ
+	const VECTOR kBoardSize = VGet(1.0f,1.0f,1.0f);		// 掲示板サイズ
 }
 
 SceneTitle::SceneTitle() :
 	m_playerPos(kPlayerPos),
 	m_boardPos(kBoardPos),
-	m_titleLogoHandle(-1),
 	m_buttonHandle(-1),
-	m_titleBgHandle(-1),
-	m_wantedHandle(-1),
 	m_playerModel(-1),
-	m_boardModel(-1)
+	m_boardModel(-1),
+	m_plyerAngle(kPlayerAngle),
+	m_boardAngle(kPlayerAngle)
 {
 
 	m_isNextSceneFlag = false;
@@ -47,15 +44,12 @@ SceneTitle::~SceneTitle()
 
 void SceneTitle::Init()
 {
-
 	m_pMap->Init();
-	m_pCamera->Init();
+	m_pCamera->Init(m_boardPos);
 
 	// 画像の読み込み
 	m_titleLogoHandle = LoadGraph("Data/Image/SceneTitle/討魔衆.png");
 	m_buttonHandle = LoadGraph("Data/Image/SceneTitle/AButton.png");
-	//m_titleBgHandle= LoadGraph("Data/Image/SceneTitle/TitleBg.png");
-	m_wantedHandle = LoadGraph("Data/Image/SceneTitle/Wanted.png");
 
 	// モデルの読み込み
 	m_playerModel = MV1LoadModel(kPlayerModelFilePath);
@@ -68,14 +62,12 @@ void SceneTitle::Init()
 	MV1SetPosition(m_boardModel, m_boardPos);
 
 	// モデルのサイズセット
-	MV1SetScale(m_playerModel, VGet(1.5f, 1.5f, 1.5f));
-	MV1SetScale(m_boardModel, VGet(1.5f, 1.5f, 1.5f));
+	MV1SetScale(m_playerModel, kPlayerSize);
+	MV1SetScale(m_boardModel, kBoardSize);
 
-
+	MV1SetRotationXYZ(m_playerModel, VGet(0.0f, m_plyerAngle, 0.0f));
+	MV1SetRotationXYZ(m_boardModel, VGet(0.0f, m_boardAngle, 0.0f));
 	
-
-	
-
 	m_pSound->InitSound();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kTitleBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
@@ -102,9 +94,6 @@ std::shared_ptr<SceneBase> SceneTitle::Update(Input& input)
 	}
 
 
-	
-
-
 #ifdef _DEBUG
 	//// Debug_STARTボタンを押すとデバッグシーンへ行く
 	//if (input.IsTrigger(InputInfo::DebugStart)) {
@@ -120,19 +109,13 @@ std::shared_ptr<SceneBase> SceneTitle::Update(Input& input)
 
 void SceneTitle::Draw()
 {
-//	m_pMap->Draw();
+	m_pMap->Draw();
 
-//	DrawGraph(0, 0, m_titleBgHandle, true);
-	// タイトルロゴを描画
-	//DrawGraph(kTitlePosX, kTitlePosY, m_titleLogoHandle, true);
-	
-	//DrawGraph(55, 200, m_wantedHandle, true);
-	
 	// モデル描画
-	MV1SetPosition(m_playerModel, m_playerPos);
-	//MV1SetPosition(m_boardModel, m_boardPos);
+	MV1DrawModel(m_playerModel);
+	MV1DrawModel(m_boardModel);
 
-	//DrawSphere3D(m_playerPos, 100000.0f, 32, 0x0000ff, 0x0000ff, true);
+	DrawGraph(kTitleLogoPos.x, kTitleLogoPos.y, m_titleLogoHandle, true);
 
 	// PressAnyButton画像を点滅しながら描画させる
 	static int m_fadeAlpha;
@@ -153,7 +136,7 @@ void SceneTitle::Draw()
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_fadeAlpha);	// 半透明で表示開始
-	DrawGraph(kButtonX, kButtonY, m_buttonHandle, true);
+	DrawGraph(kButtonPos.x, kButtonPos.y, m_buttonHandle, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);		// 不透明に戻しておく	
 
 
@@ -169,8 +152,6 @@ void SceneTitle::End()
 	// 画像の削除
 	DeleteGraph(m_titleLogoHandle);
 	DeleteGraph(m_buttonHandle);
-	//DeleteGraph(m_titleBgHandle);
-	DeleteGraph(m_wantedHandle);
 
 	MV1DeleteModel(m_playerModel);
 	MV1DeleteModel(m_boardModel);

@@ -17,7 +17,8 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	/// <param name="pos">注視点座標</param>
+	void Init(VECTOR pos);
 
 	/// <summary>
 	/// 更新
@@ -36,8 +37,6 @@ public:
 	void SetPos(const VECTOR& pos) { m_pos = pos; }
 
 private:
-	float m_angleH;	 // 水平角度
-	float m_angleV;	 // 垂直角度
 
 	VECTOR m_pos;				// カメラ座標
 	VECTOR m_targetPos;			// 注視点座標
