@@ -20,9 +20,9 @@ namespace {
 	const char* kPlayerModelFilePath = "Data/Model/ItemBox.mv1";
 
 	const VECTOR kItemPos[3]{
-		VGet(150.0f,0.0f,-300.0f),
-		VGet(-150.0f,0.0f,-300.0f),
-		VGet(0.0f,0.0f,0.0f),
+		VGet(0.0f,0.0f,500.0f),
+		VGet(200.0f,0.0f,700.0f),
+		VGet(-150.0f,0.0f,900.0f),
 	};
 
 	bool kEffect = false;
