@@ -42,6 +42,8 @@ namespace
 
 	constexpr int kMedicRecoveryAmount = 10;	// 回復量
 
+	constexpr float kStamina = 100.0f;			// スタミナ最大値
+
 	constexpr int kMaxItemNum = 3;				// 所持できるアイテムの最大数
 
 	int useItem = 0;
@@ -107,7 +109,7 @@ void Player::Init(std::shared_ptr<Score> score)
 	m_pScore = score;
 
 	m_hp = m_chara.maxHp;		// HPに最大値を入れる
-	m_stamina = 100.0f;
+	m_stamina = kStamina;		// スタミナに最大値を入れる
 	m_attack = m_playerData["knife"].attack;	// 攻撃力にナイフの攻撃力を入れる
 
 
