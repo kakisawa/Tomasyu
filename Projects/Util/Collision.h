@@ -27,8 +27,8 @@ public:
 		ColType m_hitting;		// 接触範囲
 	}m_colEnemy;
 
-	ColType m_itemCol;		// アイテムの当たり判定
-	ColType m_bulletCol;	// 弾の当たり判定
+	ColType m_colItem;		// アイテムの当たり判定
+	ColType m_colBullet;	// 弾の当たり判定
 
 	/// <summary>
 	/// コンストラクタ

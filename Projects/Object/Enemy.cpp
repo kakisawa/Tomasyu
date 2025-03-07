@@ -85,9 +85,12 @@ void Enemy::Update()
 	// 攻撃が当たっていたらプレイヤーへ攻撃値を渡す
 	if (m_isAttack && m_isColAttack)
 	{
-		Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kHit, m_col.m_colEnemy.m_rightArm->m_pos);
-		m_pPlayer->OnDamage(m_attack);
-		m_isAttack = false;
+		if (!m_pPlayer->GetInvincibleTime())
+		{
+			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kHit, m_col.m_colEnemy.m_rightArm->m_pos);
+			m_pPlayer->OnDamage(m_attack);
+			m_isAttack = false;
+		}
 	}
 
 	ChangeAnimIdle();

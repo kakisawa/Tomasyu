@@ -82,7 +82,7 @@ private:
 
 	struct Bullet
 	{
-		int m_model;		// モデル
+		int m_model = -1;		// モデル
 		bool m_isExist = false;		// 存在しているかのフラグ
 		VECTOR m_pos = VGet(0.0f, 0.0f, 0.0f);		// 座標
 		VECTOR m_move = VGet(0.0f, 0.0f, 0.0f);		// 移動

@@ -33,7 +33,6 @@ Item::Item(std::shared_ptr<Player> pPlayer, int num) :
 	m_maxItem(num),
 	m_baseModel(-1)
 {
-	
 }
 
 Item::~Item()
@@ -67,11 +66,9 @@ void Item::Init()
 		// サイズ設定
 		MV1SetScale(item.m_model, kModelSize);
 		// 当たり判定
-		item.m_col.TypeChangeSphereUpdate(item.m_col.m_itemCol, item.m_pos, kBodyColRad);
+		item.m_col.TypeChangeSphereUpdate(item.m_col.m_colItem, item.m_pos, kBodyColRad);
 		// 復活までにかかる時間
 		item.m_respawnTime = std::make_shared<IsTime>(kItemRespawnTime);
-
-		
 	}
 }
 
@@ -80,7 +77,7 @@ void Item::Update()
 	for (auto& item : m_item)
 	{
 		item.m_colPos = VAdd(item.m_pos, kColPosAdjustment);
-		item.m_col.TypeChangeSphereUpdate(item.m_col.m_itemCol, item.m_pos, kBodyColRad);
+		item.m_col.TypeChangeSphereUpdate(item.m_col.m_colItem, item.m_pos, kBodyColRad);
 
 		if (!item.m_isExist&& item.m_respawnTime->Update()) {
 			item.m_isExist = true;
@@ -91,10 +88,7 @@ void Item::Update()
 			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kItemBox, item.m_pos);
 			item.m_isEfect = true;
 		}
-		
 	}
-
-
 
 	Floating();
 	ColUpdate();
@@ -162,7 +156,7 @@ void Item::ColUpdate()
 
 		// プレイヤーとアイテムが当たっていたら
 		if (item.m_col.IsTypeChageSphereToCapsuleCollision
-		(playerCol.m_colPlayer.m_body, item.m_col.m_itemCol)) {
+		(playerCol.m_colPlayer.m_body, item.m_col.m_colItem)) {
 
 			isItem = true;
 			item.m_isExist = false;

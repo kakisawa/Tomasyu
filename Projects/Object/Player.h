@@ -357,6 +357,12 @@ public:
 	bool GetLockOn() const { return m_isLookOn; }
 
 	/// <summary>
+	/// 無敵時間中かどうかのフラグ渡し
+	/// </summary>
+	/// <returns>被ダメ中の無敵時間</returns>
+	bool GetInvincibleTime() const { return m_isInvincibleTime; }
+
+	/// <summary>
 	/// 照準座標渡し
 	/// </summary>
 	/// <returns>ロックオン時の照準座標渡し</returns>

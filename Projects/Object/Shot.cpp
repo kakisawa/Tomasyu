@@ -12,20 +12,19 @@ namespace {
 	const char* kPlayerModelFilePath = "Data/Model/Weapon/bullet.mv1";	// 弾のモデルパス
 
 	constexpr int kBulletExistTime = 150;	// 弾が消えるまでの時間
-	constexpr float kBulletSpeed = 10.0f; // 弾の速度
+	constexpr float kBulletSpeed = 30.0f; // 弾の速度
 	constexpr float kBulletRad = 2.0f; // 弾の半径
 
 	const VECTOR kBulletScale = VGet(1.0f, 1.0f, 1.0f);	// 弾のサイズ
-
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);		// ベクトル初期化用
 }
 
 Shot::Shot(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, int attack, int num,int score) :
 	m_baseModel(-1),
 	m_attack(attack),
-	m_score(score),
 	m_maxBullet(num),
 	m_bulletNum(num),
+	m_score(score),
 	m_pPlayer(pPlayer),
 	m_pEnemy(pEnemy)
 {
@@ -53,7 +52,7 @@ Shot::Shot(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, int a
 		bullet.m_isExist = false;
 
 		// 当たり判定
-		bullet.m_col.TypeChangeCapsuleUpdate(bullet.m_col.m_bulletCol,
+		bullet.m_col.TypeChangeCapsuleUpdate(bullet.m_col.m_colBullet,
 			bullet.m_pos, bullet.m_colPos, kBulletRad);
 		// サイズ設定
 		MV1SetScale(bullet.m_model, kBulletScale);
@@ -88,7 +87,7 @@ void Shot::Draw()
 			MV1DrawModel(bullet.m_model);
 
 #ifdef _DEBUG
-			bullet.m_col.TypeChangeCapsuleDraw(bullet.m_col.m_bulletCol, 0xff0000, false);
+			bullet.m_col.TypeChangeCapsuleDraw(bullet.m_col.m_colBullet, 0xff0000, false);
 #endif // DEBUG
 		}
 	}
@@ -179,7 +178,7 @@ void Shot::UpdateBullet()
 			MV1SetPosition(bullet.m_model, bullet.m_pos);
 
 			// 弾の当たり判定を更新する
-			bullet.m_col.TypeChangeCapsuleUpdate(bullet.m_col.m_bulletCol,
+			bullet.m_col.TypeChangeCapsuleUpdate(bullet.m_col.m_colBullet,
 				bullet.m_pos, bullet.m_colPos, kBulletRad);
 		}
 	}
@@ -197,7 +196,7 @@ void Shot::Attack()
 
 		// 弾が敵と当たっていたら
 		if (bullet.m_col.IsTypeChageCupsuleCollision
-		(bullet.m_col.m_bulletCol, enemyCol.m_colEnemy.m_body))
+		(bullet.m_col.m_colBullet, enemyCol.m_colEnemy.m_body))
 		{
 			VECTOR bulletPos = VAdd(m_pEnemy->GetPos(), VGet(0.0f, 40.0f, 0.0f));
 

@@ -31,6 +31,7 @@ SceneTitle::SceneTitle() :
 	m_buttonHandle(-1),
 	m_playerModel(-1),
 	m_boardModel(-1),
+	m_titleLogoHandle(-1),
 	m_plyerAngle(kPlayerAngle),
 	m_boardAngle(kPlayerAngle)
 {
@@ -115,7 +116,7 @@ void SceneTitle::Draw()
 	MV1DrawModel(m_playerModel);
 	MV1DrawModel(m_boardModel);
 
-	DrawGraph(kTitleLogoPos.x, kTitleLogoPos.y, m_titleLogoHandle, true);
+	DrawGraphF(kTitleLogoPos.x, kTitleLogoPos.y, m_titleLogoHandle, true);
 
 	// PressAnyButton画像を点滅しながら描画させる
 	static int m_fadeAlpha;
@@ -136,7 +137,7 @@ void SceneTitle::Draw()
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_fadeAlpha);	// 半透明で表示開始
-	DrawGraph(kButtonPos.x, kButtonPos.y, m_buttonHandle, true);
+	DrawGraphF(kButtonPos.x, kButtonPos.y, m_buttonHandle, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);		// 不透明に戻しておく	
 
 

@@ -32,9 +32,9 @@ void Collision::Init()
 	m_colPlayer.m_weapon.m_radius = 0.0f;
 
 	// アイテム初期化
-	m_itemCol.m_pos = kInitVec;
-	m_itemCol.m_vertexPos = kInitVec;
-	m_itemCol.m_radius = 0.0f;
+	m_colItem.m_pos = kInitVec;
+	m_colItem.m_vertexPos = kInitVec;
+	m_colItem.m_radius = 0.0f;
 }
 
 void Collision::TypeChangeSphereUpdate(ColType& colType, const VECTOR pos, const float radius)

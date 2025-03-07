@@ -12,7 +12,6 @@ namespace
 	const char* const kPlayerOnlyDataFileName = "Data/csv/PlayerOnlyData.csv";
 	const char* const kItemDataFileName = "Data/csv/ItemPosData.csv";
 
-
 	/// <summary>
 	/// 文字列を分割する
 	/// </summary>

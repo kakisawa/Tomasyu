@@ -33,16 +33,21 @@ namespace
 
 	// 銃関係
 	/*外部データ化するか悩んだけど、少量の為保留*/
-	constexpr int kHandGunMaxBullet = 50;		// ハンドガン最大弾数
-	constexpr int kMachineGunMaxBullet = 100;	// マシンガン最大弾数
+	constexpr int kMaxBulletHandGun = 50;		// ハンドガン最大弾数
+	constexpr int kMaxBulletMachineGun = 100;	// マシンガン最大弾数
 	constexpr int kAttackHandGun = 10;			// ハンドガン攻撃力
 	constexpr int kAttackMachineGun = 3;		// マシンガン攻撃力
 	constexpr int kRecoveryHandGun = 15;		// ハンドガン残弾回復量
 	constexpr int kRecoveryMachineGun = 40;		// マシンガン残弾回復量
+	constexpr int kScoreHandGun = 30;			// ハンドガンスコア
+	constexpr int kScoreMachineGun = 10;		// マシンガンスコア
 
 	constexpr int kMedicRecoveryAmount = 10;	// 回復量
-
-	constexpr float kStamina = 100.0f;			// スタミナ最大値
+	constexpr float kMaxStamina = 100.0f;		// スタミナ最大値
+	constexpr float kStaminaRecovery = 0.1f;	// スタミナ回復量
+	
+	constexpr float kStaminaConsumption = 25.0f;// 回避時スタミナ消費量
+	constexpr float kInvincibleTime = 15.0f;	// 回避時の無敵時間
 
 	constexpr int kMaxItemNum = 3;				// 所持できるアイテムの最大数
 
@@ -83,6 +88,7 @@ Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, s
 	// プレイヤーモデルのサイズ初期化
 	MV1SetScale(m_model, VGet(m_chara.modelSize, m_chara.modelSize, m_chara.modelSize));
 
+
 	// プレイヤーの状態初期化
 	m_status.situation.isMoving = false;		// 動いていない
 	m_status.situation.isInstallation = false;	// 罠を仕掛けていない
@@ -102,14 +108,14 @@ void Player::Init(std::shared_ptr<Score> score)
 
 	// 銃
 	m_pShotHandGun = std::make_shared<Shot>(shared_from_this(), m_pEnemy,
-		kAttackHandGun, kHandGunMaxBullet, 30);
+		kAttackHandGun, kMaxBulletHandGun, kScoreHandGun);
 	m_pShotMachineGun = std::make_shared<Shot>(shared_from_this(), m_pEnemy,
-		kAttackMachineGun, kMachineGunMaxBullet, 10);
+		kAttackMachineGun, kMaxBulletMachineGun, kScoreMachineGun);
 
 	m_pScore = score;
 
 	m_hp = m_chara.maxHp;		// HPに最大値を入れる
-	m_stamina = kStamina;		// スタミナに最大値を入れる
+	m_stamina = kMaxStamina;		// スタミナに最大値を入れる
 	m_attack = m_playerData["knife"].attack;	// 攻撃力にナイフの攻撃力を入れる
 
 
@@ -133,8 +139,8 @@ void Player::Update(Input& input)
 	m_isEnemy = false;
 
 	// スタミナ回復処理
-	if (m_stamina < 100) {
-		m_stamina += 0.1f;
+	if (m_stamina < kMaxStamina) {
+		m_stamina += kStaminaRecovery;
 	}
 
 	Gravity();
@@ -199,7 +205,7 @@ void Player::Draw()
 #ifdef _DEBUG
 	//DrawFormatString(0, 60, 0xffffff, "Playe:HP=%d", m_hp);
 	//DrawFormatString(0, 200, 0xffffff, "Playe:m_stamina=%.2f", m_stamina);
-	DrawFormatString(0, 300, 0xffffff, "Player:m_pos.x=%.2f:z=%.2f", m_pos.x,m_pos.z);
+	//DrawFormatString(0, 300, 0xffffff, "Player:m_pos.x=%.2f:z=%.2f", m_pos.x,m_pos.z);
 	//DrawFormatString(0, 220, 0xffffff, "Player:m_attack=%d", m_attack);
 	//DrawFormatString(0, 240, 0xffffff, "Player:m_remainingBullets_handgun=%d", m_remainingBullets_handgun);
 	//DrawFormatString(0, 260, 0xffffff, "Player:m_remainingBullets_machinegun=%d", m_remainingBullets_machinegun);
@@ -443,6 +449,7 @@ void Player::ColUpdate()
 
 void Player::GetItem()
 {
+	// アイテムと当たっていなかったら処理しない
 	if (!m_isItem) return;
 
 	// ランダムで値を獲得する
@@ -547,11 +554,11 @@ void Player::UseItem(Input& input)
 			// 弾再装填のアニメーションを入れる
 			ChangeAnimNo(PlayerAnim::Reload, m_animSpeed.Reload, false, m_animChangeTime.Reload);
 
-			if (m_remainingBulletsMachinegun < kMachineGunMaxBullet) {
-				m_pShotMachineGun->SetAddBullet(std::min(kMachineGunMaxBullet - m_remainingBulletsMachinegun, 50));
+			if (m_remainingBulletsMachinegun < kMaxBulletMachineGun) {
+				m_pShotMachineGun->SetAddBullet(std::min(kMaxBulletMachineGun - m_remainingBulletsMachinegun, 50));
 			}
 			else {
-				m_pShotHandGun->SetAddBullet(std::min(kHandGunMaxBullet - m_remainingBulletsHandgun, 20));
+				m_pShotHandGun->SetAddBullet(std::min(kMaxBulletHandGun - m_remainingBulletsHandgun, 20));
 			}
 		}
 	}
@@ -624,9 +631,10 @@ void Player::ChangeWeapon(Input& input)
 
 void Player::AttackGun(Input& input)
 {
-	// 
-	if (m_status.situation.isRoll || m_status.situation.isDamageReceived || m_status.situation.isUseItem) return;
-	if (m_useWeapon == WeaponKind::Knife)	return;
+	bool cannotAttackGun = m_status.situation.isRoll || m_status.situation.isDamageReceived || m_status.situation.isUseItem;	// true=攻撃できない false=攻撃できる
+	
+	// 銃攻撃できない場合または使用武器がナイフの場合処理しない
+	if (cannotAttackGun || m_useWeapon == WeaponKind::Knife) return;
 
 	m_status.situation.isGunAttack = false;
 
@@ -714,12 +722,10 @@ void Player::AttackGun(Input& input)
 
 void Player::AttackKnife(Input& input)
 {
-	// 回避行動をとっている場合処理しない
-	if (m_status.situation.isRoll || m_status.situation.isDamageReceived || m_status.situation.isUseItem) return;
-
-	// 武器の種類が銃だった場合処理しない
-	if (m_useWeapon == WeaponKind::HandGun)	return;
-	if (m_useWeapon == WeaponKind::MachineGun)	return;
+	bool cannotAttackKnife = m_status.situation.isRoll || m_status.situation.isDamageReceived || m_status.situation.isUseItem;	// true=攻撃できない false=攻撃できる
+	
+	// ナイフ攻撃ができない場合または使用武器が銃の場合処理しない
+	if (m_useWeapon == WeaponKind::HandGun || m_useWeapon == WeaponKind::MachineGun || cannotAttackKnife)	return;
 
 	// 武器を持たせる場所の獲得
 	int handle = MV1SearchFrame(m_model, kModelRightHandRing4);
@@ -793,16 +799,16 @@ void Player::Roll(Input& input)
 {
 	// ダメージを受けている間は処理しない
 	if (m_status.situation.isDamageReceived)return;
-
 	m_isInvincibleTime = false;
-	if (m_status.situation.isRoll && (m_nextAnimTime <= 15.0f)) {
+
+	// 回避開始から15フレームの間はダメージを受けないようにする
+	if (m_status.situation.isRoll && (m_nextAnimTime <= kInvincibleTime)) {
 		m_isInvincibleTime = true;
 	}
 
 	// 回避ボタンを押したら処理を行う
-	if (!m_status.situation.isRoll && input.IsTrigger(InputInfo::Roll) && m_stamina >= 25.0f)
-	{
-		m_stamina -= 25.0f;
+	if (!m_status.situation.isRoll && input.IsTrigger(InputInfo::Roll) && m_stamina >= kStaminaConsumption) {
+		m_stamina -= kStaminaConsumption;
 		m_stamina = std::max(m_stamina, 0.0f);
 
 		// 回避のアニメーションを再生
@@ -810,8 +816,7 @@ void Player::Roll(Input& input)
 		m_status.situation.isRoll = true;
 
 		// 回避の移動量を設定
-		if (VSize(m_move) <= 0.0f)
-		{
+		if (VSize(m_move) <= 0.0f){
 			m_roll = m_targetDir;
 			m_roll = VScale(m_roll, m_chara.walkSpeed);
 		}
@@ -820,7 +825,7 @@ void Player::Roll(Input& input)
 		}
 	}
 
-	if (!m_status.situation.isRoll) return;
+	if (!m_status.situation.isRoll) return;	// 回避をしていない場合は以下の処理をしない
 
 	// 座標の設定
 	m_pos = VAdd(m_pos, m_roll);
@@ -836,6 +841,7 @@ void Player::Roll(Input& input)
 
 void Player::Hit()
 {
+	// 死んでいる場合は処理しない
 	if (m_status.situation.isDeath) return;
 
 	/*回避開始から15フレームの間は以下の処理に進まないようにする*/
