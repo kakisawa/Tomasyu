@@ -795,6 +795,9 @@ void Player::AttackKnife(Input& input)
 
 }
 
+/// <summary>
+/// 回避処理
+/// </summary>
 void Player::Roll(Input& input)
 {
 	// ダメージを受けている間は処理しない
@@ -816,7 +819,7 @@ void Player::Roll(Input& input)
 		m_status.situation.isRoll = true;
 
 		// 回避の移動量を設定
-		if (VSize(m_move) <= 0.0f){
+		if (VSize(m_move) <= 0.0f) {
 			m_roll = m_targetDir;
 			m_roll = VScale(m_roll, m_chara.walkSpeed);
 		}
@@ -831,8 +834,7 @@ void Player::Roll(Input& input)
 	m_pos = VAdd(m_pos, m_roll);
 
 	// 回避のアニメーションが終了したら
-	if (m_status.situation.isRoll && IsAnimEnd())
-	{
+	if (m_status.situation.isRoll && IsAnimEnd()){
 		// 状態・回避の移動量を初期化する
 		m_status.situation.isRoll = false;
 		m_roll = kInitVec;
