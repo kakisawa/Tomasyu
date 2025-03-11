@@ -106,11 +106,16 @@ void Player::Init(std::shared_ptr<Score> score)
 {
 	ModelBase::Init();
 
-	// 銃
+	/*銃生成*/
+	// ハンドガン
 	m_pShotHandGun = std::make_shared<Shot>(shared_from_this(), m_pEnemy,
 		kAttackHandGun, kMaxBulletHandGun, kScoreHandGun);
+
+	// マシンガン
 	m_pShotMachineGun = std::make_shared<Shot>(shared_from_this(), m_pEnemy,
 		kAttackMachineGun, kMaxBulletMachineGun, kScoreMachineGun);
+
+
 
 	m_pScore = score;
 
@@ -222,16 +227,15 @@ void Player::Draw()
 	//DrawFormatString(0, 500, 0xffffff, "Player:m_useItem[1]=%d", m_item[1]);
 	//DrawFormatString(0, 520, 0xffffff, "Player:m_useItem[2]=%d", m_item[2]);
 	//DrawFormatString(0, 540, 0xffffff, "Player:m_useWeapon=%d", m_useWeapon);
-	//DrawFormatString(0, 560, 0xffffff, "Player:m_animNext.totalTime=%.2f", m_animNext.totalTime);
-	//DrawFormatString(0, 580, 0xffffff, "Player:m_nextAnimTime=%.2f", m_nextAnimTime);
+	DrawFormatString(0, 560, 0xffffff, "Player:m_animNext.totalTime=%.2f", m_animNext.totalTime);
+	DrawFormatString(0, 580, 0xffffff, "Player:m_nextAnimTime=%.2f", m_nextAnimTime);
 	//DrawFormatString(0, 640, 0xffffff, "Player:m_status.situation.isKnifeAttack=%d", m_status.situation.isKnifeAttack);
 	//DrawFormatString(0, 660, 0xffffff, "Player:m_isEnemy=%d", m_isEnemy);
 	//DrawFormatString(0, 680, 0xffffff, "Player:m_isAttackToEnemy=%d", m_isAttackToEnemy);
 	//DrawFormatString(0, 700, 0xffffff, "Player:m_isAttack=%d", m_isAttack);
 	//DrawFormatString(0, 720, 0xffffff, "Player:m_attackTheEnemy=%d", m_attackTheEnemy);
-
-	DrawFormatString(0, 640, 0xffffff, "Player:m_status.situation.isRoll=%d", m_status.situation.isRoll);
-	DrawFormatString(0, 660, 0xffffff, "Player:m_status.situation.isDamageReceived=%d", m_status.situation.isDamageReceived);
+	//DrawFormatString(0, 640, 0xffffff, "Player:m_status.situation.isRoll=%d", m_status.situation.isRoll);
+	//DrawFormatString(0, 660, 0xffffff, "Player:m_status.situation.isDamageReceived=%d", m_status.situation.isDamageReceived);
 
 	// 体の当たり判定描画
 	m_col.TypeChangeCapsuleDraw(m_col.m_colPlayer.m_body, 0xffff00, false);
@@ -427,6 +431,8 @@ void Player::Angle()
 
 void Player::ColUpdate()
 {
+	if (m_status.situation.isDeath)return;
+
 	// プレイヤーの当たり判定更新
 	m_colPos = VAdd(m_pos, VGet(0.0f, m_chara.bodyColUpY, 0.0f));
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colPlayer.m_body, m_pos, m_colPos, m_chara.bodyColRad);

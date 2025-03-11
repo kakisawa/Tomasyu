@@ -15,7 +15,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="pPlayer">プレイヤー情報</param>
-	/// <param name="pEnemy"></param>
+	/// <param name="pEnemy">対象情報</param>
 	/// <param name="attack">攻撃力</param>
 	/// <param name="num">弾の最大数</param>
 	/// <param name="score">スコア</param>

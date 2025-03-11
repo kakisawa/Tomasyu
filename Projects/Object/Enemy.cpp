@@ -123,7 +123,9 @@ void Enemy::Draw()
 	//DrawFormatString(0, 840, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
 	//DrawFormatString(0, 880, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_move.x=%.2f:z=%.2f", m_move.x, m_move.z);
-	//DrawFormatString(0, 920, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
+	DrawFormatString(0, 900, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
+	DrawFormatString(0, 920, 0xffffff, "Enemy:m_nextAnimTime=%.2f", m_nextAnimTime);
+	DrawFormatString(0, 940, 0xffffff, "Enemy:m_animNext.totalTime=%.2f", m_animNext.totalTime);
 	//DrawFormatString(0, 940, 0xffffff, "Enemy:m_isAttackToPlayer=%d", m_isAttackToPlayer);
 	//DrawFormatString(0, 960, 0xffffff, "Enemy:m_isAttack=%d", m_isAttack);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_angle=%.2f", m_angle);
@@ -180,11 +182,16 @@ void Enemy::ColUpdate()
 	// プレイヤーに敵の攻撃が当たったかどうかの判定
 	if (m_attackKind == 1)
 	{
+		if (m_nextAnimTime >= 30)	return;
+
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 	}
 	else if (m_attackKind == 2)
 	{
-		if (m_nextAnimTime <= 28)	return;
+
+
+
+		if (m_nextAnimTime <= 28|| m_nextAnimTime >= 55)	return;
 
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		if (!m_isColAttack) {
@@ -193,10 +200,14 @@ void Enemy::ColUpdate()
 	}
 	else if (m_attackKind == 3)
 	{
+		if (m_nextAnimTime >= 35)	return;
+
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 	}
 	else if (m_attackKind == 4)
 	{
+		if (m_nextAnimTime >= 35)	return;
+
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 	}
 }
@@ -452,7 +463,9 @@ void Enemy::Attack()
 		std::random_device rd;
 		std::mt19937 mt(rd());
 		std::uniform_real_distribution<> rand(1, 4 + 1);
-		m_attackKind = static_cast<int>(rand(mt));
+		//m_attackKind = static_cast<int>(rand(mt));
+		m_attackKind = 2;
+
 
 		m_status.situation.isAttack = true;
 
@@ -460,6 +473,7 @@ void Enemy::Attack()
 		{
 			ChangeAnimNo(EnemyAnim::AttackRightArm1, m_animSpeed.AttackRightArm1, false, m_animChangeTime.AttackRightArm1);
 			// プレイヤーに敵の攻撃が当たったかどうかの判定
+
 			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 		else if (m_attackKind == 2)
@@ -516,7 +530,7 @@ void Enemy::Death()
 void Enemy::ChangeAnimNo(const EnemyAnim anim, const float animSpeed, const bool isAnimLoop, const int changeTime)
 {
 	m_status.animNo = static_cast<int>(anim);
-	m_status.animSpeed = animSpeed;
+	m_status.animSpeed = animSpeed; 
 	m_status.isLoop = isAnimLoop;
 	ChangeAnimation(m_status.animNo, animSpeed, m_status.isLoop, false, changeTime);
 }

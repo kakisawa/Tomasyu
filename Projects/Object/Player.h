@@ -73,10 +73,9 @@ public:
 		int Installation = 5;	// 罠設置
 		int Drink = 1;			// 飲む
 		int Reload = 5;			// 弾再装填
-
+		int Roll = 5;			// 回避
 		// ここから下未定
 		int DamageReceived = 5;	// 被ダメージ
-		int Roll = 5;			// 回避
 		int Dying = 5;			// 死亡
 		int Win = 5;			// 勝利
 		int Lose = 5;			// 敗北
@@ -96,7 +95,7 @@ public:
 		float Drink = 1.3f;			// 飲む
 		float Reload = 0.6f;		// 弾再装填
 		float DamageReceived = 1.0f;// 被ダメージ
-		float Roll = 0.5f;			// 回避
+		float Roll = 0.65f;			// 回避
 		float Dying = 0.5f;			// 死亡
 		float Win = 1.0f;			// 勝利
 		float Lose = 1.0f;			// 敗北

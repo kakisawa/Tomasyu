@@ -1,2 +1,7 @@
-﻿  Player.cpp
+﻿  Enemy.cpp
+C:\Users\fko2347059\Documents\GitHub\WorkData\01,Individual\Tomasyu\Projects\Object\Enemy.cpp(358,61): warning C4267: '引数': 'size_t' から '_Ty' に変換しました。データが失われているかもしれません。
+C:\Users\fko2347059\Documents\GitHub\WorkData\01,Individual\Tomasyu\Projects\Object\Enemy.cpp(358,61): warning C4267:         with
+C:\Users\fko2347059\Documents\GitHub\WorkData\01,Individual\Tomasyu\Projects\Object\Enemy.cpp(358,61): warning C4267:         [
+C:\Users\fko2347059\Documents\GitHub\WorkData\01,Individual\Tomasyu\Projects\Object\Enemy.cpp(358,61): warning C4267:             _Ty=int
+C:\Users\fko2347059\Documents\GitHub\WorkData\01,Individual\Tomasyu\Projects\Object\Enemy.cpp(358,61): warning C4267:         ]
   Tomasyu.vcxproj -> C:\Users\fko2347059\Documents\GitHub\WorkData\01,Individual\Tomasyu\Projects\x64\Debug\Tomasyu.exe
