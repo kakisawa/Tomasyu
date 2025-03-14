@@ -225,13 +225,10 @@ void SceneGame::Draw()
 
 	m_pUI->Draw();
 	m_pTime->Draw();
-
 	m_pFade->Draw();
 
 	GameClearDraw();
 	GameOverDraw();
-
-
 
 #ifdef _DEBUG
 

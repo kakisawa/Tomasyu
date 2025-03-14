@@ -15,7 +15,7 @@ using namespace MyInputInfo;
 
 namespace
 {
-	const char* kPlayerModelFilePath = "Data/Model/PlayerModel.mv1";			// プレイヤーモデルパス
+	const char* kPlayerModelFilePath = "Data/Model/PlayerModel.mv1";	// プレイヤーモデルパス
 	const char* kModelRightHandMiddle = "mixamorig:RightHandMiddle4";	// ハンドガン用右手パス
 	const char* kModelRightHandRing3 = "mixamorig:RightHandRing3";		// マシンガン用右手パス
 	const char* kModelRightHandRing4 = "mixamorig:RightHandRing4";		// ナイフ用右手パス
@@ -114,7 +114,6 @@ void Player::Init(std::shared_ptr<Score> score)
 	// マシンガン
 	m_pShotMachineGun = std::make_shared<Shot>(shared_from_this(), m_pEnemy,
 		kAttackMachineGun, kMaxBulletMachineGun, kScoreMachineGun);
-
 
 
 	m_pScore = score;
