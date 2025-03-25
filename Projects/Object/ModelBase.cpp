@@ -18,6 +18,7 @@ ModelBase::ModelBase() :
 	m_angle(kInitFloat),
 	m_nextAnimTime(kInitFloat),
 	m_pos(kInitVec),
+	m_size(kInitVec),
 	m_move(kInitVec),
 	m_targetDir(kInitVec),
 	m_animChangeFrame(kInitInt),
@@ -38,6 +39,8 @@ void ModelBase::Init()
 {
 	// モデルの位置設定
 	MV1SetPosition(m_model, m_pos);
+	// モデルのサイズ設定
+	MV1SetScale(m_model, m_size);
 
 	// 当たり判定の初期化
 	m_col.Init();

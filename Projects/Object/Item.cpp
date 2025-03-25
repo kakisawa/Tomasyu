@@ -2,7 +2,7 @@
 #include "../Time/IsTime.h"
 #include "../Util/LoadCsv.h"
 #include "../Manager/Effect.h"
-#include "Player.h"
+#include "Player/Player.h"
 #include <DxLib.h>
 #include <cassert>
 

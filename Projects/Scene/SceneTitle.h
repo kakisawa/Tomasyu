@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "SceneBase.h"
 
-class Player;
+class TitlePlayer;
 class Map;
 class TitleCamera;
 class Fade;
@@ -21,17 +21,14 @@ private:
 	int m_titleLogoHandle; // タイトルロゴ画像
     int m_buttonHandle;  // Press...画像
 
-	int m_playerModel;      // プレイヤーモデル
 	int m_boardModel;       // 掲示板モデル
 
-	float m_plyerAngle;     // プレイヤーの角度
 	float m_boardAngle;     // 掲示板の角度
 
-    VECTOR m_playerPos;
 	VECTOR m_boardPos;
 
     // プレイヤー
-	std::shared_ptr<Player> m_pPlayer;
+    std::shared_ptr<TitlePlayer> m_pPlayer = std::make_shared<TitlePlayer>();
     // マップ
     std::shared_ptr<Map> m_pMap = std::make_shared<Map>();
     // カメラ

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../Object/Player.h"
+#include "../Object/Player/Player.h"
 #include <map>
 #include <string>
 

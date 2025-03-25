@@ -55,8 +55,10 @@ void SceneRanking::Init()
 	m_selectBox1 = kCursorPos;
 	m_rankingSelectUI = m_rankingUI_Score;
 
-	m_pSound->InitBGM();
+	m_pSound->InitSound();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kRankingBGM);
+	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
+	m_pSound->LoadSE(SoundManager::SE_Type::kSelectSE);
 
 	m_pSound->PlayBGM(SoundManager::BGM_Type::kRankingBGM, DX_PLAYTYPE_LOOP);
 
@@ -78,6 +80,7 @@ std::shared_ptr<SceneBase> SceneRanking::Update(Input& input)
 
 	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::Back)) 
 	{
+		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
 		m_isNextSceneFlag = true;
 	}
 
@@ -173,6 +176,8 @@ void SceneRanking::SelectRanking(Input& input)
 {
 	if (input.IsTrigger(InputInfo::Right))
 	{
+		m_pSound->PlaySE(SoundManager::SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
+
 		m_rankingDataChange++;
 		if (m_rankingDataChange >= rankingDataChange::RankingDataNum)
 		{
@@ -188,6 +193,9 @@ void SceneRanking::SelectRanking(Input& input)
 
 	if (input.IsTrigger(InputInfo::Left))
 	{
+
+		m_pSound->PlaySE(SoundManager::SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
+
 		m_rankingDataChange--;
 		if (m_rankingDataChange <0)
 		{

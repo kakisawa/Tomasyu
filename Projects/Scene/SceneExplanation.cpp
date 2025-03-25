@@ -50,6 +50,12 @@ void SceneExplanation::Init()
 	}
 
 	m_explanationHandle = m_explanationUIHandle[m_count];	// 説明画像
+
+	m_pSound->InitSound();
+	m_pSound->LoadBGM(SoundManager::BGM_Type::kSelectBGM);
+	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
+	m_pSound->LoadSE(SoundManager::SE_Type::kSelectSE);
+	m_pSound->PlayBGM(SoundManager::BGM_Type::kSelectBGM, DX_PLAYTYPE_LOOP);
 }
 
 std::shared_ptr<SceneBase> SceneExplanation::Update(Input& input)
@@ -60,6 +66,7 @@ std::shared_ptr<SceneBase> SceneExplanation::Update(Input& input)
 
 	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::Back))
 	{
+		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
 		m_isNextSceneFlag = true;
 	}
 
@@ -69,15 +76,20 @@ std::shared_ptr<SceneBase> SceneExplanation::Update(Input& input)
 	}
 
 	if (input.IsTrigger(InputInfo::Right)) {			// 右キー
+
+		m_pSound->PlaySE(SoundManager::SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
+
 		m_count++;
 		if (m_count >= 3)
 		{
 			m_count = 0;
 		}
-		
 	}
 
 	if (input.IsTrigger(InputInfo::Left)) {			// 左キー
+
+		m_pSound->PlaySE(SoundManager::SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
+
 		m_count--;
 		if (m_count < 0)
 		{

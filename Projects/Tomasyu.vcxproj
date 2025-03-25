@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="MiniWindow.cpp" />
     <ClCompile Include="Object\Camera\TitleCamera.cpp" />
+    <ClCompile Include="Object\Player\TitlePlayer.cpp" />
     <ClCompile Include="Util\RankingData.cpp" />
     <ClCompile Include="Util\Score.cpp" />
     <ClCompile Include="Util\Collision.cpp" />
@@ -36,7 +37,7 @@
     <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\Map.cpp" />
     <ClCompile Include="Object\ModelBase.cpp" />
-    <ClCompile Include="Object\Player.cpp" />
+    <ClCompile Include="Object\Player\Player.cpp" />
     <ClCompile Include="Object\Shot.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Scene\SceneDebug.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="MiniWindow.h" />
     <ClInclude Include="Object\Camera\TitleCamera.h" />
+    <ClInclude Include="Object\Player\TitlePlayer.h" />
     <ClInclude Include="Util\RankingData.h" />
     <ClInclude Include="Util\Score.h" />
     <ClInclude Include="Util\Collision.h" />
@@ -68,7 +70,7 @@
     <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\Map.h" />
     <ClInclude Include="Object\ModelBase.h" />
-    <ClInclude Include="Object\Player.h" />
+    <ClInclude Include="Object\Player\Player.h" />
     <ClInclude Include="Object\Shot.h" />
     <ClInclude Include="Scene\SceneBase.h" />
     <ClInclude Include="Scene\SceneDebug.h" />

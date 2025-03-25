@@ -1,7 +1,7 @@
 ﻿#include "SceneGame.h"
 #include "SceneDebug.h"
 #include "SceneSelect.h"
-#include "../Object/Player.h"
+#include "../Object/Player/Player.h"
 #include "../Object/Enemy.h"
 #include "../Object/Item.h"
 #include "../Object/Camera/Camera.h"

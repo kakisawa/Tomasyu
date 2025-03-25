@@ -139,6 +139,7 @@ protected:
 
 	VECTOR m_pos;			// 座標
 	VECTOR m_move;			// 移動量
+	VECTOR m_size;			// サイズ
 	VECTOR m_targetDir;		// プレイヤーが向くべき方向のベクトル
 	VECTOR m_colPos;		// 当たり判定用座標
 

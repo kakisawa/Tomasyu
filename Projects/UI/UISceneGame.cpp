@@ -1,5 +1,5 @@
 ﻿#include "UISceneGame.h"
-#include "../Object/Player.h"
+#include "../Object/Player/Player.h"
 #include "../Object/Enemy.h"
 #include "../Object/Shot.h"
 #include "DxLib.h"
