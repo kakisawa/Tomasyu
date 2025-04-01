@@ -9,7 +9,7 @@ namespace {
 	constexpr int kVolumeStepSize = kMaxVolume / kChangeVolumeMaxNum;	// 一回当たりの音量増減値
 
 	// 音量の初期値
-	constexpr int kInitBgmVolume = kVolumeStepSize * 5;	// BGM初期音量
+	constexpr int kInitBgmVolume = kVolumeStepSize * 7;	// BGM初期音量
 	constexpr int kInitSeVolume = kVolumeStepSize * 5;	// SE初期音量
 
 	// 変更後音量保存
@@ -97,8 +97,8 @@ void SoundManager::InitBGM(void)
 	m_bgmVolume = kChangeBgm;
 
 	// BGMのパスをつなげる
-	m_bgmPass[BGM_Type::kTitleBGM] = "Title.mp3";
-	m_bgmPass[BGM_Type::kSelectBGM] = "Select.mp3";
+	m_bgmPass[BGM_Type::kTitleBGM] = "titleBgm.mp3";
+	m_bgmPass[BGM_Type::kSelectBGM] = "selectBgm.mp3";
 	m_bgmPass[BGM_Type::kRankingBGM] = "Ranking.mp3";
 	m_bgmPass[BGM_Type::kOptionBGM] = "";
 	m_bgmPass[BGM_Type::kGameBGM] = "Game.mp3";

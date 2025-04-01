@@ -17,8 +17,8 @@ namespace {
 
 	constexpr float kBoardAngle = 0.0f + DX_PI_F;	// 掲示板の角度
 
-	const VECTOR kTitleLogoPos = VGet(130.0f, 152.0f, 0.0f);	// タイトルロゴ座標
-	const VECTOR kButtonPos = VGet(650.0f, 880.0f, 0.0f);	// タイトルロゴサイズ
+	const VECTOR kTitleLogoPos = VGet(200.0f, 152.0f, 0.0f);	// タイトルロゴ座標
+	const VECTOR kButtonPos = VGet(650.0f, 950.0f, 0.0f);	// 「Aボタンでスタート」画像座標
 	const VECTOR kBoardPos = VGet(0.0f, 0.0f, 300.0f);		// 掲示板座標
 	const VECTOR kBoardSize = VGet(1.0f,1.0f,1.0f);		// 掲示板サイズ
 }
@@ -114,14 +114,14 @@ void SceneTitle::Draw()
 	static bool isFade;
 
 	if (isFade) {
-		m_fadeAlpha += 3;
+		m_fadeAlpha += 2;
 
 		if (m_fadeAlpha >= 255) {
 			isFade = false;
 		}
 	}
 	else {
-		m_fadeAlpha -= 5;
+		m_fadeAlpha -= 10;
 		if (m_fadeAlpha <= 0) {
 			isFade = true;
 		}
