@@ -7,8 +7,8 @@ using namespace MyInputInfo;
 
 namespace {
 
-	const VECTOR kOptionGraphPos = VGet(256.0f, 131.0f, 0.0f);	
-	const VECTOR kSelectWindowPos = VGet(880.0f, 640.0f, 0.0f);
+	const VECTOR kOptionGraphPos = VGet(216.0f, 78.0f, 0.0f);	
+	const VECTOR kSelectWindowPos = VGet(960.0f, 640.0f, 0.0f);
 
 	const VECTOR kCursorGraphPos1[4] = {
 		VGet(370.0f,322.0f,0.0f),
@@ -24,24 +24,31 @@ namespace {
 		VGet(1075.0f,923.0f,0.0f)
 	};
 
+	const VECTOR kCursorGraphPos3[4] = {  // 正式版(仮)
+		VGet(572.0f,285.0f,0.0f),
+		VGet(572.0f,440.0f,0.0f),
+		VGet(572.0f,588.0f,0.0f),
+		VGet(944.0f,722.0f,0.0f)
+	};
+
 	const VECTOR kBGMVolumePos[7] = {
-		VGet(866.0f,341.0f,0.0f),
-		VGet(951.0f,341.0f,0.0f),
-		VGet(1036.0f,341.0f,0.0f),
-		VGet(1121.0f,341.0f,0.0f),
-		VGet(1206.0f,341.0f,0.0f),
-		VGet(1291.0f,341.0f,0.0f),
-		VGet(1376.0f,341.0f,0.0f),
+		VGet(944.0f,341.0f,0.0f),
+		VGet(1029.0f,341.0f,0.0f),
+		VGet(1114.0f,341.0f,0.0f),
+		VGet(1199.0f,341.0f,0.0f),
+		VGet(1284.0f,341.0f,0.0f),
+		VGet(1369.0f,341.0f,0.0f),
+		VGet(1454.0f,341.0f,0.0f),
 	};
 
 	const VECTOR kSEVolumePos[7] = {
-		VGet(866.0f,489.0f,0.0f),
-		VGet(951.0f,489.0f,0.0f),
-		VGet(1036.0f,489.0f,0.0f),
-		VGet(1121.0f,489.0f,0.0f),
-		VGet(1206.0f,489.0f,0.0f),
-		VGet(1291.0f,489.0f,0.0f),
-		VGet(1376.0f,489.0f,0.0f),
+		VGet(944.0f,490.0f,0.0f),
+		VGet(1029.0f,490.0f,0.0f),
+		VGet(1114.0f,490.0f,0.0f),
+		VGet(1199.0f,490.0f,0.0f),
+		VGet(1284.0f,490.0f,0.0f),
+		VGet(1369.0f,490.0f,0.0f),
+		VGet(1454.0f,490.0f,0.0f),
 	};
 
 
@@ -63,8 +70,10 @@ SceneOption::SceneOption() :
 	m_select(Select::BGM),
 	m_selectWindow(SelectWindow::FullScreen)
 {
-	c1.m_selectBox1 = kCursorGraphPos1[0];
-	c1.m_selectBox2 = kCursorGraphPos2[0];
+	//c1.m_selectBox1 = kCursorGraphPos1[0];
+	//c1.m_selectBox2 = kCursorGraphPos2[0];
+
+	m_cursorPos = kCursorGraphPos3[0];
 }
 
 SceneOption::~SceneOption()
@@ -90,10 +99,10 @@ void SceneOption::Init()
 
 std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 {
-	m_pFade->FadeIn(m_pFade->GatFadeInFlag());
+	m_pFade->FadeIn(m_pFade->GetFadeInFlag());
 	m_pFade->FadeOut(m_isNextSceneFlag);
 
-	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::OK))
+	if (!m_pFade->GetFadeInFlag() && input.IsTrigger(InputInfo::OK))
 	{
 		m_isNextSceneFlag = true;
 	}
@@ -209,8 +218,10 @@ void SceneOption::Draw()
 	DrawGraphF(kSelectWindowPos.x, kSelectWindowPos.y, m_selectWindowHandlel, true);
 	
 
-	DrawExtendGraphF(c1.m_selectBox1.x, c1.m_selectBox1.y,
-		c1.m_selectBox2.x, c1.m_selectBox2.y, m_cursorHandle, true);
+	//DrawExtendGraphF(c1.m_selectBox1.x, c1.m_selectBox1.y,
+	//	c1.m_selectBox2.x, c1.m_selectBox2.y, m_cursorHandle, true);
+
+	DrawGraphF(m_cursorPos.x, m_cursorPos.y, m_cursorHandle, true);
 
 
 	for (int i = 0; i < m_bgmVolumeUI.size(); i++)
@@ -222,6 +233,8 @@ void SceneOption::Draw()
 	{
 		DrawGraphF(kSEVolumePos[i].x, kSEVolumePos[i].y, m_seVolumeUI[i], true);
 	}
+
+	//m_pSound->Draw();
 
 	// フェード処理
 	m_pFade->Draw();
@@ -247,8 +260,10 @@ void SceneOption::End()
 
 void SceneOption::ChangeCursorInfo(int num)
 {
-	c1.m_selectBox1 = kCursorGraphPos1[num];
-	c1.m_selectBox2 = kCursorGraphPos2[num];
+	m_cursorPos = kCursorGraphPos3[num];
+
+	//c1.m_selectBox1 = kCursorGraphPos1[num];
+	//c1.m_selectBox2 = kCursorGraphPos2[num];
 }
 
 void SceneOption::ChangeSoundVolume()
@@ -259,6 +274,7 @@ void SceneOption::ChangeSoundVolume()
 
 void SceneOption::SetVolumeUI()
 {
+	// 初期化
 	for (int i = 0; i < m_bgmVolumeUI.size(); i++)
 	{
 		m_bgmVolumeUI[i] = m_volumeHandle;

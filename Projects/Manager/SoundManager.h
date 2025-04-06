@@ -57,7 +57,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(){}
+	void Draw();
 
 	/// <summary>
 	/// BGMを調整した音量に変換する

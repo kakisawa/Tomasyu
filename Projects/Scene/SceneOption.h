@@ -35,7 +35,7 @@ private:
 
     std::array<int, 2>m_selectWindowUI{};
         
-
+	VECTOR m_cursorPos;    // カーソルの位置
 
     struct Cursor   // 選択中のセレクト
     {

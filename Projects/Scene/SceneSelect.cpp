@@ -22,15 +22,24 @@ namespace {
 
 	const VECTOR kExampleGraph = VGet(958.0f, 162.0f, 0.0f);	// 例画像座標
 	const VECTOR kExplanatoryText = VGet(950.0f, 708.0f, 0.0f);	// 説明文座標
-	const VECTOR kPressAPos = VGet(700.0f, 1000.0f, 0.0f);		// Aボタンを押す座標
-
-	const VECTOR kCursorUIPos[5]{
+	
+	const VECTOR kCursorUIPos[5]{		// 選択中カーソルの座標
 			VGet(517.0f,177.0f,0.0f),	// ゲームを始める
 			VGet(386.0f,587.0f,0.0f),	// ランキング
 			VGet(754.0f,587.0f,0.0f),	// 設定
 			VGet(372.0f,762.0f,0.0f),	// 操作説明
 			VGet(753.0f,762.0f,0.0f),	// ゲームを終了する
 	};
+
+	const VECTOR kPressAUIPos[5]{	// 選択中PressAボタンの座標
+			VGet(840.0f,496.0f,0.0f),	// ゲームを始める
+			VGet(555.0f,708.0f,0.0f),	// ランキング
+			VGet(840.0f,708.0f,0.0f),	// 設定
+			VGet(555.0f,895.0f,0.0f),	// 操作説明
+			VGet(840.0f,895.0f,0.0f),	// ゲームを終了する
+	};
+
+	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// 初期化用
 
 	const char* const kSceneSelectUI[5]{
 		"Data/Image/SceneSelect/GameStartUI.png",		// ゲームを始める
@@ -66,6 +75,8 @@ SceneSelect::SceneSelect() :
 	m_cursorUIHandle(-1),
 	m_pressAHandle(-1),
 	m_bgHandle(-1),
+	m_cursolPos(kInitVec),
+	m_pressAPos(kInitVec),
 	m_nextScene(nextScene::GameScene)
 {
 }
@@ -93,13 +104,14 @@ void SceneSelect::Init()
 	// 画像の読み込み
 	m_nextSceneIntroductionGraph = LoadGraph("Data/Image/SceneSelect/説明文.png");
 	m_cursorUIHandle = LoadGraph("Data/Image/SceneSelect/Cursor.png");
-	m_pressAHandle = LoadGraph("Data/Image/SceneGame/PressA.png");
+	m_pressAHandle = LoadGraph("Data/Image/SceneSelect/PressA.png");
 	m_bgHandle = LoadGraph("Data/Image/SceneSelect/board2.png");
 
 
 	m_sceneSelectGraph = m_sceneSelectUIHandle[0];
 	GetGraphSize(m_sceneSelectGraph, &m_selectGraphX, &m_selectGraphY);
 	m_cursolPos = kCursorUIPos[0];
+	m_pressAPos = kPressAUIPos[0];
 
 	m_pSound->InitSound();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kSelectBGM);
@@ -110,15 +122,15 @@ void SceneSelect::Init()
 
 std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 {
-	m_pFade->FadeIn(m_pFade->GatFadeInFlag());
+	m_pFade->FadeIn(m_pFade->GetFadeInFlag());
 	m_pFade->FadeOut(m_isNextSceneFlag);
 
-	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::OK)) {
+	if (!m_pFade->GetFadeInFlag() && input.IsTrigger(InputInfo::OK)) {
 		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
 		m_isNextSceneFlag = true;
 	}
 
-	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::Back)) {
+	if (!m_pFade->GetFadeInFlag() && input.IsTrigger(InputInfo::Back)) {
 		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
 		m_nextScene = nextScene::TitleScene;
 		m_isNextSceneFlag = true;
@@ -208,7 +220,7 @@ void SceneSelect::Draw()
 	DrawGraphF(kExampleGraph.x, kExampleGraph.y, m_nextSceneGrapgh, true);
 	DrawGraphF(kExplanatoryText.x, kExplanatoryText.y, m_nextSceneIntroductionGraph, true);
 	DrawGraphF(m_cursolPos.x, m_cursolPos.y, m_cursorUIHandle, true);
-	DrawGraphF(kPressAPos.x, kPressAPos.y, m_pressAHandle, true);
+	DrawGraphF(m_pressAPos.x, m_pressAPos.y, m_pressAHandle, true);
 
 	m_pFade->Draw();
 
@@ -358,4 +370,5 @@ void SceneSelect::ChangeCursorInfo(int num)
 {
 	GetGraphSize(m_sceneSelectGraph, &m_selectGraphX, &m_selectGraphY);
 	m_cursolPos = kCursorUIPos[num];
+	m_pressAPos = kPressAUIPos[num];
 }

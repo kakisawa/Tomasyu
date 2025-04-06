@@ -9,7 +9,7 @@ namespace {
 	constexpr int kVolumeStepSize = kMaxVolume / kChangeVolumeMaxNum;	// 一回当たりの音量増減値
 
 	// 音量の初期値
-	constexpr int kInitBgmVolume = kVolumeStepSize * 7;	// BGM初期音量
+	constexpr int kInitBgmVolume = kVolumeStepSize * 4;	// BGM初期音量
 	constexpr int kInitSeVolume = kVolumeStepSize * 5;	// SE初期音量
 
 	// 変更後音量保存
@@ -27,6 +27,11 @@ void SoundManager::Init()
 	// 音量を調整
 	InitSound();
 	LoadSE(SoundManager::SE_Type::kSelectSE);
+}
+
+void SoundManager::Draw()
+{
+	DrawFormatString(0, 0, 0xffffff, "m_bgmVolume=%d", m_bgmVolume);
 }
 
 void SoundManager::ChangeSEVolume(Input& input)

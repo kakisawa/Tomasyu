@@ -34,6 +34,11 @@ class MiniWindow
 	void End();
 
 private:
+
+	int m_width; // ミニウィンドウの幅
+	int m_height; // ミニウィンドウの高さ
+
+
 	VECTOR m_pos;
 };
 

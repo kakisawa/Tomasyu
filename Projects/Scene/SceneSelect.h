@@ -36,7 +36,8 @@ private:
     int m_cursorUIHandle;  // カーソル画像
 	int m_bgHandle;        // 背景画像
 
-	VECTOR m_cursolPos;	 // カーソルの座標
+	VECTOR m_cursolPos;	        // カーソル座標
+	VECTOR m_pressAPos;   // カーソル(Aボタンを押す)座標
 
 
     std::array<int, 5> m_sceneSelectUIHandle{};   // シーンセレクトUI
