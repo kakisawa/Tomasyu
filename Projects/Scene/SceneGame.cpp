@@ -12,6 +12,7 @@
 #include "../Util/Fade.h"
 #include "../Util/Score.h"
 #include "../Util/RankingData.h"
+#include "../Util/MiniWindow.h"
 #include "DxLib.h"
 #include <ctime>
 
@@ -46,10 +47,10 @@ SceneGame::SceneGame() :
 	m_isPause(false),
 	m_isPlayBGM(true)
 {
-	
+
 	m_pEnemy = std::make_shared<Enemy>(m_pMap, nullptr);
 	m_pPlayer = std::make_shared<Player>(nullptr, nullptr, m_pItem);
-	
+
 	// PlayerとEnemyの相手ポインタを設定する
 	m_pPlayer->SetEnemyPointer(m_pEnemy);
 	m_pEnemy->SetPlayer(m_pPlayer);
@@ -94,6 +95,9 @@ void SceneGame::Init()
 	m_gameOverHandle = LoadGraph("Data/Image/SceneGame/Over/GameOver.png");
 	m_logoBgHandle = LoadGraph("Data/Image/SceneGame/Clear/GameClearBg.png");
 	m_scoreBgHandle = LoadGraph("Data/Image/SceneGame/Clear/ScoreBg.png");
+	m_pauseHandle = LoadGraph("Data/Image/SceneGame/Pause.png");
+
+	m_pMiniWindow->Init(m_pauseHandle);
 
 	time_t now = time(nullptr);
 	tm localTime;
@@ -102,8 +106,8 @@ void SceneGame::Init()
 	m_timeYear = localTime.tm_year + 1900;
 	m_timeMonth = localTime.tm_mon + 1;
 	m_timeDay = localTime.tm_mday;
-	m_timeHour=localTime.tm_hour;
-	m_timeMin=localTime.tm_min;
+	m_timeHour = localTime.tm_hour;
+	m_timeMin = localTime.tm_min;
 }
 
 std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
@@ -112,99 +116,115 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 	if (input.IsTrigger(InputInfo::DebugStart)) {
 		if (m_isPause) {
 			m_isPause = false;
+			m_pMiniWindow->CloseMiniWindow();
+			m_pFade->HarfFade(false);
+			m_pFade->FadeIn(true);
 		}
 		else {
 			m_isPause = true;
 		}
 	}
 
-	// エネミーが死んでいなければ
-	if (!m_pEnemy->GetDeathFlag()&& !m_pTime->GetTimeUp())
+	//ポーズ状態
+	if (m_isPause)
 	{
-		if (!m_pPlayer->GetDeathFlag() || m_pTime->GetTimeUp()) {
-			m_pFade->FadeIn(true);
-			m_pMap->Update();
-			m_pItem->Update();
-			m_pPlayer->Update(input);
-			m_pEnemy->Update();
-			m_pCamera->Update();
-			m_pUI->Update();
-			m_pTime->Update();
+		// 半透明にし、ミニウィンドウを表示する
+		m_pFade->HarfFade(true);
+		m_pMiniWindow->CallMiiniWindow();
 
-			// エフェクトの更新
-			Effect::GetInstance().Update();
+		if (input.IsTrigger(InputInfo::OK))
+		{
+			return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く
 		}
 	}
+	else {
+		// エネミーが死んでいなければ
+		if (!m_pEnemy->GetDeathFlag() && !m_pTime->GetTimeUp())
+		{
+			if (!m_pPlayer->GetDeathFlag() || m_pTime->GetTimeUp()) {
+				m_pFade->FadeIn(true);
+				m_pMap->Update();
+				m_pItem->Update();
+				m_pPlayer->Update(input);
+				m_pEnemy->Update();
+				m_pCamera->Update();
+				m_pUI->Update();
+				m_pTime->Update();
 
-	// プレイヤーが死亡したら・制限時間を過ぎてしまったら
-	if (m_pPlayer->GetDeathFlag() || m_pTime->GetTimeUp()) {
-		// フェード演出を行う
-		m_pFade->HarfFade(true);
-		// フェード演出が終わったら、BGMを変更する
-		if (!m_pFade->GetHarfFadeFlag()) {
-			if (m_isPlayBGM) {
-				m_pSound->StopBGM(SoundManager::BGM_Type::kGameBGM);
-				m_isPlayBGM = false;
-			}
-
-			if (input.IsTrigger(InputInfo::OK))
-			{
-				return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く
+				// エフェクトの更新
+				Effect::GetInstance().Update();
 			}
 		}
-	}
 
-	// エネミーを倒したら
-	if (m_pEnemy->GetDeathFlag())
-	{
-		// フェード演出を行う
-		m_pFade->HarfFade(true);
-		// フェード演出が終わったら、BGMを変更する
-		if (!m_pFade->GetHarfFadeFlag()) {
-			m_pSound->StopBGM(SoundManager::BGM_Type::kGameBGM);
-			if (m_isPlayBGM) {
-				m_pSound->PlayBGM(SoundManager::BGM_Type::kGameClearBGM, DX_PLAYTYPE_LOOP);
-				m_isPlayBGM = false;
-			}
-			// ゲームクリア時の演出
-			m_gameClearLogoWaitTime--;
+		// プレイヤーが死亡したら・制限時間を過ぎてしまったら
+		if (m_pPlayer->GetDeathFlag() || m_pTime->GetTimeUp()) {
+			// フェード演出を行う
+			m_pFade->HarfFade(true);
+			// フェード演出が終わったら、BGMを変更する
+			if (!m_pFade->GetHarfFadeFlag()) {
+				if (m_isPlayBGM) {
+					m_pSound->StopBGM(SoundManager::BGM_Type::kGameBGM);
+					m_isPlayBGM = false;
+				}
 
-			m_pScore->Update();
-
-			if (m_gameClearLogoWaitTime <= 0) {
-				m_gameClearLogoScale -= 0.03f;
-				if (m_gameClearLogoScale <= 1.0f)
+				if (input.IsTrigger(InputInfo::OK))
 				{
-					// Aボタンが押されたら、次の処理を行う
-						// 3回押されたらセレクトシーンへ遷移する
-					if (input.IsTrigger(InputInfo::OK))
+					return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く
+				}
+			}
+		}
+
+		// エネミーを倒したら
+		if (m_pEnemy->GetDeathFlag())
+		{
+			// フェード演出を行う
+			m_pFade->HarfFade(true);
+			// フェード演出が終わったら、BGMを変更する
+			if (!m_pFade->GetHarfFadeFlag()) {
+				m_pSound->StopBGM(SoundManager::BGM_Type::kGameBGM);
+				if (m_isPlayBGM) {
+					m_pSound->PlayBGM(SoundManager::BGM_Type::kGameClearBGM, DX_PLAYTYPE_LOOP);
+					m_isPlayBGM = false;
+				}
+				// ゲームクリア時の演出
+				m_gameClearLogoWaitTime--;
+
+				m_pScore->Update();
+
+				if (m_gameClearLogoWaitTime <= 0) {
+					m_gameClearLogoScale -= 0.03f;
+					if (m_gameClearLogoScale <= 1.0f)
 					{
-						m_gameClearStagingCount++;
-					}
+						// Aボタンが押されたら、次の処理を行う
+							// 3回押されたらセレクトシーンへ遷移する
+						if (input.IsTrigger(InputInfo::OK))
+						{
+							m_gameClearStagingCount++;
+						}
 
-					if (m_gameClearStagingCount >= 3)
-					{
-						m_pRankingData->TimeSave(m_pTime->GetElapsedTime(),
-							m_timeYear, m_timeMonth, m_timeDay, m_timeHour, m_timeMin);
+						if (m_gameClearStagingCount >= 3)
+						{
+							m_pRankingData->TimeSave(m_pTime->GetElapsedTime(),
+								m_timeYear, m_timeMonth, m_timeDay, m_timeHour, m_timeMin);
 
-						m_pRankingData->ScoreSave(m_pScore->GetTotalScore(),
-							m_timeYear, m_timeMonth, m_timeDay, m_timeHour, m_timeMin);
+							m_pRankingData->ScoreSave(m_pScore->GetTotalScore(),
+								m_timeYear, m_timeMonth, m_timeDay, m_timeHour, m_timeMin);
 
-
-						return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く
+							return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く
+						}
 					}
 				}
 			}
-
 		}
 	}
 
+	
 
 #ifdef _DEBUG
-	if (input.IsTrigger(InputInfo::DebugStart)) {			// STARTボタン
+	//if (input.IsTrigger(InputInfo::DebugStart)) {			// STARTボタン
 
-		m_pEnemy->SetDeathFlag(true);
-	}
+	//	m_pEnemy->SetDeathFlag(true);
+	//}
 
 #endif // DEBUG
 
@@ -230,6 +250,10 @@ void SceneGame::Draw()
 	GameClearDraw();
 	GameOverDraw();
 
+	if (m_isPause) {
+		m_pMiniWindow->Draw();
+	}
+
 #ifdef _DEBUG
 
 	/*DrawFormatString(0, 300, 0xffffff, "m_timeYear=%d", m_timeYear);
@@ -237,7 +261,7 @@ void SceneGame::Draw()
 	DrawFormatString(0, 340, 0xffffff, "m_timeDay=%d", m_timeDay);
 	DrawFormatString(0, 360, 0xffffff, "m_timeHour=%d", m_timeHour);
 	DrawFormatString(0, 380, 0xffffff, "m_timeMin=%d", m_timeMin);*/
-	
+
 
 #endif // DEBUG
 }
@@ -258,10 +282,11 @@ void SceneGame::End()
 	DeleteGraph(m_gameOverHandle);
 	DeleteGraph(m_logoBgHandle);
 	DeleteGraph(m_scoreBgHandle);
+	DeleteGraph(m_pauseHandle);
 }
 
 void SceneGame::GameClearDraw()
-{	
+{
 	// 敵が死亡したら
 	if (m_pEnemy->GetDeathFlag()) {
 

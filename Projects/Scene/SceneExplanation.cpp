@@ -60,11 +60,11 @@ void SceneExplanation::Init()
 
 std::shared_ptr<SceneBase> SceneExplanation::Update(Input& input)
 {
-	m_pFade->FadeIn(m_pFade->GatFadeInFlag());
+	m_pFade->FadeIn(m_pFade->GetFadeInFlag());
 	m_pFade->FadeOut(m_isNextSceneFlag);
 
 
-	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::Back))
+	if (!m_pFade->GetFadeInFlag() && input.IsTrigger(InputInfo::Back))
 	{
 		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
 		m_isNextSceneFlag = true;

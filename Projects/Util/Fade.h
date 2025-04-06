@@ -48,13 +48,13 @@ public:
 	/// フェードインフラグを獲得する
 	/// </summary>
 	/// <returns></returns>
-	bool GatFadeInFlag() const { return m_isFadeIn; }
+	bool GetFadeInFlag() const { return m_isFadeIn; }
 
 	/// <summary>
 	/// フェードアウトフラグを獲得する
 	/// </summary>
 	/// <returns></returns>
-	bool GatFadeOutFlag() const { return m_isFadeOut; }
+	bool GetFadeOutFlag() const { return m_isFadeOut; }
 
 	/// <summary>
 	/// 半透明フラグを獲得する

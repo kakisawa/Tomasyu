@@ -69,7 +69,7 @@ void SceneTitle::Init()
 std::shared_ptr<SceneBase> SceneTitle::Update(Input& input)
 {
 	// フェード処理
-	m_pFade->FadeIn(m_pFade->GatFadeInFlag());
+	m_pFade->FadeIn(m_pFade->GetFadeInFlag());
 	m_pFade->FadeOut(m_isNextSceneFlag);
 
 	m_pMap->Update();
@@ -77,7 +77,7 @@ std::shared_ptr<SceneBase> SceneTitle::Update(Input& input)
 	m_pPlayer->Update();
 
 	// Aボタンを押して、フェードインが終了したらゲームセレクトシーンへ行く
-	if (!m_pFade->GatFadeInFlag() && input.IsTrigger(InputInfo::OK))
+	if (!m_pFade->GetFadeInFlag() && input.IsTrigger(InputInfo::OK))
 	{
 		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
 		m_isNextSceneFlag = true;

@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MiniWindow.cpp" />
+    <ClCompile Include="Util\MiniWindow.cpp" />
     <ClCompile Include="Object\Camera\TitleCamera.cpp" />
     <ClCompile Include="Object\Player\TitlePlayer.cpp" />
     <ClCompile Include="Util\RankingData.cpp" />
@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
-    <ClInclude Include="MiniWindow.h" />
+    <ClInclude Include="Util\MiniWindow.h" />
     <ClInclude Include="Object\Camera\TitleCamera.h" />
     <ClInclude Include="Object\Player\TitlePlayer.h" />
     <ClInclude Include="Util\RankingData.h" />

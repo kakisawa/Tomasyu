@@ -11,6 +11,7 @@ class Time;
 class Fade;
 class Score;
 class RankingData;
+class MiniWindow;
 class SceneGame :
     public SceneBase
 {
@@ -34,6 +35,7 @@ private:
     int m_scoreHandle;          // スコア画像
 	int m_logoBgHandle;         // ゲームクリア背景画像
 	int m_scoreBgHandle;        // スコア背景画像
+	int m_pauseHandle;          // ポーズ画像
 
 	int m_gameClearStagingCount;    // ゲームクリア演出用カウント
 	int m_gameClearLogoWaitTime;       // ゲームクリア演出待機時間
@@ -68,4 +70,6 @@ private:
     std::shared_ptr<Score> m_pScore = std::make_shared<Score>();
 	// ランキングデータ
 	std::shared_ptr<RankingData> m_pRankingData = std::make_shared<RankingData>();
+    // ミニウィンドウ
+	std::shared_ptr<MiniWindow> m_pMiniWindow = std::make_shared<MiniWindow>();
 };
