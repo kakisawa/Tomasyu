@@ -8,9 +8,9 @@ LoadCsv* LoadCsv::m_instance = nullptr;
 
 namespace
 {
-	const char* const kCommonCharaInfoFileName = "Data/csv/CharaInfo.csv";
-	const char* const kPlayerOnlyDataFileName = "Data/csv/PlayerOnlyData.csv";
-	const char* const kItemDataFileName = "Data/csv/ItemPosData.csv";
+	const char* const kCommonCharaInfoFileName = "Data/csv/CharaInfo.csv";		// キャラクター情報パス
+	const char* const kPlayerOnlyDataFileName = "Data/csv/PlayerOnlyData.csv";	// プレイヤー情報パス
+	const char* const kItemDataFileName = "Data/csv/ItemPosData.csv";			// アイテム情報パス
 
 	/// <summary>
 	/// 文字列を分割する

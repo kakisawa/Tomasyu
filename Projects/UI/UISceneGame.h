@@ -8,31 +8,38 @@ class Player;
 class Enemy;
 class UISceneGame
 {
-	enum class GunType {
-		HandGun,
-		MachineGun,
+	enum class GunType {	// 銃の種類
+		HandGun,			// ハンドガン
+		MachineGun,			// マシンガン
 	};
 
 	struct BalanceBullet {
-		int m_playerHundredsHandle;	// プレイヤーの残弾数百の位
-		int m_playerTensHandle;		// プレイヤーの残弾数十の位
-		int m_playerOneHandle;		// プレイヤーの残弾数一の位
+		int m_playerHundredsHandle;	// プレイヤーの残弾数100の位
+		int m_playerTensHandle;		// プレイヤーの残弾数10の位
+		int m_playerOneHandle;		// プレイヤーの残弾数1の位
 	};
 
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="pPlayer">プレイヤー情報</param>
+	/// <param name="pEnemy">対象情報</param>
 	UISceneGame(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy>pEnemy);
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~UISceneGame();
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	/// <param name="player"></param>
 	void Init();
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="player"></param>
 	void Update();
 
 	/// <summary>
@@ -53,31 +60,26 @@ public:
 	/// <summary>
 	/// HP・スタミナバーUIの更新
 	/// </summary>
-	/// <param name="player"></param>
 	void UpdateBarUI();
 
 	/// <summary>
 	/// アイテムUIの更新
 	/// </summary>
-	/// <param name="player"></param>
 	void UpdateItemUI();
 
 	/// <summary>
 	/// 武器UIの更新
 	/// </summary>
-	/// <param name="player"></param>
 	void UpdateWeaponUI();
 
 	/// <summary>
 	/// 選択中アイテム名UIの表示
 	/// </summary>
-	/// <param name="player">プレイヤー情報</param>
 	void SetUI_SelectItem();
 
 	/// <summary>
 	/// プレイヤーが獲得したアイテムのUIを設定する
 	/// </summary>
-	/// <param name="player">プレイヤー情報</param>
 	void SetUI_GetItem();
 
 	/// <summary>
@@ -88,6 +90,7 @@ public:
 	/// <summary>
 	/// プレイヤーの残弾UIを表示する
 	/// </summary>
+	/// <param name="type">銃の種類</param>
 	/// <param name="num">残弾数</param>
 	void SetUI_RemainingBulletsHandle(GunType type,int num);
 
@@ -109,8 +112,7 @@ private:
 	std::array<int, 9>m_itemCharaUIHnadle{};	// 文字画像UI用ハンドル
 	std::array<int, 12>m_playerToolUIHandle{};	// 武器・アイテム画像UI用ハンドル
 	std::array<int, 7>m_barUIHandle{};			// HP・スタミナバー画像UI用ハンドル
-
-	std::array<int, 10>m_numberUIHandle{};	// 残弾表示UI用ハンドル
+	std::array<int, 10>m_numberUIHandle{};		// 残弾表示UI用ハンドル
 
 	VECTOR m_cursorUI1Pos;		// 武器カーソルUI座標
 	VECTOR m_cursorUI2Pos;		// アイテムカーソルUI座標

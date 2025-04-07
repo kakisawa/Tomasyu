@@ -16,15 +16,45 @@ class SceneGame :
     public SceneBase
 {
 public:
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
     SceneGame();
-    ~SceneGame();
 
+    /// <summary>
+    /// デストラクタ
+    /// </summary>
+    ~SceneGame(){}
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
     virtual void Init() override;
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <param name="input">入力</param>
     virtual std::shared_ptr<SceneBase> Update(Input& input) override;
+
+    /// <summary>
+    /// 描画
+    /// </summary>
     virtual void Draw() override;
+
+    /// <summary>
+    /// 終了
+    /// </summary>
     virtual void End() override;
 
+    /// <summary>
+    /// ゲームクリア描画
+    /// </summary>
     void GameClearDraw();
+
+	/// <summary>
+	/// ゲームオーバー描画
+	/// </summary>
 	void GameOverDraw();
 
 private:

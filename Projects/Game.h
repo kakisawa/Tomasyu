@@ -1,12 +1,12 @@
-#pragma once
+ï»¿#pragma once
 
 namespace Game{
-	constexpr int kScreenHeight = 1080;	// ‰æ–Ê‰¡•
-	constexpr int kScreenWidth = 1920;	// ‰æ–Êc•
+	constexpr int kScreenHeight = 1080;	// ç”»é¢ç¸¦å¹…
+	constexpr int kScreenWidth = 1920;	// ç”»é¢æ¨ªå¹…
 
-	constexpr int kColorBitDepth = 32;	// ƒJƒ‰[ƒrƒbƒg”
+	constexpr int kColorBitDepth = 32;	// ã‚«ãƒ©ãƒ¼ãƒ“ãƒƒãƒˆæ•°
 
-	const char* const kTitle = "Tomasyu";	// ƒ^ƒCƒgƒ‹–¼
+	const char* const kTitle = "Tomasyu";	// ã‚¿ã‚¤ãƒˆãƒ«å
 	
-	constexpr int kParticleMax = 8000;	// ‰æ–Ê‚É•\¦‰Â”\‚ÈÅ‘åƒp[ƒeƒBƒNƒ‹”
+	constexpr int kParticleMax = 8000;	// ç”»é¢ã«è¡¨ç¤ºå¯èƒ½ãªæœ€å¤§ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ•°
 }

@@ -6,10 +6,6 @@ IsTime::IsTime(int rimitTime):
 {
 }
 
-IsTime::~IsTime()
-{
-}
-
 bool IsTime::Update()
 {
 	// 制限時間を超えていたらtrueを返す

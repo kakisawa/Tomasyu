@@ -1,13 +1,13 @@
-#include "RankingData.h"
+ï»¿#include "RankingData.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
 #include <tuple>
 
 namespace {
-	const char* kTimeFilePath = "Data/csv/TimeRankingData.csv";	// ƒXƒRƒAƒ‰ƒ“ƒLƒ“ƒOƒf[ƒ^‚ğ•Û‘¶‚·‚éƒtƒ@ƒCƒ‹–¼
-	const char* kScoreFilePath = "Data/csv/ScoreRankingData.csv";	// ƒ^ƒCƒ€ƒ‰ƒ“ƒLƒ“ƒOƒf[ƒ^‚ğ•Û‘¶‚·‚éƒtƒ@ƒCƒ‹–¼
-	constexpr int kRankingNum = 5;	// •Û‘¶‚·‚é‡ˆÊ”
+	const char* kTimeFilePath = "Data/csv/TimeRankingData.csv";	// ã‚¹ã‚³ã‚¢ãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«åãƒ‘ã‚¹
+	const char* kScoreFilePath = "Data/csv/ScoreRankingData.csv";	// ã‚¿ã‚¤ãƒ ãƒ©ãƒ³ã‚­ãƒ³ã‚°ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«åãƒ‘ã‚¹
+	constexpr int kRankingNum = 5;	// ä¿å­˜ã™ã‚‹é †ä½æ•°
 }
 
 RankingData::RankingData()
@@ -21,16 +21,16 @@ void RankingData::ScoreLoad()
 	std::ifstream file(kScoreFilePath);
 
 
-	if (!file.is_open()) // ƒtƒ@ƒCƒ‹“Ç‚İ‚İ¸”s
+	if (!file.is_open()) // ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿å¤±æ•—
 	{
 #ifdef _DEBUG
-		printfDx("ƒtƒ@ƒCƒ‹“Ç‚İ‚İ¸”s\n");
+		printfDx("ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿å¤±æ•—\n");
 #endif
 	}
-	else // ƒtƒ@ƒCƒ‹“Ç‚İ‚İ¬Œ÷
+	else // ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿æˆåŠŸ
 	{
 		std::string line;
-		m_scoreRanking.clear(); // ‚·‚Å‚É—v‘f‚ª‚ ‚éê‡‚ÍƒNƒŠƒA‚·‚é
+		m_scoreRanking.clear(); // ã™ã§ã«è¦ç´ ãŒã‚ã‚‹å ´åˆã¯ã‚¯ãƒªã‚¢ã™ã‚‹
 		while (std::getline(file, line))
 		{
 			std::istringstream ss(line);
@@ -39,9 +39,9 @@ void RankingData::ScoreLoad()
 			ss >>  score >> comma >> year >> comma >> month >> comma >> day >> comma >> hour >> comma >> min;
 			if (ss.fail()) {
 #ifdef _DEBUG
-				printfDx("ƒf[ƒ^‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½: %s\n", line.c_str());
+				printfDx("ãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ: %s\n", line.c_str());
 #endif
-				continue; // “Ç‚İ‚İ‚É¸”s‚µ‚½ê‡‚ÍŸ‚Ìs‚Ö
+				continue; // èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ãŸå ´åˆã¯æ¬¡ã®è¡Œã¸
 			}
 			m_scoreRanking.emplace_back(score, year, month, day, hour, min);
 		}
@@ -54,16 +54,16 @@ void RankingData::TimeLoad()
 	std::ifstream file(kTimeFilePath);
 
 
-	if (!file.is_open()) // ƒtƒ@ƒCƒ‹“Ç‚İ‚İ¸”s
+	if (!file.is_open()) // ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿å¤±æ•—
 	{
 #ifdef _DEBUG
-		printfDx("ƒtƒ@ƒCƒ‹“Ç‚İ‚İ¸”s\n");
+		printfDx("ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿å¤±æ•—\n");
 #endif
 	}
-	else // ƒtƒ@ƒCƒ‹“Ç‚İ‚İ¬Œ÷
+	else // ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿æˆåŠŸ
 	{
 		std::string line;
-		m_timeRanking.clear(); // ‚·‚Å‚É—v‘f‚ª‚ ‚éê‡‚ÍƒNƒŠƒA‚·‚é
+		m_timeRanking.clear(); // ã™ã§ã«è¦ç´ ãŒã‚ã‚‹å ´åˆã¯ã‚¯ãƒªã‚¢ã™ã‚‹
 		while (std::getline(file, line))
 		{
 			std::istringstream ss(line);
@@ -72,9 +72,9 @@ void RankingData::TimeLoad()
 			ss >> time >> comma >>  year >> comma >> month >> comma >> day >> comma >> hour >> comma >> min;
 			if (ss.fail()) {
 #ifdef _DEBUG
-				printfDx("ƒf[ƒ^‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½: %s\n", line.c_str());
+				printfDx("ãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ: %s\n", line.c_str());
 #endif
-				continue; // “Ç‚İ‚İ‚É¸”s‚µ‚½ê‡‚ÍŸ‚Ìs‚Ö
+				continue; // èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ãŸå ´åˆã¯æ¬¡ã®è¡Œã¸
 			}
 			m_timeRanking.emplace_back(time, year, month, day, hour, min);
 		}
@@ -85,18 +85,18 @@ void RankingData::TimeLoad()
 void RankingData::ScoreSave(int score, int year, int month, int day, int hour, int min)
 {
 
-	// •‰‚Ì’l‚ª‚ ‚éê‡‚Í‰½‚à‚¹‚¸I—¹
+	// è² ã®å€¤ãŒã‚ã‚‹å ´åˆã¯ä½•ã‚‚ã›ãšçµ‚äº†
 	if ( score <= 0 || year <= 0 || month <= 0 || day <= 0 || hour <= 0 || min <= 0) {
 #ifdef _DEBUG
-		printfDx("•‰‚Ì’l‚ªŠÜ‚Ü‚ê‚Ä‚¢‚é‚½‚ßA•Û‘¶‚ğƒXƒLƒbƒv‚µ‚Ü‚µ‚½\n");
+		printfDx("è² ã®å€¤ãŒå«ã¾ã‚Œã¦ã„ã‚‹ãŸã‚ã€ä¿å­˜ã‚’ã‚¹ã‚­ãƒƒãƒ—ã—ã¾ã—ãŸ\n");
 #endif
-		return; // ˆ—‚ğ’†’f
+		return; // å‡¦ç†ã‚’ä¸­æ–­
 	}
 
 	m_scoreRanking.emplace_back(score, year, month, day, hour, min);
-	// ƒ‰ƒ“ƒLƒ“ƒO‚ğƒ\[ƒg‚µ‚ÄãˆÊ kRankingNum Œ‚ğ•Û‘¶
+	// ãƒ©ãƒ³ã‚­ãƒ³ã‚°ã‚’ã‚½ãƒ¼ãƒˆã—ã¦ä¸Šä½ kRankingNum ä»¶ã‚’ä¿å­˜
 	std::sort(m_scoreRanking.begin(), m_scoreRanking.end(), [](const std::tuple<int, int, int, int, int, int>& lhs, const std::tuple<int, int, int, int, int, int>& rhs) {
-		return std::get<0>(lhs) > std::get<0>(rhs); // ƒNƒŠƒAŠÔ‚Åƒ\[ƒg
+		return std::get<0>(lhs) > std::get<0>(rhs); // ã‚¯ãƒªã‚¢æ™‚é–“ã§ã‚½ãƒ¼ãƒˆ
 		});
 	if (m_scoreRanking.size() > kRankingNum)
 	{
@@ -106,13 +106,13 @@ void RankingData::ScoreSave(int score, int year, int month, int day, int hour, i
 	std::ofstream file(kScoreFilePath, std::ios::out | std::ios::trunc);
 
 
-	if (!file.is_open()) // ƒtƒ@ƒCƒ‹‘‚«‚İ¸”s
+	if (!file.is_open()) // ãƒ•ã‚¡ã‚¤ãƒ«æ›¸ãè¾¼ã¿å¤±æ•—
 	{
 #ifdef _DEBUG
-		printfDx("ƒtƒ@ƒCƒ‹‘‚«‚İ¸”s\n");
+		printfDx("ãƒ•ã‚¡ã‚¤ãƒ«æ›¸ãè¾¼ã¿å¤±æ•—\n");
 #endif
 	}
-	else // ƒtƒ@ƒCƒ‹‘‚«‚İ¬Œ÷
+	else // ãƒ•ã‚¡ã‚¤ãƒ«æ›¸ãè¾¼ã¿æˆåŠŸ
 	{
 		for (const auto& entry : m_scoreRanking)
 		{
@@ -126,18 +126,18 @@ void RankingData::ScoreSave(int score, int year, int month, int day, int hour, i
 
 void RankingData::TimeSave(int time, int year, int month, int day, int hour, int min)
 {
-	// •‰‚Ì’l‚ª‚ ‚éê‡‚Í‰½‚à‚¹‚¸I—¹
+	// è² ã®å€¤ãŒã‚ã‚‹å ´åˆã¯ä½•ã‚‚ã›ãšçµ‚äº†
 	if (time <= 0 ||year <= 0 || month <= 0 || day <= 0 || hour <= 0 || min <= 0) {
 #ifdef _DEBUG
-		printfDx("•‰‚Ì’l‚ªŠÜ‚Ü‚ê‚Ä‚¢‚é‚½‚ßA•Û‘¶‚ğƒXƒLƒbƒv‚µ‚Ü‚µ‚½\n");
+		printfDx("è² ã®å€¤ãŒå«ã¾ã‚Œã¦ã„ã‚‹ãŸã‚ã€ä¿å­˜ã‚’ã‚¹ã‚­ãƒƒãƒ—ã—ã¾ã—ãŸ\n");
 #endif
-		return; // ˆ—‚ğ’†’f
+		return; // å‡¦ç†ã‚’ä¸­æ–­
 	}
 
 	m_timeRanking.emplace_back(time, year, month, day, hour, min);
-	// ƒ‰ƒ“ƒLƒ“ƒO‚ğƒ\[ƒg‚µ‚ÄãˆÊ kRankingNum Œ‚ğ•Û‘¶
+	// ãƒ©ãƒ³ã‚­ãƒ³ã‚°ã‚’ã‚½ãƒ¼ãƒˆã—ã¦ä¸Šä½ kRankingNum ä»¶ã‚’ä¿å­˜
 	std::sort(m_timeRanking.begin(), m_timeRanking.end(), [](const std::tuple<int, int, int, int, int, int>& lhs, const std::tuple<int, int, int, int, int, int>& rhs) {
-		return std::get<0>(lhs) < std::get<0>(rhs); // ƒNƒŠƒAŠÔ‚Åƒ\[ƒg
+		return std::get<0>(lhs) < std::get<0>(rhs); // ã‚¯ãƒªã‚¢æ™‚é–“ã§ã‚½ãƒ¼ãƒˆ
 		});
 	if (m_timeRanking.size() > kRankingNum)
 	{
@@ -147,13 +147,13 @@ void RankingData::TimeSave(int time, int year, int month, int day, int hour, int
 	std::ofstream file(kTimeFilePath, std::ios::out | std::ios::trunc);
 
 
-	if (!file.is_open()) // ƒtƒ@ƒCƒ‹‘‚«‚İ¸”s
+	if (!file.is_open()) // ãƒ•ã‚¡ã‚¤ãƒ«æ›¸ãè¾¼ã¿å¤±æ•—
 	{
 #ifdef _DEBUG
-		printfDx("ƒtƒ@ƒCƒ‹‘‚«‚İ¸”s\n");
+		printfDx("ãƒ•ã‚¡ã‚¤ãƒ«æ›¸ãè¾¼ã¿å¤±æ•—\n");
 #endif
 	}
-	else // ƒtƒ@ƒCƒ‹‘‚«‚İ¬Œ÷
+	else // ãƒ•ã‚¡ã‚¤ãƒ«æ›¸ãè¾¼ã¿æˆåŠŸ
 	{
 		for (const auto& entry : m_timeRanking)
 		{

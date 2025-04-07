@@ -1,6 +1,8 @@
 ﻿#include "Collision.h"
 
 namespace {
+	const int kArmParts = 2;	// 腕部分のパーツ数
+
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// ベクトルの初期化
 }
 
@@ -11,7 +13,7 @@ void Collision::Init()
 	m_colEnemy.m_body.m_vertexPos = kInitVec;
 	m_colEnemy.m_body.m_radius = 0.0f;
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < kArmParts; i++)
 	{
 		m_colEnemy.m_leftArm[i].m_pos = kInitVec;
 		m_colEnemy.m_leftArm[i].m_vertexPos = kInitVec;

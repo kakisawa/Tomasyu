@@ -2,7 +2,14 @@
 class Fade
 {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Fade();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~Fade();
 
 	/// <summary>

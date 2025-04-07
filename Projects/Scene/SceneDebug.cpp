@@ -72,7 +72,6 @@ std::shared_ptr<SceneBase> SceneDebug::Update(Input &input)
 
 	SwitchingScene(input);
 
-
 	return shared_from_this();
 }
 
@@ -86,9 +85,6 @@ void SceneDebug::Draw()
 		m_selectBox.selectPos.x + kSelectWidth, m_selectBox.selectPos.y + kSelectMoveY,
 		0xff00ff,false);
 
-	//DrawFormatString(0, 500, 0xffffff, "m_selectBox.selectPos.y=%.2f", m_selectBox.selectPos.y);
-	//DrawFormatString(0, 520, 0xffffff, "ks=%.2f", ks);
-
 	// 各シーン
 	DrawString(kSelectBasePosX, kSelectBasePosY, "SceneTitle", 0xffffff);
 	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY, "SceneSelect", 0xffffff);
@@ -97,6 +93,11 @@ void SceneDebug::Draw()
 	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 4, "SceneRanking", 0xffffff);
 	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 5, "SceneGame", 0xffffff);
 	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 6, "GameEnd", 0xffffff);
+
+#ifdef _DEBUG
+	//DrawFormatString(0, 500, 0xffffff, "m_selectBox.selectPos.y=%.2f", m_selectBox.selectPos.y);
+	//DrawFormatString(0, 520, 0xffffff, "ks=%.2f", ks);
+#endif // DEBUG
 }
 
 void SceneDebug::SwitchingScene(Input& input)

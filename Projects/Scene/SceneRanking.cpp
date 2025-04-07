@@ -9,22 +9,22 @@
 using namespace MyInputInfo;
 
 namespace {
+	constexpr int kUIMoveX = 605;
+	constexpr int kCursorAddX = 4;
+	
 	const VECTOR kRankingPos = VGet(637.0f, 91.0f, 0.0f);
-
 	const VECTOR kUIPos = VGet(462.0f, 236.0f, 0.0f);
 	const VECTOR kCursorPos = VGet(457.5f, 231.5f, 0.0f);
-
 	const VECTOR kRankingUIPos = VGet(142.0f, 358.0f, 0.0f);
 	const VECTOR kRankingUI_Change = VGet(1322.0f, 389.0f, 0.0f);
 
-	constexpr int kUIMoveX = 605;
-	constexpr int kCursorAddX = 4;
+	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);
 }
 
 SceneRanking::SceneRanking() :
 	m_bg(-1),
 	m_rankingGraph(-1),
-	m_cursorUI(-1),
+	m_cursorGraph(-1),
 	m_selectUI1(-1),
 	m_selectUI3(-1),
 	m_rankingUI(-1),
@@ -32,22 +32,18 @@ SceneRanking::SceneRanking() :
 	m_rankingUI_Score(-1),
 	m_rankingUI_Time(-1),
 	m_rankingDataChange(rankingDataChange::Score),
-	m_selectBox1(VGet(0.0f,0.0f,0.0f))
+	m_selectBox1(kInitVec)
 {
-}
-
-SceneRanking::~SceneRanking()
-{
-	
 }
 
 void SceneRanking::Init()
 {
+	// 画像の読み込み
 	m_bg = LoadGraph("Data/Image/SceneRanking/Bg.png");
 	m_rankingGraph = LoadGraph("Data/Image/SceneRanking/ランキング.png");
 	m_selectUI1 = LoadGraph("Data/Image/SceneRanking/最大スコア.png");
 	m_selectUI3 = LoadGraph("Data/Image/SceneRanking/最短時間.png");
-	m_cursorUI = LoadGraph("Data/Image/SceneRanking/カーソル.png");
+	m_cursorGraph = LoadGraph("Data/Image/SceneRanking/カーソル.png");
 	m_rankingUI = LoadGraph("Data/Image/SceneRanking/ランキングデータ.png");
 	m_rankingUI_Score= LoadGraph("Data/Image/SceneRanking/スコア.png");
 	m_rankingUI_Time = LoadGraph("Data/Image/SceneRanking/討伐時間.png");
@@ -107,7 +103,7 @@ void SceneRanking::Draw()
 	DrawGraphF(kUIPos.x, kUIPos.y, m_selectUI1, true);
 	DrawGraphF(kUIPos.x + kUIMoveX, kUIPos.y, m_selectUI3, true);
 
-	DrawGraphF(m_selectBox1.x, m_selectBox1.y, m_cursorUI, true);
+	DrawGraphF(m_selectBox1.x, m_selectBox1.y, m_cursorGraph, true);
 
 	DrawGraphF(kRankingUIPos.x, kRankingUIPos.y, m_rankingUI, true);
 	DrawGraphF(kRankingUI_Change.x, kRankingUI_Change.y, m_rankingSelectUI, true);
@@ -164,7 +160,7 @@ void SceneRanking::End()
 	DeleteGraph(m_rankingGraph);
 	DeleteGraph(m_selectUI1);
 	DeleteGraph(m_selectUI3);
-	DeleteGraph(m_cursorUI);
+	DeleteGraph(m_cursorGraph);
 	DeleteGraph(m_rankingUI);
 	DeleteGraph(m_rankingUI_Score);
 	DeleteGraph(m_rankingUI_Time);

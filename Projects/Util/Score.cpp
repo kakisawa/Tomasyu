@@ -6,6 +6,8 @@ namespace {
 	constexpr int kRemainingTimScore = 10;	// 1秒あたりの定数スコア
 	constexpr int kSecondConversion = 60;	// 秒換算用
 
+	constexpr int kNumberHandleNum = 10;	// 数字画像の最大数
+
 	const VECTOR kScorePos[5] = {
 	VGet(1028.0f, 714.0f, 0.0f),
 	VGet(1096.0f, 714.0f, 0.0f),
@@ -46,10 +48,6 @@ Score::Score():
 {
 }
 
-Score::~Score()
-{
-}
-
 void Score::Init(std::shared_ptr<Time> time)
 {
 	// 数字UI画像読み込み
@@ -66,7 +64,6 @@ void Score::Update()
 	int time = m_pTime->GetRemainingTime() / kSecondConversion;	// 時間(秒)
 
 	m_remainingTimeScore = time * kRemainingTimScore;			// 時間と定数スコアをかける
-
 	m_totalScore = m_score + m_remainingTimeScore;				// 残り時間スコアとスコアを足す
 
 
@@ -122,7 +119,7 @@ void Score::DrawClearScore()
 
 void Score::SetTotalScoreHandle()
 {
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < kNumberHandleNum; i++)
 	{
 		// 一桁目
 		if (m_totalScoreOneDigits == i)

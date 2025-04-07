@@ -8,7 +8,6 @@
 #include <functional>
 
 namespace {
-
 	const float kHpMaxWidth = 1205.0f;		// 最大HPUIの横幅
 	const float kStaminaMaxWidth = 1172.0f;	// 最大スタミナUIの横幅
 	const float kBarUIHeight = 37.0f;		// HPスタミナUIの縦幅
@@ -65,53 +64,53 @@ namespace {
 	VECTOR kBaseUI = VGet(1740.0f, 91.0f, 0.0f);			// アイテム・武器大本UI座標
 
 	const char* const kItemCharaUI[9]{						// 文字UI画像
-		"Data/Image/SceneGame/文字UI_仮.png",
-		"Data/Image/SceneGame/文字UI_地雷.png",
-		"Data/Image/SceneGame/文字UI_びっくり箱.png",
-		"Data/Image/SceneGame/文字UI_氷床.png",
-		"Data/Image/SceneGame/文字UI_回復薬.png",
-		"Data/Image/SceneGame/文字UI_弾薬.png",
-		"Data/Image/SceneGame/文字UI_ハンドガン.png",
-		"Data/Image/SceneGame/文字UI_マシンガン.png",
-		"Data/Image/SceneGame/文字UI_ナイフ.png",
+		"Data/Image/SceneGame/CharUI/Tentative.png",
+		"Data/Image/SceneGame/CharUI/landmine.png",
+		"Data/Image/SceneGame/CharUI/SurpriseBox.png",
+		"Data/Image/SceneGame/CharUI/IceFloor.png",
+		"Data/Image/SceneGame/CharUI/RecoveryMedic.png",
+		"Data/Image/SceneGame/CharUI/Ammunition.png",
+		"Data/Image/SceneGame/CharUI/HandGun.png",
+		"Data/Image/SceneGame/CharUI/MachineGun.png",
+		"Data/Image/SceneGame/CharUI/Knife.png",
 	};
 
 	const char* const kPlayerToolUI[12]{
-		"Data/Image/SceneGame/アイテム・武器大本.png",
-		"Data/Image/SceneGame/武器カーソル.png",
-		"Data/Image/SceneGame/アイテムカーソル.png",
-		"Data/Image/SceneGame/表示下.png",
-		"Data/Image/SceneGame/アイテム_仮.png",
-		"Data/Image/SceneGame/アイテム_地雷.png",
-		"Data/Image/SceneGame/アイテム_びっくり箱.png",
-		"Data/Image/SceneGame/アイテム_氷床.png",
-		"Data/Image/SceneGame/アイテム_回復薬.png",
-		"Data/Image/SceneGame/アイテム_弾薬.png",
+		"Data/Image/SceneGame/Item/ItemWeaponBg.png",
+		"Data/Image/SceneGame/WeaponCursor.png",
+		"Data/Image/SceneGame/ItemCursor.png",
+		"Data/Image/SceneGame/ItemWeaponUIBg.png",
+		"Data/Image/SceneGame/Item/Tentative.png",
+		"Data/Image/SceneGame/Item/landmine.png",
+		"Data/Image/SceneGame/Item/SurpriseBox.png",
+		"Data/Image/SceneGame/Item/IceFloor.png",
+		"Data/Image/SceneGame/Item/RecoveryMedic.png",
+		"Data/Image/SceneGame/Item/Ammunition.png",
 		"Data/Image/SceneGame/ChangeWeapon.png",		// 武器切り替えUI
 		"Data/Image/SceneGame/ChangeItem.png",			// アイテム切り替えUI
 	};
 
 	const char* const kBarUI[7]{
-		"Data/Image/SceneGame/HP背景バー.png",
-		"Data/Image/SceneGame/HP_赤.png",
-		"Data/Image/SceneGame/HP_緑.png",
-		"Data/Image/SceneGame/スタミナ背景バー.png",
-		"Data/Image/SceneGame/スタミナ.png",
-		"Data/Image/SceneGame/敵HP背景バー.png",
-		"Data/Image/SceneGame/敵HPバー.png",
+		"Data/Image/SceneGame/Bar/HpBar.png",
+		"Data/Image/SceneGame/Bar/RedHp.png",
+		"Data/Image/SceneGame/Bar/GreenHp.png",
+		"Data/Image/SceneGame/Bar/StaminaBg.png",
+		"Data/Image/SceneGame/Bar/Stamina.png",
+		"Data/Image/SceneGame/Bar/EnemyHpBg.png",
+		"Data/Image/SceneGame/Bar/EnemyHp.png",
 	};
 
 	const char* const kNumberUI[10]{
-		"Data/Image/SceneGame/残弾/0.png",
-		"Data/Image/SceneGame/残弾/1.png",
-		"Data/Image/SceneGame/残弾/2.png",
-		"Data/Image/SceneGame/残弾/3.png",
-		"Data/Image/SceneGame/残弾/4.png",
-		"Data/Image/SceneGame/残弾/5.png",
-		"Data/Image/SceneGame/残弾/6.png",
-		"Data/Image/SceneGame/残弾/7.png",
-		"Data/Image/SceneGame/残弾/8.png",
-		"Data/Image/SceneGame/残弾/9.png",
+		"Data/Image/SceneGame/BulletNumber/0.png",
+		"Data/Image/SceneGame/BulletNumber/1.png",
+		"Data/Image/SceneGame/BulletNumber/2.png",
+		"Data/Image/SceneGame/BulletNumber/3.png",
+		"Data/Image/SceneGame/BulletNumber/4.png",
+		"Data/Image/SceneGame/BulletNumber/5.png",
+		"Data/Image/SceneGame/BulletNumber/6.png",
+		"Data/Image/SceneGame/BulletNumber/7.png",
+		"Data/Image/SceneGame/BulletNumber/8.png",
+		"Data/Image/SceneGame/BulletNumber/9.png",
 	};
 }
 
@@ -165,7 +164,6 @@ void UISceneGame::Draw()
 	DrawGraphF(kBarPos[0].x, kBarPos[0].y, m_barUIHandle[0], true);
 	DrawGraphF(kBarPos[2].x, kBarPos[2].y, m_barUIHandle[3], true);
 
-
 	// プレイヤーHPバー・スタミナバーUI
 	float stamina = kStaminaMaxWidth * (m_playerStamina * 0.01f);
 	float hp_red = kHpMaxWidth * (m_playerHp_Red * 0.01f);
@@ -185,7 +183,6 @@ void UISceneGame::Draw()
 
 	DrawRectGraphF2(kBarPos[5].x, kBarPos[5].y, 0.0f, 0.0f,
 		std::max(0.0f, hp), kBarUIHeight, m_barUIHandle[6], true);
-
 
 	// 選択中のアイテム・武器名背景UI
 	for (int i = 0; i < 2; i++)
@@ -262,7 +259,6 @@ void UISceneGame::Load()
 void UISceneGame::End()
 {
 	// 画像データの削除
-
 	// 文字UI画像の削除
 	for (int i = 0; i < m_itemCharaUIHnadle.size(); i++)
 	{
@@ -319,7 +315,6 @@ void UISceneGame::UpdateItemUI()
 	SetUI_GetItem();
 
 	// プレイヤーのアイテム選択情報を獲得しての処理
-
 	for (int i = 0; i < 3; i++)
 	{
 		if (m_pPlayer->GetItemFrame() == i)
@@ -421,9 +416,9 @@ void UISceneGame::SetUI_RemainingBullets()
 
 void UISceneGame::SetUI_RemainingBulletsHandle(GunType type, int num)
 {
-	int hundred = num / 100;
-	int ten = (num % 100) / 10;
-	int one = (num % 100) % 10;
+	int hundred = num / 100;		// 100の位
+	int ten = (num % 100) / 10;		// 10の位
+	int one = (num % 100) % 10;		// 1の位
 
 	if (hundred == 1)
 	{

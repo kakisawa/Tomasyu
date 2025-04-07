@@ -21,21 +21,20 @@ namespace {
 
 	const VECTOR kGameTimeBgPos = VGet(10.0f, 20.0f, 0.0f);	// 残り時間背景画像座標
 
-
-	const char* const kNumberNavyPath[11]{
-		"Data/Image/SceneGame/時間/0.png",
-		"Data/Image/SceneGame/時間/1.png",
-		"Data/Image/SceneGame/時間/2.png",
-		"Data/Image/SceneGame/時間/3.png",
-		"Data/Image/SceneGame/時間/4.png",
-		"Data/Image/SceneGame/時間/5.png",
-		"Data/Image/SceneGame/時間/6.png",
-		"Data/Image/SceneGame/時間/7.png",
-		"Data/Image/SceneGame/時間/8.png",
-		"Data/Image/SceneGame/時間/9.png",
-		"Data/Image/SceneGame/時間/点.png",
+	const char* const kNumberNavyPath[11]{	// 「紺数字・点画像」パス
+		"Data/Image/SceneGame/Time/0.png",
+		"Data/Image/SceneGame/Time/1.png",
+		"Data/Image/SceneGame/Time/2.png",
+		"Data/Image/SceneGame/Time/3.png",
+		"Data/Image/SceneGame/Time/4.png",
+		"Data/Image/SceneGame/Time/5.png",
+		"Data/Image/SceneGame/Time/6.png",
+		"Data/Image/SceneGame/Time/7.png",
+		"Data/Image/SceneGame/Time/8.png",
+		"Data/Image/SceneGame/Time/9.png",
+		"Data/Image/SceneGame/Time/点.png",
 	};
-	const char* const kNumberBlackPath[11]{
+	const char* const kNumberBlackPath[11]{	// 「黒数字・点画像」パス
 		"Data/Image/SceneGame/Clear/0.png",
 		"Data/Image/SceneGame/Clear/1.png",
 		"Data/Image/SceneGame/Clear/2.png",
@@ -76,15 +75,7 @@ Time::Time() :
 		m_numberNavyUIHandle[i] = LoadGraph(kNumberNavyPath[i]);
 		m_numberGreenUIHandle[i] = LoadGraph(kNumberBlackPath[i]);
 	}
-	m_timeBgHandle = LoadGraph("Data/Image/SceneGame/時間/Time.png");
-}
-
-Time::~Time()
-{
-}
-
-void Time::Init()
-{
+	m_timeBgHandle = LoadGraph("Data/Image/SceneGame/Time/Time.png");
 }
 
 void Time::Update()
@@ -191,7 +182,6 @@ void Time::SetTimeGreenHandle()
 			m_elapsedTimeHandleMinites = m_numberGreenUIHandle[i];
 		}
 	}
-
 
 	// 秒数
 	for (int i = 0; i < 10; i++)

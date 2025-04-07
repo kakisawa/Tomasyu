@@ -14,7 +14,7 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~Score();
+	virtual ~Score(){}
 
 	/// <summary>
 	/// 初期化

@@ -12,12 +12,12 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~Time();
+	~Time(){}
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(){}
 
 	/// <summary>
 	/// 更新

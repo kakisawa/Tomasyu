@@ -11,7 +11,7 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~IsTime();
+	~IsTime(){}
 
 	/// <summary>
 	/// 更新

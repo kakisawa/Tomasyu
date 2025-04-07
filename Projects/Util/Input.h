@@ -25,8 +25,8 @@ namespace MyInputInfo{
 
 		MAX,			// 最大入力数
 	};
-
 }
+
 // 入力機器の種類
 enum class InputType {
 	key,	// キーボード
@@ -35,7 +35,6 @@ enum class InputType {
 };
 
 // 入力情報
-
 using namespace MyInputInfo;
 
 class Input
