@@ -193,7 +193,7 @@ void SceneRanking::SelectRanking(Input& input)
 		m_pSound->PlaySE(SoundManager::SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
 
 		m_rankingDataChange--;
-		if (m_rankingDataChange <0)
+		if (m_rankingDataChange < 0)
 		{
 			m_rankingDataChange = rankingDataChange::Time;
 		}

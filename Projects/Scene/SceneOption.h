@@ -72,7 +72,7 @@ private:
         SE,
         Window,
         Back,
-    }m_select;
+    }m_select;  // セレクト
 
     enum SelectWindow {
         FullScreen,

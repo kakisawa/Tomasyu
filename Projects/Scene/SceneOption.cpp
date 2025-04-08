@@ -6,6 +6,11 @@
 using namespace MyInputInfo;
 
 namespace {
+	constexpr int kSoundMax = 255;	// 音量最大値
+	constexpr int kChangeSoundNum = 7;	// 音量調整の数
+
+	constexpr int kVolumeAddDec = kSoundMax/kChangeSoundNum;	// 音量調整の増減値
+
 
 	const VECTOR kOptionGraphPos = VGet(216.0f, 78.0f, 0.0f);	// 設定画面画像座標
 	const VECTOR kSelectWindowPos = VGet(960.0f, 640.0f, 0.0f);	// 画面サイズ画像座標
@@ -93,6 +98,7 @@ std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 		return std::make_shared<SceneSelect>();	// セレクトシーンへ行く
 	}
 
+	// カーソル移動
 	if (input.IsTrigger(InputInfo::Down)) {
 		if (m_select==Select::BGM)
 		{
@@ -139,6 +145,7 @@ std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 		}
 	}
 
+	// 音量設定
 	if (m_select == Select::BGM)
 	{
 		m_pSound->ChangeBGMVolume(input);
@@ -149,6 +156,7 @@ std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 	}
 
 
+	// ウィンドウタイプ変更
 	if (m_select == Select::Window)
 	{
 		if(input.IsTrigger(InputInfo::Right))
@@ -194,6 +202,7 @@ std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 
 void SceneOption::Draw()
 {
+	// 画像描画
 	DrawGraphF(kOptionGraphPos.x, kOptionGraphPos.y, m_optionHandle, true);
 	DrawGraphF(kSelectWindowPos.x, kSelectWindowPos.y, m_selectWindowHandlel, true);
 	DrawGraphF(m_cursorPos.x, m_cursorPos.y, m_cursorHandle, true);
@@ -254,35 +263,35 @@ void SceneOption::SetVolumeUI()
 	}
 
 	// SEの音量
-	if (m_pSound->GetSeVolume() <= ((255 / 7) * 0)) {
+	if (m_pSound->GetSeVolume() <= (kVolumeAddDec * 0)) {
 
 	}
-	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 1)) {
+	else if (m_pSound->GetSeVolume() <= (kVolumeAddDec * 1)) {
 		m_seVolumeUI[0] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 2)) {
+	else if (m_pSound->GetSeVolume() <= (kVolumeAddDec * 2)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 3)) {
+	else if (m_pSound->GetSeVolume() <= (kVolumeAddDec * 3)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 		m_seVolumeUI[2] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 4)) {
+	else if (m_pSound->GetSeVolume() <= (kVolumeAddDec * 4)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 		m_seVolumeUI[2] = -1;
 		m_seVolumeUI[3] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 5)) {
+	else if (m_pSound->GetSeVolume() <= (kVolumeAddDec * 5)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 		m_seVolumeUI[2] = -1;
 		m_seVolumeUI[3] = -1;
 		m_seVolumeUI[4] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= ((255 / 7) * 6)) {
+	else if (m_pSound->GetSeVolume() <= (kVolumeAddDec * 6)) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 		m_seVolumeUI[2] = -1;
@@ -290,7 +299,7 @@ void SceneOption::SetVolumeUI()
 		m_seVolumeUI[4] = -1;
 		m_seVolumeUI[5] = -1;
 	}
-	else if (m_pSound->GetSeVolume() <= 255) {
+	else if (m_pSound->GetSeVolume() <= kSoundMax) {
 		m_seVolumeUI[0] = -1;
 		m_seVolumeUI[1] = -1;
 		m_seVolumeUI[2] = -1;
@@ -302,35 +311,40 @@ void SceneOption::SetVolumeUI()
 
 
 	// BGMの音量
-	if (m_pSound->GetBgmVolume() <= ((255 / 7) * 0)) {
-		
-	}
-	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 1)) {
+	if (m_pSound->GetBgmVolume() <= (kVolumeAddDec * 0)) 
+	{}
+	else if (m_pSound->GetBgmVolume() <= (kVolumeAddDec * 1)) 
+	{
 		m_bgmVolumeUI[0] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 2)) {
+	else if (m_pSound->GetBgmVolume() <= (kVolumeAddDec * 2)) 
+	{
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 3)) {
+	else if (m_pSound->GetBgmVolume() <= (kVolumeAddDec * 3)) 
+	{
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 		m_bgmVolumeUI[2] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 4)) {
+	else if (m_pSound->GetBgmVolume() <= (kVolumeAddDec * 4)) 
+	{
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 		m_bgmVolumeUI[2] = -1;
 		m_bgmVolumeUI[3] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 5)) {
+	else if (m_pSound->GetBgmVolume() <= (kVolumeAddDec * 5)) 
+	{
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 		m_bgmVolumeUI[2] = -1;
 		m_bgmVolumeUI[3] = -1;
 		m_bgmVolumeUI[4] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= ((255 / 7) * 6)) {
+	else if (m_pSound->GetBgmVolume() <= (kVolumeAddDec * 6)) 
+	{
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 		m_bgmVolumeUI[2] = -1;
@@ -338,7 +352,8 @@ void SceneOption::SetVolumeUI()
 		m_bgmVolumeUI[4] = -1;
 		m_bgmVolumeUI[5] = -1;
 	}
-	else if (m_pSound->GetBgmVolume() <= 255){
+	else if (m_pSound->GetBgmVolume() <= kSoundMax)
+	{
 		m_bgmVolumeUI[0] = -1;
 		m_bgmVolumeUI[1] = -1;
 		m_bgmVolumeUI[2] = -1;
