@@ -9,10 +9,9 @@
 using namespace MyInputInfo;
 
 namespace {
-	constexpr int kUIMoveX = 605;
-	constexpr int kCursorAddX = 4;
-	
-	const VECTOR kRankingPos = VGet(637.0f, 91.0f, 0.0f);
+	constexpr int kUIMoveX = 605;	// SelectRankingUIの移動量
+
+	const VECTOR kRankingPos = VGet(637.0f, 91.0f, 0.0f);	
 	const VECTOR kUIPos = VGet(462.0f, 236.0f, 0.0f);
 	const VECTOR kCursorPos = VGet(457.5f, 231.5f, 0.0f);
 	const VECTOR kRankingUIPos = VGet(142.0f, 358.0f, 0.0f);
