@@ -12,7 +12,7 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~Map();
+	virtual ~Map(){}
 
 	/// <summary>
 	/// 初期化
@@ -22,7 +22,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(){}
 
 	/// <summary>
 	/// 描画

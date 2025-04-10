@@ -270,6 +270,7 @@ void SceneGame::Draw()
 void SceneGame::End()
 {
 	m_pUI->End();
+	m_pMap->End();
 	m_pPlayer->End();
 	m_pScore->End();
 	m_pEnemy->End();

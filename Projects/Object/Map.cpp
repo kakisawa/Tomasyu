@@ -17,12 +17,6 @@ Map::Map():
 {
 }
 
-Map::~Map()
-{
-	// モデルの削除
-	MV1DeleteModel(m_model);
-}
-
 void Map::Init()
 {
 	// モデルの読み込み
@@ -38,10 +32,6 @@ void Map::Init()
 	m_pointPos.point2 = kPointPos2;
 	m_pointPos.point3 = kPointPos3;
 	m_pointPos.point4 = kPointPos4;
-}
-
-void Map::Update()
-{
 }
 
 void Map::Draw()

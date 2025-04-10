@@ -47,6 +47,9 @@ public:
 		MAX,
 	};
 
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~SoundManager();
 
 	/// <summary>
@@ -91,10 +94,14 @@ public:
 	/// <returns>SE音量</returns>
 	int GetSeVolume() const { return m_seVolume; }
 
-	//サウンドの初期化
+	/// <summary>
+	/// サウンドの初期化
+	/// </summary>
 	void InitSound(void);
 
-	//BGMのパスの初期化
+	/// <summary>
+	/// BGMのパスの初期化
+	/// </summary>
 	void InitBGM(void);
 
 	/// <summary>
@@ -103,7 +110,9 @@ public:
 	/// <param name="_bgm">BGMの種類</param>
 	void LoadBGM(BGM_Type bgm);
 
-	//SEのパスの初期化
+	/// <summary>
+	/// SEのパスの初期化
+	/// </summary>
 	void InitSE(void);
 
 	/// <summary>
@@ -161,6 +170,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	void ReleaseSound(void);
+
 private:
 	int m_seVolume;	// SE音量
 	int m_bgmVolume;	// BGM音量
