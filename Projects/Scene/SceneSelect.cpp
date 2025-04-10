@@ -87,6 +87,7 @@ SceneSelect::~SceneSelect()
 
 void SceneSelect::Init()
 {
+	// 画像の読み込み
 	for (int i = 0; i < m_sceneSelectUIHandle.size(); i++)
 	{
 		m_sceneSelectUIHandle[i] = LoadGraph(kSceneSelectUI[i]);
@@ -101,18 +102,18 @@ void SceneSelect::Init()
 		m_sceneSelectIntroductionHandle[i] = LoadGraph(kSceneSelectIntroductionGtaph[i]);
 	}
 
-	// 画像の読み込み
 	m_nextSceneIntroductionGraph = LoadGraph("Data/Image/SceneSelect/説明文.png");
 	m_cursorUIHandle = LoadGraph("Data/Image/SceneSelect/Cursor.png");
 	m_pressAHandle = LoadGraph("Data/Image/SceneSelect/PressA.png");
 	m_bgHandle = LoadGraph("Data/Image/SceneSelect/board2.png");
 
-
+	// 画像・座標のセット
 	m_sceneSelectGraph = m_sceneSelectUIHandle[0];
 	GetGraphSize(m_sceneSelectGraph, &m_selectGraphX, &m_selectGraphY);
 	m_cursolPos = kCursorUIPos[0];
 	m_pressAPos = kPressAUIPos[0];
 
+	// サウンドの初期化・読み込み
 	m_pSound->InitSound();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kSelectBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
@@ -122,6 +123,7 @@ void SceneSelect::Init()
 
 std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 {
+	// フェード処理
 	m_pFade->FadeIn(m_pFade->GetFadeInFlag());
 	m_pFade->FadeOut(m_isNextSceneFlag);
 
@@ -137,7 +139,7 @@ std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 	}
 
 
-	if (m_isNextSceneFlag&& m_pFade->GatNextSceneFlag())						// 次のシーン
+	if (m_isNextSceneFlag&& m_pFade->GatNextSceneFlag())	// 次のシーン
 	{
 		if (m_nextScene == nextScene::TitleScene)
 		{
@@ -230,6 +232,7 @@ void SceneSelect::Draw()
 
 void SceneSelect::End()
 {
+	// 画像の削除
 	m_pSound->ReleaseSound();
 
 	DeleteGraph(m_nextSceneGrapgh);
@@ -368,6 +371,7 @@ void SceneSelect::SwitchingScene(Input& input)
 
 void SceneSelect::ChangeCursorInfo(int num)
 {
+	// 画像の読み込み・カーソル座標の変更
 	GetGraphSize(m_sceneSelectGraph, &m_selectGraphX, &m_selectGraphY);
 	m_cursolPos = kCursorUIPos[num];
 	m_pressAPos = kPressAUIPos[num];

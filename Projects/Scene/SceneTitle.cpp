@@ -10,10 +10,7 @@
 using namespace MyInputInfo;
 
 namespace {
-
 	const char* kBoardModelFilePath = "Data/Model/BulletinBoard.mv1";	// 掲示板モデルパス
-
-	constexpr int kTitlePosX_Tentative = 250;
 
 	constexpr float kBoardAngle = 0.0f + DX_PI_F;	// 掲示板の角度
 
@@ -30,12 +27,7 @@ SceneTitle::SceneTitle() :
 	m_titleLogoHandle(-1),
 	m_boardAngle(kBoardAngle)
 {
-
 	m_isNextSceneFlag = false;
-}
-
-SceneTitle::~SceneTitle()
-{
 }
 
 void SceneTitle::Init()
@@ -60,6 +52,7 @@ void SceneTitle::Init()
 
 	MV1SetRotationXYZ(m_boardModel, VGet(0.0f, m_boardAngle, 0.0f));
 	
+	// サウンドの初期化・読み込み
 	m_pSound->InitSound();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kTitleBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
@@ -102,9 +95,8 @@ std::shared_ptr<SceneBase> SceneTitle::Update(Input& input)
 
 void SceneTitle::Draw()
 {
-	m_pMap->Draw();
-
-	// モデル描画
+// モデル描画
+	m_pMap->Draw();	
 	MV1DrawModel(m_boardModel);
 	m_pPlayer->Draw();
 	DrawGraphF(kTitleLogoPos.x, kTitleLogoPos.y, m_titleLogoHandle, true);
@@ -130,7 +122,6 @@ void SceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_fadeAlpha);	// 半透明で表示開始
 	DrawGraphF(kButtonPos.x, kButtonPos.y, m_buttonHandle, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);		// 不透明に戻しておく	
-
 
 	// フェード処理
 	m_pFade->Draw();

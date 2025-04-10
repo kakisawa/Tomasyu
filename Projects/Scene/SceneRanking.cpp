@@ -11,13 +11,13 @@ using namespace MyInputInfo;
 namespace {
 	constexpr int kUIMoveX = 605;	// SelectRankingUIの移動量
 
-	const VECTOR kRankingPos = VGet(637.0f, 91.0f, 0.0f);	
-	const VECTOR kUIPos = VGet(462.0f, 236.0f, 0.0f);
-	const VECTOR kCursorPos = VGet(457.5f, 231.5f, 0.0f);
-	const VECTOR kRankingUIPos = VGet(142.0f, 358.0f, 0.0f);
-	const VECTOR kRankingUI_Change = VGet(1322.0f, 389.0f, 0.0f);
+	const VECTOR kRankingPos = VGet(637.0f, 91.0f, 0.0f);			// ランキング画像の座標
+	const VECTOR kUIPos = VGet(462.0f, 236.0f, 0.0f);				// ランキングの種類UIの基本座標
+	const VECTOR kCursorPos = VGet(457.5f, 231.5f, 0.0f);			// カーソルの基本座標
+	const VECTOR kRankingUIPos = VGet(142.0f, 358.0f, 0.0f);		// ランキングUIの座標
+	const VECTOR kRankingUI_Change = VGet(1322.0f, 389.0f, 0.0f);	// 選択中のランキング座標
 
-	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);
+	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);		// ベクトルの初期化
 }
 
 SceneRanking::SceneRanking() :
@@ -50,6 +50,7 @@ void SceneRanking::Init()
 	m_selectBox1 = kCursorPos;
 	m_rankingSelectUI = m_rankingUI_Score;
 
+	// サウンドの初期化・読み込み
 	m_pSound->InitSound();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kRankingBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);
@@ -57,12 +58,14 @@ void SceneRanking::Init()
 
 	m_pSound->PlayBGM(SoundManager::BGM_Type::kRankingBGM, DX_PLAYTYPE_LOOP);
 
+	// ランキングデータの読み込み
 	m_pRankingData->ScoreLoad();
 	m_pRankingData->TimeLoad();	
 }
 
 std::shared_ptr<SceneBase> SceneRanking::Update(Input& input)
 {
+	// フェード処理
 	m_pFade->FadeIn(m_pFade->GetFadeInFlag());
 	m_pFade->FadeOut(m_isNextSceneFlag);
 
@@ -107,10 +110,11 @@ void SceneRanking::Draw()
 	DrawGraphF(kRankingUIPos.x, kRankingUIPos.y, m_rankingUI, true);
 	DrawGraphF(kRankingUI_Change.x, kRankingUI_Change.y, m_rankingSelectUI, true);
 
-	
-	if (m_rankingDataChange == rankingDataChange::Score) {
-		if (m_scoreRanking.size() > 0) {
-
+	// スコアランキングの描画
+	if (m_rankingDataChange == rankingDataChange::Score) 
+	{
+		if (m_scoreRanking.size() > 0) 
+		{
 			for (int i = 0; i < m_scoreRanking.size(); i++)
 			{
 				// プレイ日時描画
@@ -125,6 +129,7 @@ void SceneRanking::Draw()
 			}
 		}
 	}
+	// タイムランキングの描画
 	else if (m_rankingDataChange == rankingDataChange::Time) {
 		if (m_timeRanking.size() > 0) {
 
@@ -144,6 +149,7 @@ void SceneRanking::Draw()
 		}
 	}
 
+	// フォントの変更
 	SetFontSize(14);
 
 	// フェード処理
@@ -155,6 +161,7 @@ void SceneRanking::Draw()
 
 void SceneRanking::End()
 {
+	// 画像の削除
 	DeleteGraph(m_bg);
 	DeleteGraph(m_rankingGraph);
 	DeleteGraph(m_selectUI1);
@@ -164,6 +171,7 @@ void SceneRanking::End()
 	DeleteGraph(m_rankingUI_Score);
 	DeleteGraph(m_rankingUI_Time);
 
+	// サウンドの解放
 	m_pSound->ReleaseSound();
 }
 
@@ -188,7 +196,6 @@ void SceneRanking::SelectRanking(Input& input)
 
 	if (input.IsTrigger(InputInfo::Left))
 	{
-
 		m_pSound->PlaySE(SoundManager::SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
 
 		m_rankingDataChange--;

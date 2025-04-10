@@ -81,6 +81,8 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="pMap">マップ情報</param>
+	/// <param name="pPlayer">プレイヤー情報</param>
 	Enemy(const std::shared_ptr<Map> pMap, const std::shared_ptr<Player> pPlayer);
 
 	/// <summary>
@@ -116,7 +118,7 @@ public:
 	/// <summary>
 	/// Playerのポインタを設定する
 	/// </summary>
-	/// <param name="pPlayer"></param>
+	/// <param name="pPlayer">プレイヤー情報</param>
 	void SetPlayer(std::shared_ptr<Player> pPlayer) { m_pPlayer = pPlayer; }
 
 	/// <summary>
@@ -152,6 +154,7 @@ public:
 	/// <summary>
 	/// 被ダメージ処理
 	/// </summary>
+	/// <param name="damage">ダメージ量</param>
 	void OnDamage(int damage);
 
 	/// <summary>

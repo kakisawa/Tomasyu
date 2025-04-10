@@ -115,8 +115,7 @@ void Player::Init(std::shared_ptr<Score> score)
 	m_pShotMachineGun = std::make_shared<Shot>(shared_from_this(), m_pEnemy,
 		kAttackMachineGun, kMaxBulletMachineGun, kScoreMachineGun);
 
-
-	m_pScore = score;
+	m_pScore = score;			// スコアを入れる
 
 	m_hp = m_chara.maxHp;		// HPに最大値を入れる
 	m_stamina = kMaxStamina;		// スタミナに最大値を入れる
@@ -143,12 +142,12 @@ void Player::Update(Input& input)
 	m_isEnemy = false;
 
 	// スタミナ回復処理
-	if (m_stamina < kMaxStamina) {
+	if (m_stamina < kMaxStamina) 
+	{
 		m_stamina += kStaminaRecovery;
 	}
 
-	Gravity();
-
+	// 銃の残弾セット
 	SetRemainingBulletsHandgun();
 	SetRemainingBulletsMachinegun();
 
@@ -158,6 +157,7 @@ void Player::Update(Input& input)
 	GetItem();
 
 	// 更新処理
+	Gravity();
 	Move();
 	UseItem(input);
 	Angle();
@@ -256,7 +256,8 @@ void Player::LoadData()
 	assert(m_model != -1);
 
 	// 武器モデルの読み込み
-	for (int i = 0; i < m_weapon.size(); i++) {
+	for (int i = 0; i < m_weapon.size(); i++) 
+	{
 		m_weapon[i] = MV1LoadModel(kWeaponPath[i]);
 		assert(m_weapon[i] != -1);
 	}
@@ -274,7 +275,8 @@ void Player::End()
 	m_pShotMachineGun->End();
 
 	// 武器モデルの削除
-	for (int i = 0; i < m_weapon.size(); i++) {
+	for (int i = 0; i < m_weapon.size(); i++) 
+	{
 		MV1DeleteModel(m_weapon[i]);
 	}
 
@@ -303,7 +305,6 @@ void Player::Move()
 {
 	// 移動できる条件の時
 	bool isItem = m_status.situation.isUseItem && !m_status.situation.isReload;
-
 	bool isNotMove = isItem || m_status.situation.isKnifeAttack || m_status.situation.isRoll || m_status.situation.isDamageReceived;
 
 	if (isNotMove)	return;
@@ -369,7 +370,8 @@ void Player::MoveUpdate()
 void Player::Gravity()
 {
 	// 地面に埋まったり宙に浮かないようにする
-	if (m_pos.y > 0.0f|| m_pos.y < 0.0f) {
+	if (m_pos.y > 0.0f|| m_pos.y < 0.0f) 
+	{
 		m_gravity = 0.0f;
 	}
 }
@@ -614,6 +616,7 @@ void Player::LockOn(Input& input)
 
 void Player::ChangeWeapon(Input& input)
 {
+	// 武器を使用中は処理を行わない
 	if (m_status.situation.isGunAttack || m_status.situation.isKnifeAttack)	return;
 
 	if (input.IsTrigger(InputInfo::ChangeWeapon))
@@ -797,7 +800,6 @@ void Player::AttackKnife(Input& input)
 		m_isAttack = false;
 		m_is3Combo = false;
 	}
-
 }
 
 /// <summary>
@@ -863,6 +865,7 @@ void Player::Hit()
 
 void Player::OnDamage(int damage)
 {
+	// 被ダメ中以外は処理を行う
 	if (!m_isInvincibleTime)
 	{
 		m_hp -= damage;
@@ -923,6 +926,7 @@ void Player::Death()
 
 void Player::PlaySE()
 {
+	// ナイフ攻撃時SEを鳴らす
 	if (m_useWeapon == WeaponKind::Knife)
 	{
 		if (m_isAttack && m_isAttackToEnemy)

@@ -11,6 +11,7 @@ namespace {
 
 TitlePlayer::TitlePlayer()
 {
+	// 値の入力
 	m_pos = kPlayerPos;
 	m_angle = kPlayerAngle;
 	m_size = kPlayerSize;
@@ -18,10 +19,6 @@ TitlePlayer::TitlePlayer()
 	// プレイヤーモデルの読み込み
 	m_model = MV1LoadModel(kPlayerModelFilePath);
 	assert(m_model != -1);
-}
-
-TitlePlayer::~TitlePlayer()
-{
 }
 
 void TitlePlayer::Init()

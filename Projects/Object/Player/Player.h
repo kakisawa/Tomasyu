@@ -134,10 +134,12 @@ public:
 	std::map<std::string, PlayerOnlyData> m_playerData;
 
 public:
-
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="pCamera">カメラ情報</param>
+	/// <param name="pEnemy">敵情報</param>
+	/// <param name="pItem">アイテム情報</param>
 	Player(std::shared_ptr<Camera> pCamera ,std::shared_ptr<Enemy> pEnemy,std::shared_ptr<Item> pItem);
 
 	/// <summary>
@@ -153,10 +155,6 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="enemy">敵情報参照</param>
-	/// <param name="item">アイテム参照</param>
-	/// <param name="camera">カメラ参照</param>
-	/// <param name="input">入力情報</param>
 	void Update(Input& input);
 
 	/// <summary>
@@ -186,7 +184,6 @@ public:
 	/// <summary>
 	/// 移動処理
 	/// </summary>
-	/// <param name="camera">カメラ参照</param>
 	void Move();
 
 	/// <summary>
@@ -207,8 +204,6 @@ public:
 	/// <summary>
 	/// 当たり判定更新
 	/// </summary>
-	/// <param name="enemy">敵情報参照</param>
-	/// <param name="item">アイテム参照</param>
 	void ColUpdate();
 
 	/// <summary>
@@ -230,7 +225,6 @@ public:
 	/// 対象を追跡する
 	/// </summary>
 	/// <param name="input">入力</param>
-	/// <param name="enemy">敵情報参照</param>
 	void LockOn(Input& input);
 
 	/// <summary>
@@ -300,32 +294,29 @@ public:
 	/// <summary>
 	/// ハンドガンの残弾数をセットする
 	/// </summary>
-	/// <returns>残弾数</returns>
 	void SetRemainingBulletsHandgun();
 
 	/// <summary>
 	/// マシンガンの残弾数をセットする
 	/// </summary>
-	/// <returns>残弾数</returns>
 	void SetRemainingBulletsMachinegun();
 
 	/// <summary>
 	/// アイテムへ当たったかフラグのセット
 	/// </summary>
 	/// <param name="flag">当たったか入力</param>
-	/// <returns>アイテムと当たったか</returns>
 	void SetGetItemFlag(int flag) { m_isItem = flag; }
 
 	/// <summary>
 	///	Enemyポインタを設定する
 	/// </summary>
-	/// <param name="pEnemy"></param>
+	/// <param name="pEnemy">敵情報</param>
 	void SetEnemyPointer(std::shared_ptr<Enemy> pEnemy) { m_pEnemy = pEnemy; }
 
 	/// <summary>
 	/// Cameraポインタを設定する
 	/// </summary>
-	/// <param name="pCamera"></param>
+	/// <param name="pCamera">カメラ情報</param>
 	void SetCameraPointer(std::shared_ptr<Camera> pCamera) { m_pCamera = pCamera; }
 
 	/// <summary>
@@ -334,7 +325,10 @@ public:
 	/// <returns>スタミナ</returns>
 	float GetStamina()const { return m_stamina; }
 
-	// 選択中のアイテムを渡す関数
+	/// <summary>
+	/// 選択中のアイテムを渡す関数
+	/// </summary>
+	/// <returns>選択中のアイテム</returns>
 	int GetItemFrame() const { return m_useItem; }
 
 	/// <summary>

@@ -75,7 +75,7 @@ void SceneOption::Init()
 		m_selectWindowUI[i] = LoadGraph(kSelectWindow[i]);
 	}
 
-	// サウンド初期化
+	// サウンドの初期化・読み込み
 	m_pSound->Init();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kSelectBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);

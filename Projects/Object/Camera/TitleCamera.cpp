@@ -1,27 +1,28 @@
-#include "TitleCamera.h"
+ï»¿#include "TitleCamera.h"
 #include <cmath>
 #include <algorithm>
 
 namespace {
-	constexpr float kCameraNear = 0.1f;			// ƒJƒƒ‰è‘OƒNƒŠƒbƒv‹——£
-	constexpr float kCameraFar = 5000.0f;		// ƒJƒƒ‰Å‰œƒNƒŠƒbƒv‹——£
+	constexpr float kCameraNear = 0.1f;			// ã‚«ãƒ¡ãƒ©æ‰‹å‰ã‚¯ãƒªãƒƒãƒ—è·é›¢
+	constexpr float kCameraFar = 5000.0f;		// ã‚«ãƒ¡ãƒ©æœ€å¥¥ã‚¯ãƒªãƒƒãƒ—è·é›¢
 
-	constexpr float kDist = -80.0f;				// ƒJƒƒ‰‚©‚çƒvƒŒƒCƒ„[‚Ü‚Å‚Ì‹——£
+	constexpr float kDist = -80.0f;				// ã‚«ãƒ¡ãƒ©ã‹ã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¾ã§ã®è·é›¢
 
-	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// ƒxƒNƒgƒ‹‚Ì‰Šú‰¿’l
-	const VECTOR kLightDirection = VGet(20.0f, -50.0f, 0.0f);	// ƒ‰ƒCƒg‚ÌwŒü«
+	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// ãƒ™ã‚¯ãƒˆãƒ«ã®åˆæœŸä¾¡å€¤
+	const VECTOR kLightDirection = VGet(20.0f, -50.0f, 0.0f);	// ãƒ©ã‚¤ãƒˆã®æŒ‡å‘æ€§
 }
 
 TitleCamera::TitleCamera():
 	m_pos(kInitVec),
 	m_targetPos(kInitVec)
 {
-	// 	ƒJƒƒ‰‚Ìè‘OƒNƒŠƒbƒv‹——£‚Æ‰œƒNƒŠƒbƒv‹——£‚ğİ’è‚·‚é
+	// 	ã‚«ãƒ¡ãƒ©ã®æ‰‹å‰ã‚¯ãƒªãƒƒãƒ—è·é›¢ã¨å¥¥ã‚¯ãƒªãƒƒãƒ—è·é›¢ã‚’è¨­å®šã™ã‚‹
 	SetCameraNearFar(kCameraNear, kCameraFar);
 }
 
 void TitleCamera::Init(VECTOR pos)
 {
+	// å¯¾è±¡ã®ã‚»ãƒƒãƒˆ
 	m_targetPos = pos;
 	m_targetPos = VAdd(m_targetPos, VGet(10.0f, 50.0f, 0.0f));
 	m_pos = VGet(50.0f, 60.0f, 230.0f);
@@ -29,9 +30,9 @@ void TitleCamera::Init(VECTOR pos)
 
 void TitleCamera::Update()
 {
-	// ƒJƒƒ‰‚Ìî•ñ‚ğƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒJƒƒ‰‚É”½‰f‚³‚¹‚é
+	// ã‚«ãƒ¡ãƒ©ã®æƒ…å ±ã‚’ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®ã‚«ãƒ¡ãƒ©ã«åæ˜ ã•ã›ã‚‹
 	SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
 
-	// 	•W€ƒ‰ƒCƒg‚Ìƒ^ƒCƒv‚ğƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg‚É‚·‚é
+	// 	æ¨™æº–ãƒ©ã‚¤ãƒˆã®ã‚¿ã‚¤ãƒ—ã‚’ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆã«ã™ã‚‹
 	ChangeLightTypeDir(kLightDirection);
 }

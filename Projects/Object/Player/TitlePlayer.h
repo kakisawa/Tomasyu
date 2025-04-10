@@ -38,7 +38,7 @@ public:
     /// <summary>
     /// デストラクタ
     /// </summary>
-    virtual ~TitlePlayer();
+    virtual ~TitlePlayer(){}
 
     /// <summary>
     /// 初期化

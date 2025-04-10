@@ -51,7 +51,7 @@ void SceneExplanation::Init()
 
 	m_explanationHandle = m_explanationUIHandle[m_count];	// 説明画像
 
-	// サウンド読み込み
+	// サウンドの初期化・読み込み
 	m_pSound->InitSound();
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kSelectBGM);
 	m_pSound->LoadSE(SoundManager::SE_Type::kButtonSE);

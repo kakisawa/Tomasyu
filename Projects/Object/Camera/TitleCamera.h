@@ -1,43 +1,37 @@
-#pragma once
+ï»¿#pragma once
 #include "DxLib.h"
 
 class TitleCamera
 {
 public:
 	/// <summary>
-	/// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	/// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
 	TitleCamera();
 
 	/// <summary>
-	/// ƒfƒXƒgƒ‰ƒNƒ^
+	/// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
 	~TitleCamera(){}
 
 	/// <summary>
-	/// ‰Šú‰»
+	/// åˆæœŸåŒ–
 	/// </summary>
-	/// <param name="pos">’‹“_À•W</param>
+	/// <param name="pos">æ³¨è¦–ç‚¹åº§æ¨™</param>
 	void Init(VECTOR pos);
 
 	/// <summary>
-	/// XV
+	/// æ›´æ–°
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// ƒJƒƒ‰ˆÊ’u•â³
+	/// ã‚«ãƒ¡ãƒ©ã®åº§æ¨™ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	/// </summary>
-	void FixCameraPos();
-
-	/// <summary>
-	/// ƒJƒƒ‰‚ÌÀ•W‚ğƒZƒbƒg‚·‚é
-	/// </summary>
-	/// <param name="pos">À•W</param>
+	/// <param name="pos">åº§æ¨™</param>
 	void SetPos(const VECTOR& pos) { m_pos = pos; }
 
 private:
-
-	VECTOR m_pos;				// ƒJƒƒ‰À•W
-	VECTOR m_targetPos;			// ’‹“_À•W
+	VECTOR m_pos;				// ã‚«ãƒ¡ãƒ©åº§æ¨™
+	VECTOR m_targetPos;			// æ³¨è¦–ç‚¹åº§æ¨™
 };

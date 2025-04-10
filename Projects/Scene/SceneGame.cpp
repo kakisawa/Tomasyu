@@ -78,7 +78,7 @@ void SceneGame::Init()
 	m_pSound->InitBGM();
 	m_pScore->Init(m_pTime);
 
-	// BGMのロード
+	// サウンドの初期化・読み込み
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kGameBGM);
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kGameClearBGM);
 	// 通常バトル時のBGMを流す
@@ -232,7 +232,6 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 	//if (input.IsTrigger(InputInfo::DebugStart)) {			// STARTボタン
 	//	m_pEnemy->SetDeathFlag(true);
 	//}
-
 #endif // DEBUG
 
 	return shared_from_this();

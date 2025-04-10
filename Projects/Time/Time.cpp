@@ -3,7 +3,7 @@
 #include "DxLib.h"
 
 namespace {
-	constexpr int kMaxtimeLimit = 10800;	// 制限時間(3分=180秒)
+	constexpr int kMaxtimeLimit = 18000;	// 制限時間(5分=300秒)
 
 	const VECTOR kGameClearTimePos[4] = {
 		VGet(1103.0f, 848.0f, 0.0f),
@@ -150,7 +150,7 @@ void Time::End()
 void Time::SetTimeNavyHandle()
 {
 	// 分数
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		if (m_minutes == i)
 		{

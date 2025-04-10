@@ -1,0 +1,58 @@
+﻿  MiniWindow.cpp
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Util\MiniWindow.cpp(8,29): warning C4244: '初期化中': 'float' から 'const int' への変換です。データが失われる可能性があります。
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Util\MiniWindow.cpp(30,43): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Util\MiniWindow.cpp(31,45): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Util\MiniWindow.cpp(38,84): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Util\MiniWindow.cpp(38,60): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Util\MiniWindow.cpp(38,36): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Util\MiniWindow.cpp(38,27): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+  TitleCamera.cpp
+  TitlePlayer.cpp
+  RankingData.cpp
+  Score.cpp
+  Collision.cpp
+  Effect.cpp
+  Fade.cpp
+  Input.cpp
+  LoadCsv.cpp
+  Main.cpp
+  SceneManager.cpp
+  SoundManager.cpp
+  Camera.cpp
+  Enemy.cpp
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Object\Enemy.cpp(363,64): warning C4267: '引数': 'size_t' から '_Ty' に変換しました。データが失われているかもしれません。
+          with
+          [
+              _Ty=int
+          ]
+  Item.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\include\xutility(231,77): warning C4244: '引数': 'const float' から 'int' への変換です。データが失われる可能性があります。
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\include\memory(2023,1): message : コンパイル対象の関数 テンプレート インスタンス化 'void std::_Construct_in_place<_Ty,const float&>(_Ty &,const float &) noexcept(false)' のリファレンスを確認してください
+          with
+          [
+              _Ty=IsTime
+          ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\include\memory(2703,36): message : コンパイル対象の関数 テンプレート インスタンス化 'std::_Ref_count_obj2<IsTime>::_Ref_count_obj2<const float&>(const float &)' のリファレンスを確認してください
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933\include\memory(2704,20): message : コンパイル対象の関数 テンプレート インスタンス化 'std::_Ref_count_obj2<IsTime>::_Ref_count_obj2<const float&>(const float &)' のリファレンスを確認してください
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Object\Item.cpp(71,65): message : コンパイル対象の関数 テンプレート インスタンス化 'std::shared_ptr<IsTime> std::make_shared<IsTime,const float&>(const float &)' のリファレンスを確認してください
+  Map.cpp
+  ModelBase.cpp
+  Player.cpp
+  Shot.cpp
+  コンパイル中...
+  SceneBase.cpp
+  SceneDebug.cpp
+  SceneExplanation.cpp
+  SceneGame.cpp
+  SceneOption.cpp
+  SceneRanking.cpp
+  SceneSelect.cpp
+  SceneTitle.cpp
+  IsTime.cpp
+  Time.cpp
+  UISceneGame.cpp
+  コード生成しています。
+  Previous IPDB not found, fall back to full compilation.
+  All 3204 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  コード生成が終了しました。
+  Tomasyu.vcxproj -> C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\x64\Release\Tomasyu.exe

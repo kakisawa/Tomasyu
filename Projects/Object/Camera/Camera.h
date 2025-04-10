@@ -9,6 +9,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="pPlayer">プレイヤー情報</param>
 	Camera(std::shared_ptr<Player> pPlayer);
 
 	/// <summary>

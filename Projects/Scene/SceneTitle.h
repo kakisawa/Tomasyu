@@ -9,23 +9,45 @@ class SceneTitle :
     public SceneBase
 {
 public:
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
     SceneTitle();
-    ~SceneTitle();
 
+    /// <summary>
+    /// デストラクタ
+    /// </summary>
+    ~SceneTitle(){}
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
     void Init() override;
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <param name="input">入力</param>
     virtual std::shared_ptr<SceneBase> Update(Input& input) override;
+
+    /// <summary>
+    ///  描画
+    /// </summary>
     void Draw() override;
+
+    /// <summary>
+    /// 終了
+    /// </summary>
     virtual void End() override;
 
 private:
 	int m_titleLogoHandle; // タイトルロゴ画像
-    int m_buttonHandle;  // Press...画像
-
+    int m_buttonHandle;     // Press...画像
 	int m_boardModel;       // 掲示板モデル
 
 	float m_boardAngle;     // 掲示板の角度
 
-	VECTOR m_boardPos;
+	VECTOR m_boardPos;      // 掲示板画像の座標
 
     // プレイヤー
     std::shared_ptr<TitlePlayer> m_pPlayer = std::make_shared<TitlePlayer>();

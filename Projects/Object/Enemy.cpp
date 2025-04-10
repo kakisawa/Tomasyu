@@ -12,6 +12,9 @@ namespace {
 	constexpr int kAttackHandArm = 30;						// 右腕攻撃力
 	constexpr int kAttackMachineArm = 30;					// 左腕攻撃力
 	constexpr int kNextAttackTime = 100;					// 次の攻撃をするまでのカウント
+
+	constexpr int kAttackKind1TimeUnder = 30;
+
 	constexpr float kInitAngle = -DX_PI_F / 2.0f * 90.0f;	// プレイヤーの初期角度*90(向きを反対にする)
 
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);			// Vector値初期価値
@@ -56,6 +59,8 @@ void Enemy::Init()
 	Load();
 
 	ModelBase::Init();
+
+	// データの入力
 	m_pos = VGet(m_chara.initPosX, m_chara.initPosY, m_chara.initPosZ);
 	MV1SetScale(m_model, VGet(m_chara.modelSize, m_chara.modelSize, m_chara.modelSize));
 	m_angle = kInitAngle;
@@ -74,6 +79,7 @@ void Enemy::Update()
 	PlaySE();
 	ModelBase::Update();
 
+	// 死亡していたら以下の処理を通さない
 	if (m_status.situation.isDeath) return;
 
 	Attack();
@@ -182,19 +188,15 @@ void Enemy::ColUpdate()
 	// プレイヤーに敵の攻撃が当たったかどうかの判定
 	if (m_attackKind == 1)
 	{
-		if (m_nextAnimTime >= 30)	return;
-
+		if (m_nextAnimTime >= kAttackKind1TimeUnder)	return;
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 	}
 	else if (m_attackKind == 2)
 	{
-
-
-
 		if (m_nextAnimTime <= 28|| m_nextAnimTime >= 55)	return;
-
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
-		if (!m_isColAttack) {
+		if (!m_isColAttack)
+		{
 			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[0], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 	}
@@ -207,7 +209,6 @@ void Enemy::ColUpdate()
 	else if (m_attackKind == 4)
 	{
 		if (m_nextAnimTime >= 35)	return;
-
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 	}
 }
@@ -219,9 +220,11 @@ void Enemy::Move()
 
 	m_move = kInitVec;
 
+	// プレイヤーにぶつかっているかどうか
 	bool toPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_hitting, m_pPlayer->GetCol().m_colPlayer.m_body);
 	
-	if (!toPlayer) {
+	if (!toPlayer)
+	{
 		if (m_isSearchPlayer)
 		{
 			m_isNextTargetPosSearch = true;
@@ -286,7 +289,6 @@ void Enemy::Move()
 	}
 	m_pos = VAdd(m_pos, m_move);
 	
-
 	// 移動処理の更新
 	MoveUpdate();
 }
