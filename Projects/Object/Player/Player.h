@@ -374,6 +374,7 @@ public:
 	Item::ItemKind item() const { return m_item[m_useItem]; }
 
 private:
+	int m_aimingHandle;			// 照準画像
 	int m_remainingBulletsHandgun;		// ハンドガンの残弾数
 	int m_remainingBulletsMachinegun;	// マシンガンの残弾数
 	int m_useItem;				// 所持している3つのうち、使用するアイテム

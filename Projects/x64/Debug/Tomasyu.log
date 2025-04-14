@@ -1,9 +1,2 @@
-﻿  SceneDebug.cpp
-  SceneExplanation.cpp
-  SceneGame.cpp
-  SceneOption.cpp
-  SceneRanking.cpp
-  SceneSelect.cpp
-  Time.cpp
-  コードを生成中...
+﻿  Player.cpp
   Tomasyu.vcxproj -> C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\x64\Debug\Tomasyu.exe

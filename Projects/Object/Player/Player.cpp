@@ -15,6 +15,8 @@ using namespace MyInputInfo;
 
 namespace
 {
+	const char* kAmingHandlePath = "Data/Image/SceneGame/Aiming.png";	// 照準画像パス
+
 	const char* kPlayerModelFilePath = "Data/Model/PlayerModel.mv1";	// プレイヤーモデルパス
 	const char* kModelRightHandMiddle = "mixamorig:RightHandMiddle4";	// ハンドガン用右手パス
 	const char* kModelRightHandRing3 = "mixamorig:RightHandRing3";		// マシンガン用右手パス
@@ -58,6 +60,7 @@ namespace
 }
 
 Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Item> pItem) :
+	m_aimingHandle(-1),
 	m_useItem(0),
 	m_getItem(0),
 	m_machineGunCount(0),
@@ -206,6 +209,15 @@ void Player::Draw()
 	m_pShotHandGun->Draw();
 	m_pShotMachineGun->Draw();
 
+
+	// 照準の描画
+	if (m_isLookOn) 
+	{
+		//DrawGraphF(m_pEnemy->GetPos().x-100, m_pEnemy->GetPos().y-200, m_aimingHandle, true);
+		DrawGraphF(500, 500, m_aimingHandle, true);
+	}
+	
+
 #ifdef _DEBUG
 	//DrawFormatString(0, 60, 0xffffff, "Playe:HP=%d", m_hp);
 	//DrawFormatString(0, 200, 0xffffff, "Playe:m_stamina=%.2f", m_stamina);
@@ -262,6 +274,8 @@ void Player::LoadData()
 		assert(m_weapon[i] != -1);
 	}
 
+	m_aimingHandle = LoadGraph(kAmingHandlePath);
+
 	// SEの初期化・読み込み
 	m_pSound->InitSE();
 	m_pSound->LoadSE(SoundManager::SE_Type::kKnifeSE);
@@ -279,6 +293,8 @@ void Player::End()
 	{
 		MV1DeleteModel(m_weapon[i]);
 	}
+
+	DeleteGraph(m_aimingHandle);
 
 	// サウンドの解放
 	m_pSound->ReleaseSound();
