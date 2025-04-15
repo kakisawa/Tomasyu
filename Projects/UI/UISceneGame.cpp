@@ -2,6 +2,7 @@
 #include "../Object/Player/Player.h"
 #include "../Object/Enemy.h"
 #include "../Object/Shot.h"
+#include "../Util/Score.h"
 #include "DxLib.h"
 #include <cassert>
 #include <algorithm>
@@ -59,9 +60,19 @@ namespace {
 		VGet(1868.0f, 347.0f,0.0f),
 	};
 
+	const VECTOR kScoreUIPos[5]{		// スコアUI座標
+		VGet(59.0f,186.0f,0.0f),
+		VGet(138.0f,186.0f,0.0f),
+		VGet(181.0f,186.0f,0.0f),
+		VGet(224.0f,186.0f,0.0f),
+		VGet(267.0f,186.0f,0.0f),
+	};
+
 	VECTOR kDisplayItemPos = VGet(1650, 580, 0.0f);			// 選択中のアイテム文字UI座標
 	VECTOR kDisplayWeaponPos = VGet(1610, 33, 0.0f);		// 選択中の武器文字UI座標
 	VECTOR kBaseUI = VGet(1740.0f, 91.0f, 0.0f);			// アイテム・武器大本UI座標
+	VECTOR kScoreBgUIPos = VGet(-5.0f, 135.0f, 0.0f);		// スコア拝啓UI座標
+	VECTOR kLockOnUIPos = VGet(1565.0f, 98.0f, 0.0f);		// ロックオンUI座標
 
 	const char* const kItemCharaUI[9]{						// 文字UI画像
 		"Data/Image/SceneGame/CharUI/Tentative.png",
@@ -73,9 +84,9 @@ namespace {
 		"Data/Image/SceneGame/CharUI/HandGun.png",
 		"Data/Image/SceneGame/CharUI/MachineGun.png",
 		"Data/Image/SceneGame/CharUI/Knife.png",
-	};
+	}; 
 
-	const char* const kPlayerToolUI[12]{
+	const char* const kPlayerToolUI[14]{
 		"Data/Image/SceneGame/Item/ItemWeaponBg.png",
 		"Data/Image/SceneGame/WeaponCursor.png",
 		"Data/Image/SceneGame/ItemCursor.png",
@@ -88,6 +99,8 @@ namespace {
 		"Data/Image/SceneGame/Item/Ammunition.png",
 		"Data/Image/SceneGame/ChangeWeapon.png",		// 武器切り替えUI
 		"Data/Image/SceneGame/ChangeItem.png",			// アイテム切り替えUI
+		"Data/Image/SceneGame/ScoreUIBg.png",			// スコア背景UI
+		"Data/Image/SceneGame/LockOn.png",				// ロックオンUI
 	};
 
 	const char* const kBarUI[7]{
@@ -114,7 +127,7 @@ namespace {
 	};
 }
 
-UISceneGame::UISceneGame(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy>pEnemy) :
+UISceneGame::UISceneGame(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy>pEnemy,std::shared_ptr<Score> pScore) :
 	m_playerRemainingBullets_handgun(0),
 	m_playerRemainingBullets_machinegun(0),
 	m_useWeaponChara(0),
@@ -126,7 +139,8 @@ UISceneGame::UISceneGame(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy>
 	m_cursorUI1Pos(kWeaponSelectPos[0]),
 	m_cursorUI2Pos(kItemSelectPos[0]),
 	m_pPlayer(pPlayer),
-	m_pEnemy(pEnemy)
+	m_pEnemy(pEnemy),
+	m_pScore(pScore)
 {
 	// 素材の読み込み
 	Load();
@@ -153,6 +167,9 @@ void UISceneGame::Update()
 
 	// 残弾UIの設定
 	SetUI_RemainingBullets();
+
+	// スコアの設定
+	SetScore();
 }
 
 void UISceneGame::Draw()
@@ -220,9 +237,28 @@ void UISceneGame::Draw()
 	DrawGraphF(kGunUIPos[4].x, kGunUIPos[4].y, balanceBullets[GunType::MachineGun].m_playerTensHandle, true);
 	DrawGraphF(kGunUIPos[5].x, kGunUIPos[5].y, balanceBullets[GunType::MachineGun].m_playerOneHandle, true);
 
+
+	// スコア
+	DrawGraphF(kScoreBgUIPos.x, kScoreBgUIPos.y, m_playerToolUIHandle[12], true);
+	DrawGraphF(kScoreUIPos[0].x, kScoreUIPos[0].y, m_score.m_tenThousandsHandle, true);
+	DrawGraphF(kScoreUIPos[1].x, kScoreUIPos[1].y, m_score.m_thousandsHandle, true);
+	DrawGraphF(kScoreUIPos[2].x, kScoreUIPos[2].y, m_score.m_hundredsHandle, true);
+	DrawGraphF(kScoreUIPos[3].x, kScoreUIPos[3].y, m_score.m_tensHandle, true);
+	DrawGraphF(kScoreUIPos[4].x, kScoreUIPos[4].y, m_score.m_oneHandle, true);
+
+
+	// ロックオンUI
+	DrawGraphF(kLockOnUIPos.x, kLockOnUIPos.y, m_playerToolUIHandle[13], true);
+
 #ifdef _DEBUG
 	//DrawFormatString(0, 0, 0xffffff, "m_playerRemainingBullets_handgun=%d", m_playerRemainingBullets_handgun);
 	//DrawFormatString(0, 20, 0xffffff, "m_playerRemainingBullets_machinegun=%d", m_playerRemainingBullets_machinegun);
+
+	DrawFormatString(0, 500, 0xffffff, "10000の位=%d", m_score.m_tenThousandsHandle);
+	DrawFormatString(0, 520, 0xffffff, "1000の位=%d", m_score.m_thousandsHandle);
+	DrawFormatString(0, 540, 0xffffff, "100の位=%d", m_score.m_hundredsHandle);
+	DrawFormatString(0, 560, 0xffffff, "10の位=%d", m_score.m_tensHandle);
+	DrawFormatString(0, 580, 0xffffff, "1の位=%d", m_score.m_oneHandle);
 #endif // DEBUG
 }
 
@@ -412,6 +448,15 @@ void UISceneGame::SetUI_RemainingBullets()
 
 	SetUI_RemainingBulletsHandle(GunType::HandGun, m_playerRemainingBullets_handgun);
 	SetUI_RemainingBulletsHandle(GunType::MachineGun, m_playerRemainingBullets_machinegun);
+}
+
+void UISceneGame::SetScore()
+{
+	m_score.m_tenThousandsHandle = m_pScore->GetScore() / 10000;		// 10000の位
+	m_score.m_thousandsHandle = (m_pScore->GetScore() % 10000) / 1000;	// 1000の位
+	m_score.m_hundredsHandle = (m_pScore->GetScore() % 1000) / 100;		// 100の位
+	m_score.m_tensHandle = (m_pScore->GetScore() % 100) / 10;			// 10の位
+	m_score.m_oneHandle = (m_pScore->GetScore() % 100) % 10;			// 1の位
 }
 
 void UISceneGame::SetUI_RemainingBulletsHandle(GunType type, int num)

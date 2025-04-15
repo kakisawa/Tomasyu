@@ -44,6 +44,10 @@ namespace
 	constexpr int kScoreHandGun = 30;			// ハンドガンスコア
 	constexpr int kScoreMachineGun = 10;		// マシンガンスコア
 
+	constexpr int kScoreKnife = 500;			// ナイフスコア
+	constexpr int kMaxItemNum = 3;				// 所持できるアイテムの最大数
+	int useItem = 0;
+
 	constexpr int kMedicRecoveryAmount = 10;	// 回復量
 	constexpr float kMaxStamina = 100.0f;		// スタミナ最大値
 	constexpr float kStaminaRecovery = 0.1f;	// スタミナ回復量
@@ -51,9 +55,9 @@ namespace
 	constexpr float kStaminaConsumption = 25.0f;// 回避時スタミナ消費量
 	constexpr float kInvincibleTime = 15.0f;	// 回避時の無敵時間
 
-	constexpr int kMaxItemNum = 3;				// 所持できるアイテムの最大数
+	constexpr float kAimingSize = 100.0f;		// 照準画像のサイズ
 
-	int useItem = 0;
+	VECTOR kAimingPos = VGet(960.0f, 480.0f, 0.0f);	// 照準座標
 
 	constexpr float kInitFloat = 0.0f;				// float値初期化
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// Vector値初期化値
@@ -189,7 +193,7 @@ void Player::Update(Input& input)
 	{
 		Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kKnife, m_KnifeTipPos);
 
-		m_pScore->AddScore(500);
+		m_pScore->AddScore(kScoreKnife);
 		m_pEnemy->OnDamage(m_attack);
 		m_isAttack = false;
 	}
@@ -213,8 +217,9 @@ void Player::Draw()
 	// 照準の描画
 	if (m_isLookOn) 
 	{
-		//DrawGraphF(m_pEnemy->GetPos().x-100, m_pEnemy->GetPos().y-200, m_aimingHandle, true);
-		DrawGraphF(500, 500, m_aimingHandle, true);
+		DrawExtendGraphF(kAimingPos.x - kAimingSize / 2 , kAimingPos.y - kAimingSize / 2,
+			kAimingPos.x + kAimingSize / 2, kAimingPos.y + kAimingSize / 2,
+			m_aimingHandle, true);
 	}
 	
 
@@ -238,8 +243,8 @@ void Player::Draw()
 	//DrawFormatString(0, 500, 0xffffff, "Player:m_useItem[1]=%d", m_item[1]);
 	//DrawFormatString(0, 520, 0xffffff, "Player:m_useItem[2]=%d", m_item[2]);
 	//DrawFormatString(0, 540, 0xffffff, "Player:m_useWeapon=%d", m_useWeapon);
-	DrawFormatString(0, 560, 0xffffff, "Player:m_animNext.totalTime=%.2f", m_animNext.totalTime);
-	DrawFormatString(0, 580, 0xffffff, "Player:m_nextAnimTime=%.2f", m_nextAnimTime);
+	/*DrawFormatString(0, 560, 0xffffff, "Player:m_animNext.totalTime=%.2f", m_animNext.totalTime);
+	DrawFormatString(0, 580, 0xffffff, "Player:m_nextAnimTime=%.2f", m_nextAnimTime);*/
 	//DrawFormatString(0, 640, 0xffffff, "Player:m_status.situation.isKnifeAttack=%d", m_status.situation.isKnifeAttack);
 	//DrawFormatString(0, 660, 0xffffff, "Player:m_isEnemy=%d", m_isEnemy);
 	//DrawFormatString(0, 680, 0xffffff, "Player:m_isAttackToEnemy=%d", m_isAttackToEnemy);
@@ -275,6 +280,7 @@ void Player::LoadData()
 	}
 
 	m_aimingHandle = LoadGraph(kAmingHandlePath);
+	assert(m_aimingHandle != -1);
 
 	// SEの初期化・読み込み
 	m_pSound->InitSE();

@@ -59,6 +59,12 @@ public:
 	void SetTotalScoreHandle();
 
 	/// <summary>
+	/// 現在のスコア渡し
+	/// </summary>
+	/// <returns>スコア</returns>
+	const int GetScore() { return m_score; }
+
+	/// <summary>
 	/// 合計スコア渡し
 	/// </summary>
 	/// <returns>合計スコア</returns>
