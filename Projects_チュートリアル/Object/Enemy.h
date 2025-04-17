@@ -176,8 +176,15 @@ public:
 	/// </summary>
 	void ChangeAnimIdle();
 
-	// SEを鳴らす
+	/// <summary>
+	/// SEを鳴らす
+	/// </summary>
 	void PlaySE();
+
+	/// <summary>
+	/// チュートリアル用
+	/// </summary>
+	void TutorialHp();
 
 private:
 	int m_attackTimeCount;	// 攻撃をするまでにかかる時間

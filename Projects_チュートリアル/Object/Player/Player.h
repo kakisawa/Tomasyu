@@ -133,6 +133,14 @@ public:
 
 	std::map<std::string, PlayerOnlyData> m_playerData;
 
+
+
+
+	struct Tutorial{
+		bool isTMove = false;
+
+	};
+
 public:
 	/// <summary>
 	/// コンストラクタ

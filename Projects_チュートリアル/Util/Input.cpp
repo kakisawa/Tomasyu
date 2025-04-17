@@ -51,7 +51,7 @@ Input::Input()
 
 
 	// デバッグ用
-	m_commandTable[InputInfo::DebugDamageReceived] = { {InputType::key,KEY_INPUT_B},
+	m_commandTable[InputInfo::DebugBack] = { {InputType::key,KEY_INPUT_B},
 											{InputType::pad,PAD_INPUT_L} };		// XBoxのBackボタン
 
 }

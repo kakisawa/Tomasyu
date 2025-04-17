@@ -45,9 +45,15 @@ public:
     /// </summary>
     virtual void End() override;
 
+    /// <summary>
+    /// チュートリアル画像の切り替え
+    /// </summary>
+    void ChangeTutorialDisplay(Input& input);
 
 private:
     int m_pauseHandle;          // ポーズ画像
+    int m_tutorialDisplay;      // チュートリアル説明画像(表示用)
+    std::array<int, 3> m_tutorialHandle;    // チュートリアル説明画像
 
     bool m_isPause;         // ポーズフラグ
 

@@ -13,11 +13,23 @@
 #include "../Util/MiniWindow.h"
 #include "DxLib.h"
 #include <ctime>
+#include <cassert>
 
 using namespace MyInputInfo;
 
-SceneTutorial::SceneTutorial(): 
+namespace {
+	const char* const kTutorialHandlePath[3] = {	// チュートリアル画像パス
+		"Data/Image/SceneTutorial/Tutorial1.png" ,
+		"Data/Image/SceneTutorial/Tutorial2.png" ,
+		"Data/Image/SceneTutorial/Tutorial3.png" ,
+	};
+
+	const VECTOR kTutorialPos = VGet(0.0f, 310.0f, 0.0f);
+}
+
+SceneTutorial::SceneTutorial() :
 	m_pauseHandle(-1),
+	m_tutorialDisplay(-1),
 	m_isPause(false)
 {
 	m_pEnemy = std::make_shared<Enemy>(m_pMap, nullptr);
@@ -57,8 +69,16 @@ void SceneTutorial::Init()
 
 	// 画像の読み込み
 	m_pauseHandle = LoadGraph("Data/Image/SceneTutorial/TutorialPause.png");
+	assert(m_pauseHandle != -1);
+
+	for (int i = 0; i < m_tutorialHandle.size(); i++)
+	{
+		m_tutorialHandle[i] = LoadGraph(kTutorialHandlePath[i]);
+		assert(m_tutorialHandle[i] != -1);
+	}
 
 	m_pMiniWindow->Init(m_pauseHandle);
+	m_tutorialDisplay = m_tutorialHandle[0];
 }
 
 std::shared_ptr<SceneBase> SceneTutorial::Update(Input& input)
@@ -97,20 +117,19 @@ std::shared_ptr<SceneBase> SceneTutorial::Update(Input& input)
 	}
 	else
 	{
-		// 敵が死んでいなければ
-		if (!m_pEnemy->GetDeathFlag())
-		{
-			m_pFade->FadeIn(true);
-			m_pMap->Update();
-			m_pItem->Update();
-			m_pPlayer->Update(input);
-			m_pEnemy->Update();
-			m_pCamera->Update();
-			m_pUI->Update();
+		m_pFade->FadeIn(true);
+		m_pMap->Update();
+		m_pItem->Update();
+		m_pPlayer->Update(input);
+		m_pEnemy->Update();
+		m_pEnemy->TutorialHp();
+		m_pCamera->Update();
+		m_pUI->Update();
+		// エフェクトの更新
+		Effect::GetInstance().Update();
 
-			// エフェクトの更新
-			Effect::GetInstance().Update();
-		}
+
+		ChangeTutorialDisplay(input);
 	}
 
 	return shared_from_this();
@@ -125,6 +144,9 @@ void SceneTutorial::Draw()
 	m_pScore->Draw();
 	Effect::GetInstance().Draw();	// エフェクト表示
 	m_pUI->Draw();
+
+	DrawGraphF(kTutorialPos.x, kTutorialPos.y, m_tutorialDisplay, true);
+
 	m_pFade->Draw();
 
 	// ポーズ中の描画
@@ -132,7 +154,6 @@ void SceneTutorial::Draw()
 	{
 		m_pMiniWindow->Draw();
 	}
-
 }
 
 void SceneTutorial::End()
@@ -146,4 +167,28 @@ void SceneTutorial::End()
 
 	// 画像の削除
 	DeleteGraph(m_pauseHandle);
+
+	for (int i = 0; i < m_tutorialHandle.size(); i++)
+	{
+		DeleteGraph(m_tutorialHandle[i]);
+	}
+}
+
+void SceneTutorial::ChangeTutorialDisplay(Input& input)
+{
+	if (input.IsTrigger(InputInfo::DebugBack))
+	{
+		if (m_tutorialDisplay == m_tutorialHandle[0])
+		{
+			m_tutorialDisplay = m_tutorialHandle[1];
+		}
+		else if (m_tutorialDisplay == m_tutorialHandle[1])
+		{
+			m_tutorialDisplay = m_tutorialHandle[2];
+		}
+		else if (m_tutorialDisplay == m_tutorialHandle[2])
+		{
+			m_tutorialDisplay = m_tutorialHandle[0];
+		}
+	}
 }

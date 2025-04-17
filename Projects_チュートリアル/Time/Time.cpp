@@ -128,7 +128,7 @@ void Time::Draw()
 
 	input.Update();
 
-	if (input.IsPress(InputInfo::DebugDamageReceived)) {
+	if (input.IsPress(InputInfo::DebugBack)) {
 		m_remainingTime = 60;
 	}
 

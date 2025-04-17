@@ -560,3 +560,11 @@ void Enemy::PlaySE()
 		m_pSound->PlaySE(SoundManager::SE_Type::kDeathrattle, DX_PLAYTYPE_BACK);
 	}
 }
+
+void Enemy::TutorialHp()
+{
+	if (m_hp < m_chara.maxHp / 3)
+	{
+		m_hp = m_chara.maxHp;
+	}
+}

@@ -117,12 +117,6 @@ public:
 	/// <param name="num">残弾数</param>
 	void SetUI_RemainingBulletsHandle(GunType type, int num);
 
-	/// <summary>
-	/// スコアのUIを表示する
-	/// </summary>
-	/// <param name="num">スコア数</param>
-	void SetScoreUI(int num);
-
 private:
 	int m_useWeaponChara;		// 使用中の武器の表示文字
 	int m_useItemChara;			// 使用中のアイテムの表示文字
