@@ -14,6 +14,38 @@ class SceneTutorial :
     public SceneBase
 {
 public:
+
+    //struct tutorialNum{
+    //    int tutorial1;
+    //    int tutorial2;
+    //    int tutorial3;
+    //};
+
+    //struct tutorialPos {
+    //    VECTOR checkPos1;
+    //    VECTOR checkPos2;
+    //    VECTOR checkPos3;
+    //    VECTOR checkPos4;
+    //};
+
+    //struct tutorialInfo{
+    //    tutorialNum m_tutorialNum;
+    //    tutorialPos m_tutorialPos;
+    //}m_tutorial;
+
+
+    enum class tutorialNum {
+        tutorial1,
+        tutorial2,
+        tutorial3,
+    };
+
+    struct TutorialInfo{
+        tutorialNum num;
+
+    };
+
+
     /// <summary>
     /// コンストラクタ
     /// </summary>
@@ -49,6 +81,11 @@ public:
     /// チュートリアル画像の切り替え
     /// </summary>
     void ChangeTutorialDisplay(Input& input);
+
+    /// <summary>
+    /// チュートリアルの確認
+    /// </summary>
+    void CheckTutorial();
 
 private:
     int m_pauseHandle;          // ポーズ画像

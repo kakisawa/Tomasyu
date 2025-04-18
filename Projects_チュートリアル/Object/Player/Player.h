@@ -133,13 +133,21 @@ public:
 
 	std::map<std::string, PlayerOnlyData> m_playerData;
 
-
-
-
 	struct Tutorial{
-		bool isTMove = false;
+		bool isTMove = false;				// 移動
+		bool isTRoll = false;				// 回避
+		bool isTGetItem = false;			// アイテム獲得
+		bool isTChangeWeapon = false;		// 武器切り替え
+		bool isTRockOn = false;				// ロックオン
+		bool isTAttackHandGun = false;		// 銃攻撃(ハンドガン)
+		bool isTAttackMachineGun = false;	// 銃攻撃(マシンガン)
+		bool isTAttackKnife = false;		// ナイフ攻撃
+		bool isTChangeItem = false;			// アイテム切り替え
+		bool isTUseItem = false;			// アイテム使用
+		bool isTOpenPause = false;			// ポーズ画面を開く
+	}m_tutorial;
 
-	};
+	
 
 public:
 	/// <summary>
@@ -380,6 +388,12 @@ public:
 	/// </summary>
 	/// <returns>選択中のアイテムの種類</returns>
 	Item::ItemKind item() const { return m_item[m_useItem]; }
+
+	/// <summary>
+	/// チュートリアル内容
+	/// </summary>
+	/// <returns>チュートリアル</returns>
+	Tutorial GetTutorial() { return m_tutorial; }
 
 private:
 	int m_aimingHandle;			// 照準画像

@@ -192,3 +192,7 @@ void SceneTutorial::ChangeTutorialDisplay(Input& input)
 		}
 	}
 }
+
+void SceneTutorial::CheckTutorial()
+{
+}

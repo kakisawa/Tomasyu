@@ -1,7 +1,7 @@
-﻿  SceneTutorial.cpp
+﻿  SceneGame.cpp
   コード生成しています。
-  5 of 3253 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+  1 of 3255 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    14 functions had inline decision re-evaluated but remain unchanged
+    7 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   Tomasyu.vcxproj -> C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects_チュートリアル\x64\Release\Tomasyu.exe
