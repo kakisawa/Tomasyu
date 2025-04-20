@@ -133,6 +133,10 @@ public:
 
 	std::map<std::string, PlayerOnlyData> m_playerData;
 
+private:
+	/// <summary>
+	/// チュートリアル用
+	/// </summary>
 	struct Tutorial{
 		bool isTMove = false;				// 移動
 		bool isTRoll = false;				// 回避
@@ -144,10 +148,7 @@ public:
 		bool isTAttackKnife = false;		// ナイフ攻撃
 		bool isTChangeItem = false;			// アイテム切り替え
 		bool isTUseItem = false;			// アイテム使用
-		bool isTOpenPause = false;			// ポーズ画面を開く
 	}m_tutorial;
-
-	
 
 public:
 	/// <summary>
@@ -316,6 +317,18 @@ public:
 	/// マシンガンの残弾数をセットする
 	/// </summary>
 	void SetRemainingBulletsMachinegun();
+
+	/// <summary>
+	/// チュートリアル用行動フラグを初期化する
+	/// </summary>
+	void InitTutorialActionFlag();
+
+	/// <summary>
+	/// チュートリアル用行動フラグと、
+	/// プレイヤーの状態フラグが同一なものはセットする
+	/// </summary>
+	void SetTutorialActionFlag();
+
 
 	/// <summary>
 	/// アイテムへ当たったかフラグのセット

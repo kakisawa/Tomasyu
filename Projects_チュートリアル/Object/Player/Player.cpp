@@ -147,6 +147,7 @@ void Player::Init(std::shared_ptr<Score> score)
 void Player::Update(Input& input)
 {
 	m_isEnemy = false;
+	InitTutorialActionFlag();	// チュートリアル用行動フラグを初期化する
 
 	// スタミナ回復処理
 	if (m_stamina < kMaxStamina) 
@@ -197,6 +198,8 @@ void Player::Update(Input& input)
 		m_pEnemy->OnDamage(m_attack);
 		m_isAttack = false;
 	}
+
+	SetTutorialActionFlag();
 
 	// アニメーションの更新
 	ChangeAnimIdle();
@@ -488,6 +491,8 @@ void Player::GetItem()
 	m_getItem = static_cast<int>(rand(mt));
 
 	ItemChange();
+
+	m_tutorial.isTGetItem = true;	// チュートリアル用アイテム獲得フラグをtrueにする
 }
 
 void Player::ItemChange()
@@ -516,6 +521,7 @@ void Player::UseItem(Input& input)
 		{
 			m_useItem = 0;
 		}
+		m_tutorial.isTChangeItem = true;	// チュートリアル用アイテム切り替えフラグをtrueにする
 	}
 
 	// Yボタンでアイテムを使う
@@ -656,6 +662,8 @@ void Player::ChangeWeapon(Input& input)
 		{
 			m_useWeapon = WeaponKind::HandGun;
 		}
+
+		m_tutorial.isTChangeWeapon = true;	// チュートリアル用武器切り替えフラグをtrueにする
 	}
 }
 
@@ -713,6 +721,8 @@ void Player::AttackGun(Input& input)
 					m_pShotHandGun->CreateBullet(shotDirection);
 				}
 			}
+			m_tutorial.isTAttackHandGun = true;	// チュートリアル用ハンドガン攻撃フラグをtrueにする
+
 		}
 		else if (m_useWeapon == WeaponKind::MachineGun)
 		{
@@ -746,6 +756,7 @@ void Player::AttackGun(Input& input)
 					m_pShotMachineGun->CreateBullet(shotDirection);
 				}
 			}
+			m_tutorial.isTAttackMachineGun = true;	// チュートリアル用マシンガン攻撃フラグをtrueにする
 		}
 	}
 }
@@ -966,4 +977,27 @@ void Player::SetRemainingBulletsHandgun()
 void Player::SetRemainingBulletsMachinegun()
 {
 	m_remainingBulletsMachinegun = m_pShotMachineGun->GetBulletNum();
+}
+
+void Player::InitTutorialActionFlag()
+{
+	m_tutorial.isTMove = false;
+	m_tutorial.isTRoll = false;
+	m_tutorial.isTGetItem = false;
+	m_tutorial.isTChangeWeapon = false;
+	m_tutorial.isTRockOn = false;
+	m_tutorial.isTAttackHandGun = false;
+	m_tutorial.isTAttackMachineGun = false;
+	m_tutorial.isTAttackKnife = false;
+	m_tutorial.isTChangeItem = false;
+	m_tutorial.isTUseItem = false;
+}
+
+void Player::SetTutorialActionFlag()
+{
+	m_tutorial.isTMove = m_status.situation.isMoving;				// 移動
+	m_tutorial.isTRoll = m_status.situation.isRoll;					// 回避	
+	m_tutorial.isTUseItem = m_status.situation.isUseItem;			// アイテム使用
+	m_tutorial.isTRockOn = m_isLookOn;								// ロックオン
+	m_tutorial.isTAttackKnife = m_status.situation.isKnifeAttack;	// ナイフ攻撃
 }

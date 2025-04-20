@@ -13,38 +13,37 @@ class MiniWindow;
 class SceneTutorial :
     public SceneBase
 {
+private:
+    /// <summary>
+    /// チュートリアル用
+    /// </summary>
+    struct TutorialFlag {
+        bool isTMove = false;				// 移動
+        bool isTRoll = false;				// 回避
+        bool isTGetItem = false;			// アイテム獲得
+        bool isTChangeWeapon = false;		// 武器切り替え
+        bool isTRockOn = false;				// ロックオン
+        bool isTAttackHandGun = false;		// 銃攻撃(ハンドガン)
+        bool isTAttackMachineGun = false;	// 銃攻撃(マシンガン)
+        bool isTAttackKnife = false;		// ナイフ攻撃
+        bool isTChangeItem = false;			// アイテム切り替え
+        bool isTUseItem = false;			// アイテム使用
+		bool isTOpenPause = false;			// ポーズを開く
+    }m_tutorial;
+
 public:
+    enum class TutorialStep {
+        Tutorial1,
+		Tutorial2,
+		Tutorial3,
+        num,
+	}m_tutorialNum;
 
-    //struct tutorialNum{
-    //    int tutorial1;
-    //    int tutorial2;
-    //    int tutorial3;
-    //};
-
-    //struct tutorialPos {
-    //    VECTOR checkPos1;
-    //    VECTOR checkPos2;
-    //    VECTOR checkPos3;
-    //    VECTOR checkPos4;
-    //};
-
-    //struct tutorialInfo{
-    //    tutorialNum m_tutorialNum;
-    //    tutorialPos m_tutorialPos;
-    //}m_tutorial;
-
-
-    enum class tutorialNum {
-        tutorial1,
-        tutorial2,
-        tutorial3,
-    };
-
-    struct TutorialInfo{
-        tutorialNum num;
-
-    };
-
+    struct Tutorial {
+        int m_step;
+        int m_handle;
+        std::vector<VECTOR> m_checkPos;
+  };
 
     /// <summary>
     /// コンストラクタ
@@ -78,6 +77,11 @@ public:
     virtual void End() override;
 
     /// <summary>
+    /// チュートリアル詳細の初期化
+    /// </summary>
+    void InitTutorial();
+
+    /// <summary>
     /// チュートリアル画像の切り替え
     /// </summary>
     void ChangeTutorialDisplay(Input& input);
@@ -89,10 +93,20 @@ public:
 
 private:
     int m_pauseHandle;          // ポーズ画像
+
     int m_tutorialDisplay;      // チュートリアル説明画像(表示用)
-    std::array<int, 3> m_tutorialHandle;    // チュートリアル説明画像
+	int m_tutorialCount;        // チュートリアルのカウント
 
     bool m_isPause;         // ポーズフラグ
+
+    std::vector<int> m_checkHandle; // チュートリアル用チェックマーク画像
+	std::vector<Tutorial> m_tutorialStep;	// チュートリアルの詳細
+
+    enum class nextScene {
+        None,               // 無し
+        GameScene,
+		SelectScene,
+    }m_nextScene;
 
     // カメラ
     std::shared_ptr<Camera> m_pCamera;
