@@ -102,6 +102,29 @@ void Enemy::Update()
 	ChangeAnimIdle();
 }
 
+void Enemy::UpdateTutorial()
+{
+	PlaySE();
+	ModelBase::Update();
+	Attack();
+	ColUpdate();
+	Angle();
+	TutorialHp();
+
+	// 攻撃が当たっていたらプレイヤーへ攻撃値を渡す
+	if (m_isAttack && m_isColAttack)
+	{
+		if (!m_pPlayer->GetInvincibleTime())
+		{
+			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kHit, m_col.m_colEnemy.m_rightArm->m_pos);
+			m_pPlayer->OnDamage(m_attack);
+			m_isAttack = false;
+		}
+	}
+
+	ChangeAnimIdle();
+}
+
 void Enemy::Draw()
 {
 	ModelBase::Draw();
@@ -465,9 +488,7 @@ void Enemy::Attack()
 		std::random_device rd;
 		std::mt19937 mt(rd());
 		std::uniform_real_distribution<> rand(1, 4 + 1);
-		//m_attackKind = static_cast<int>(rand(mt));
-		m_attackKind = 2;
-
+		m_attackKind = static_cast<int>(rand(mt));
 
 		m_status.situation.isAttack = true;
 

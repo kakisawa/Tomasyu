@@ -261,7 +261,7 @@ void Player::Draw()
 
 	// ナイフ当たり判定の描画
 	if (m_status.situation.isKnifeAttack) {
-		m_col.TypeChangeCapsuleDraw(m_col.m_colPlayer.m_weapon, 0xffff00, true);
+		m_col.TypeChangeCapsuleDraw(m_col.m_colPlayer.m_weapon, 0xff0000, true);
 	}
 #endif // DEBUG
 }

@@ -101,6 +101,11 @@ public:
 	void Update() override;
 
 	/// <summary>
+	/// チュートリアル用更新
+	/// </summary>
+	void UpdateTutorial();
+
+	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw() override;

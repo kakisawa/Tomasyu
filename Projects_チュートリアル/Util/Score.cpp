@@ -3,7 +3,7 @@
 #include "DxLib.h"
 
 namespace {
-	constexpr int kRemainingTimScore = 10;	// 1秒あたりの定数スコア
+	constexpr int kRemainingTimScore = 50;	// 1秒あたりの定数スコア
 	constexpr int kSecondConversion = 60;	// 秒換算用
 
 	constexpr int kNumberHandleNum = 10;	// 数字画像の最大数

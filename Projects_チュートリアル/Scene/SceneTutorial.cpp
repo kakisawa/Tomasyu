@@ -181,7 +181,7 @@ std::shared_ptr<SceneBase> SceneTutorial::Update(Input& input)
 		m_pMap->Update();
 		m_pItem->Update();
 		m_pPlayer->Update(input);
-		m_pEnemy->Update();
+		m_pEnemy->UpdateTutorial();
 		m_pEnemy->TutorialHp();
 		m_pCamera->Update();
 		m_pUI->Update();
