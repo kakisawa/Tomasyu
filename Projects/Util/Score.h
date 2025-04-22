@@ -23,6 +23,11 @@ public:
 	void Init(std::shared_ptr<Time> time);
 
 	/// <summary>
+	/// チュートリアル用初期化
+	/// </summary>
+	void InitTutorial();
+
+	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update();

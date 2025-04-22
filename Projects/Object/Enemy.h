@@ -101,6 +101,11 @@ public:
 	void Update() override;
 
 	/// <summary>
+	/// チュートリアル用更新
+	/// </summary>
+	void UpdateTutorial();
+
+	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw() override;
@@ -176,8 +181,10 @@ public:
 	/// </summary>
 	void ChangeAnimIdle();
 
-	// SEを鳴らす
-	void PlaySE();
+	/// <summary>
+	/// チュートリアル用
+	/// </summary>
+	void TutorialHp();
 
 private:
 	int m_attackTimeCount;	// 攻撃をするまでにかかる時間

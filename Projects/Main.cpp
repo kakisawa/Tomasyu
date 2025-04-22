@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// ウインドウ名設定
 	SetMainWindowText(Game::kTitle);
 	// 画面サイズの設定
-	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorBitDepth);
+	SetGraphMode(static_cast<int>(Game::kScreenWidth), static_cast<int>(Game::kScreenHeight), Game::kColorBitDepth);
 	
 
 	SetWindowSizeExtendRate(1.0);

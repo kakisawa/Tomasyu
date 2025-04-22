@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\SceneTutorial.cpp" />
     <ClCompile Include="Util\MiniWindow.cpp" />
     <ClCompile Include="Object\Camera\TitleCamera.cpp" />
     <ClCompile Include="Object\Player\TitlePlayer.cpp" />
@@ -53,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Scene\SceneTutorial.h" />
     <ClInclude Include="Util\MiniWindow.h" />
     <ClInclude Include="Object\Camera\TitleCamera.h" />
     <ClInclude Include="Object\Player\TitlePlayer.h" />

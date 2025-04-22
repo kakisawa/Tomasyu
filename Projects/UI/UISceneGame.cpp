@@ -209,7 +209,7 @@ void UISceneGame::Draw()
 	// 敵HP背景バーUI
 	DrawGraphF(kBarPos[4].x, kBarPos[4].y, m_barUIHandle[5], true);
 	// 敵HPバー
-	float hp = kHpMaxWidth * (m_enemyHp * 0.001f);
+	float hp = kHpMaxWidth * (m_enemyHp * 0.0005f);
 
 	DrawRectGraphF2(kBarPos[5].x, kBarPos[5].y, 0.0f, 0.0f,
 		std::max(0.0f, hp), kBarUIHeight, m_barUIHandle[6], true);

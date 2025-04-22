@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "SceneBase.h"
 class Fade;
+class MiniWindow;
 class SceneSelect :
     public SceneBase
 {
@@ -48,6 +49,12 @@ public:
     /// <param name="num"></param>
     void ChangeCursorInfo(int num);
 
+    /// <summary>
+    /// チュートリアルへ行くかの確認
+    /// </summary>
+    /// <param name="input">入力</param>
+    void TutorialCheck(Input& input);
+
 private:
     int m_sceneSelectGraph;             // 選択中のセレクト画像情報を入れる用
     int m_selectGraphX, m_selectGraphY; // 選択中のセレクト画像のサイズ獲得用
@@ -58,9 +65,14 @@ private:
     int m_pressAHandle;    // Aボタンを押す画像
     int m_cursorUIHandle;  // カーソル画像
 	int m_bgHandle;        // 背景画像
+    int m_tutorialCheckHandle;  // チュートリアル確認画像
+
+    bool m_isTutorialCheck;     // チュートリアルをするか確認する
+    bool m_isTutorialCursol;    // 一度だけ通る(チュートリアル選択時のカーソル位置を設定するかどうか)
 
 	VECTOR m_cursolPos;	  // カーソル座標
 	VECTOR m_pressAPos;   // カーソル(Aボタンを押す)座標
+    
 
 
     std::array<int, 5> m_sceneSelectUIHandle{};             // シーンセレクトUI
@@ -77,5 +89,8 @@ private:
         GameEnd,            // ゲーム終了
     }m_nextScene;
 
+    // フェード
     std::shared_ptr<Fade> m_pFade = std::make_shared<Fade>();
+    // ミニウィンドウ
+    std::shared_ptr<MiniWindow> m_pMiniWindow = std::make_shared<MiniWindow>();
 };

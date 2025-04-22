@@ -5,7 +5,7 @@
 
 namespace {
 	constexpr int kAddMiniWindow = 20;	// ウィンドウの増減値
-	constexpr int kWidthCenter = Game::kScreenWidth / 2.0f;	// 横幅の中心点
+	constexpr float kWidthCenter = Game::kScreenWidth / 2.0f;	// 横幅の中心点
 
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// ベクトル値の初期化
 }
@@ -25,17 +25,18 @@ void MiniWindow::Init(int handle)
 	m_handle = handle;
 
 	// 画像の幅と高さを取得
-	GetGraphSize(m_handle, &m_width, &m_height);
+	GetGraphSizeF(m_handle, &m_width, &m_height);
 
-	m_pos.x = (Game::kScreenWidth - m_width) / 2;
-	m_pos.y = (Game::kScreenHeight - m_height) / 2;
+	m_pos.x = static_cast<float>((Game::kScreenWidth - m_width) / 2);
+	m_pos.y = static_cast<float>((Game::kScreenHeight - m_height) / 2);
 
 	m_movePos.x = kWidthCenter;	// 小ウィンドウの座標を初期位置にセットする
 }
 
 void MiniWindow::Draw()
 {
-	DrawExtendGraph(m_movePos.x, m_pos.y, (Game::kScreenWidth - m_movePos.x), m_pos.y + m_height, m_handle, true);
+	DrawExtendGraphF(m_movePos.x, m_pos.y,  
+		Game::kScreenWidth - m_movePos.x,m_pos.y + m_height, m_handle, true);
 }
 
 void MiniWindow::CallMiiniWindow()

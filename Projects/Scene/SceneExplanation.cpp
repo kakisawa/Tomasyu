@@ -19,8 +19,7 @@ namespace {
 
 	VECTOR kExplanationGraphPos = VGet(260.0f, 139.0f, 0.0f);	// 画像座標
 
-	const char* const kExplanationUI[3] = {
-		"Data/Image/SceneExplanation/SceneExplanation1-3.png",
+	const char* const kExplanationUI[2] = {
 		"Data/Image/SceneExplanation/SceneExplanation2-3.png",
 		"Data/Image/SceneExplanation/SceneExplanation3-3.png",
 	};	// 画像パス
@@ -82,7 +81,7 @@ std::shared_ptr<SceneBase> SceneExplanation::Update(Input& input)
 		m_pSound->PlaySE(SoundManager::SE_Type::kSelectSE, DX_PLAYTYPE_BACK);
 
 		m_count++;
-		if (m_count >= 3)
+		if (m_count >= 2)
 		{
 			m_count = 0;
 		}

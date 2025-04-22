@@ -5,6 +5,7 @@
 #include "SceneExplanation.h"
 #include "SceneRanking.h"
 #include "SceneGame.h"
+#include "SceneTutorial.h"
 #include "EffekseerForDXLib.h"
 
 using namespace MyInputInfo;
@@ -18,7 +19,7 @@ namespace {
 	constexpr int kSelectBoxY = kSelectBasePosY - 2;	// 選択中シーン表示BoxX座標
 	constexpr int kSelectWidth = 150;					// 選択中シーン表示Boxの幅
 
-	constexpr int kSceneNum = 6;						// 選択できるシーンの数
+	constexpr int kSceneNum = 7;						// 選択できるシーンの数
 
 	constexpr int kInitSelectPosY = kSelectBasePosY + kSelectMoveY * 0;	// 選択中シーンの初期Y座標
 }
@@ -57,6 +58,10 @@ std::shared_ptr<SceneBase> SceneDebug::Update(Input &input)
 		{
 			return std::make_shared<SceneRanking>();	// ランキングシーンへ行く
 		}
+		if (m_nextScene == nextScene::kTutorialScene)
+		{
+			return std::make_shared<SceneTutorial>();	// チュートリアルシーンへ行く
+		}
 		if (m_nextScene == nextScene::kGameScene)
 		{
 			return std::make_shared<SceneGame>();	// ゲームシーンへ行く
@@ -91,8 +96,9 @@ void SceneDebug::Draw()
 	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 2, "SceneOption", 0xffffff);
 	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 3, "SceneExplanation", 0xffffff);
 	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 4, "SceneRanking", 0xffffff);
-	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 5, "SceneGame", 0xffffff);
-	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 6, "GameEnd", 0xffffff);
+	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 5, "SceneTutorial", 0xffffff);
+	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 6, "SceneGame", 0xffffff);
+	DrawString(kSelectBasePosX, kSelectBasePosY + kSelectMoveY * 7, "GameEnd", 0xffffff);
 
 #ifdef _DEBUG
 	//DrawFormatString(0, 500, 0xffffff, "m_selectBox.selectPos.y=%.2f", m_selectBox.selectPos.y);
@@ -129,6 +135,10 @@ void SceneDebug::SwitchingScene(Input& input)
 		}
 		else if (m_nextScene == nextScene::kRankingScene)
 		{
+			m_nextScene = nextScene::kTutorialScene;
+		}
+		else if (m_nextScene == nextScene::kTutorialScene)
+		{
 			m_nextScene = nextScene::kGameScene;
 		}
 		else if (m_nextScene == nextScene::kGameScene)
@@ -159,6 +169,10 @@ void SceneDebug::SwitchingScene(Input& input)
 			m_nextScene = nextScene::kGameScene;
 		}
 		else if (m_nextScene == nextScene::kGameScene)
+		{
+			m_nextScene = nextScene::kTutorialScene;
+		}
+		else if (m_nextScene == nextScene::kTutorialScene)
 		{
 			m_nextScene = nextScene::kRankingScene;
 		}

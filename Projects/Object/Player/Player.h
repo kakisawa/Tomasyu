@@ -133,6 +133,23 @@ public:
 
 	std::map<std::string, PlayerOnlyData> m_playerData;
 
+private:
+	/// <summary>
+	/// チュートリアル用
+	/// </summary>
+	struct Tutorial{
+		bool isTMove = false;				// 移動
+		bool isTRoll = false;				// 回避
+		bool isTGetItem = false;			// アイテム獲得
+		bool isTChangeWeapon = false;		// 武器切り替え
+		bool isTRockOn = false;				// ロックオン
+		bool isTAttackHandGun = false;		// 銃攻撃(ハンドガン)
+		bool isTAttackMachineGun = false;	// 銃攻撃(マシンガン)
+		bool isTAttackKnife = false;		// ナイフ攻撃
+		bool isTChangeItem = false;			// アイテム切り替え
+		bool isTUseItem = false;			// アイテム使用
+	}m_tutorial;
+
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -302,6 +319,18 @@ public:
 	void SetRemainingBulletsMachinegun();
 
 	/// <summary>
+	/// チュートリアル用行動フラグを初期化する
+	/// </summary>
+	void InitTutorialActionFlag();
+
+	/// <summary>
+	/// チュートリアル用行動フラグと、
+	/// プレイヤーの状態フラグが同一なものはセットする
+	/// </summary>
+	void SetTutorialActionFlag();
+
+
+	/// <summary>
 	/// アイテムへ当たったかフラグのセット
 	/// </summary>
 	/// <param name="flag">当たったか入力</param>
@@ -372,6 +401,12 @@ public:
 	/// </summary>
 	/// <returns>選択中のアイテムの種類</returns>
 	Item::ItemKind item() const { return m_item[m_useItem]; }
+
+	/// <summary>
+	/// チュートリアル内容
+	/// </summary>
+	/// <returns>チュートリアル</returns>
+	Tutorial GetTutorial() { return m_tutorial; }
 
 private:
 	int m_aimingHandle;			// 照準画像

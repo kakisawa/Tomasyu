@@ -7,9 +7,9 @@ public:
 
 	struct ColType
 	{
-		VECTOR m_pos;		// 座標
-		VECTOR m_vertexPos;	// 頂点座標
-		float m_radius;		// 半径
+		VECTOR m_pos = VGet(0.0f, 0.0f, 0.0f);		// 座標
+		VECTOR m_vertexPos = VGet(0.0f, 0.0f, 0.0f);	// 頂点座標
+		float m_radius = 0.0f;		// 半径
 	};
 
 	struct Player			// プレイヤーの当たり判定部位

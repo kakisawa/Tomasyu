@@ -57,6 +57,7 @@ private:
 		kOptionScene,
 		kExplanationScene,
 		kRankingScene,
+		kTutorialScene,
 		kGameScene,
 		kGameEnd,
 	}m_nextScene;

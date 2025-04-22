@@ -70,13 +70,12 @@ void Enemy::Init()
 	m_attack = kAttackHandArm;	// 攻撃力を入れる
 
 	// アニメーションの設定
-	SetAnimation(static_cast<int>(EnemyAnim::Idle), m_animSpeed.Idle, true, false);
+	SetAnimation(static_cast<int>(EnemyAnim::Idle), m_animSpeed.Idle, true, false);	
 }
 
 void Enemy::Update()
 {
 	Death();
-	PlaySE();
 	ModelBase::Update();
 
 	// 死亡していたら以下の処理を通さない
@@ -91,11 +90,35 @@ void Enemy::Update()
 	// 攻撃が当たっていたらプレイヤーへ攻撃値を渡す
 	if (m_isAttack && m_isColAttack)
 	{
+		if (!m_pPlayer->GetInvincibleTime()||m_pPlayer->GetHp() >= 0)
+		{
+			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kHit, m_col.m_colEnemy.m_rightArm->m_pos);
+			m_pPlayer->OnDamage(m_attack);
+			m_isAttack = false;
+			m_pSound->PlaySE(SoundManager::SE_Type::kPunchSE2, DX_PLAYTYPE_BACK);
+		}
+	}
+
+	ChangeAnimIdle();
+}
+
+void Enemy::UpdateTutorial()
+{
+	ModelBase::Update();
+	Attack();
+	ColUpdate();
+	Angle();
+	TutorialHp();
+
+	// 攻撃が当たっていたらプレイヤーへ攻撃値を渡す
+	if (m_isAttack && m_isColAttack)
+	{
 		if (!m_pPlayer->GetInvincibleTime())
 		{
 			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kHit, m_col.m_colEnemy.m_rightArm->m_pos);
 			m_pPlayer->OnDamage(m_attack);
 			m_isAttack = false;
+			m_pSound->PlaySE(SoundManager::SE_Type::kPunchSE2, DX_PLAYTYPE_BACK);
 		}
 	}
 
@@ -465,9 +488,7 @@ void Enemy::Attack()
 		std::random_device rd;
 		std::mt19937 mt(rd());
 		std::uniform_real_distribution<> rand(1, 4 + 1);
-		//m_attackKind = static_cast<int>(rand(mt));
-		m_attackKind = 2;
-
+		m_attackKind = static_cast<int>(rand(mt));
 
 		m_status.situation.isAttack = true;
 
@@ -521,6 +542,7 @@ void Enemy::Death()
 	ChangeAnimNo(EnemyAnim::Death, m_animSpeed.Death, false, m_animChangeTime.Death);
 	// 体当たり判定更新
 	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_body, kInitVec, kInitVec, 0.0f);
+	m_pSound->PlaySE(SoundManager::SE_Type::kDeathrattle, DX_PLAYTYPE_BACK);
 
 	// 死亡アニメーションが終わったら死亡フラグをtrueにする
 	if (m_status.situation.isDeath && IsAnimEnd())
@@ -546,17 +568,10 @@ void Enemy::ChangeAnimIdle()
 	}
 }
 
-void Enemy::PlaySE()
+void Enemy::TutorialHp()
 {
-	// プレイヤーへ攻撃が当たったら殴りSEを鳴らす
-	if (m_isAttack && m_isColAttack)
+	if (m_hp < m_chara.maxHp / 3)
 	{
-		m_pSound->PlaySE(SoundManager::SE_Type::kPunchSE2, DX_PLAYTYPE_BACK);
-	}
-
-	// エネミーが死亡したら断末魔SEを鳴らす
-	if (m_status.situation.isDeath)
-	{
-		m_pSound->PlaySE(SoundManager::SE_Type::kDeathrattle, DX_PLAYTYPE_BACK);
+		m_hp = m_chara.maxHp;
 	}
 }

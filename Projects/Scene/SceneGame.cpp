@@ -140,7 +140,8 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 			return std::make_shared<SceneSelect>();	// ゲームセレクトシーンへ行く
 		}
 	}
-	else {
+	else 
+	{
 		// エネミーが死んでいなければ
 		if (!m_pEnemy->GetDeathFlag() && !m_pTime->GetTimeUp())
 		{

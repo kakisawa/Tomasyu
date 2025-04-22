@@ -1,5 +1,4 @@
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\vc143.pdb
-c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\shot.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\player.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\modelbase.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\map.obj
@@ -19,6 +18,7 @@ c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\rele
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\titleplayer.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\titlecamera.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\miniwindow.obj
+c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\scenetutorial.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\uiscenegame.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\time.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\istime.obj
@@ -30,10 +30,11 @@ c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\rele
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\sceneexplanation.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\scenedebug.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\scenebase.obj
-c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\tomasyu.exe
-c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\tomasyu.pdb
+c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\shot.obj
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\tomasyu.ipdb
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\tomasyu.iobj
+c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\tomasyu.exe
+c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\tomasyu.pdb
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\tomasyu.tlog\cl.command.1.tlog
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\tomasyu.tlog\cl.read.1.tlog
 c:\users\川﨑美琴\documents\github\01.personalwork\tomasyu\projects\x64\release\tomasyu.tlog\cl.write.1.tlog

@@ -3,7 +3,7 @@
 #include "DxLib.h"
 
 namespace {
-	constexpr int kRemainingTimScore = 10;	// 1秒あたりの定数スコア
+	constexpr int kRemainingTimScore = 50;	// 1秒あたりの定数スコア
 	constexpr int kSecondConversion = 60;	// 秒換算用
 
 	constexpr int kNumberHandleNum = 10;	// 数字画像の最大数
@@ -57,6 +57,15 @@ void Score::Init(std::shared_ptr<Time> time)
 	}
 
 	m_pTime = time;		// ポインタの値入れ
+}
+
+void Score::InitTutorial()
+{
+	// 数字UI画像読み込み
+	for (int i = 0; i < m_numberBlackUIHandle.size(); i++)
+	{
+		m_numberBlackUIHandle[i] = LoadGraph(kNumberBlackPath[i]);
+	}
 }
 
 void Score::Update()

@@ -47,8 +47,8 @@ public:
 
 private:
 	int m_handle;	// ミニウィンドウのハンドル
-	int m_width;	// ミニウィンドウの幅
-	int m_height;	// ミニウィンドウの高さ
+	float m_width;	// ミニウィンドウの幅
+	float m_height;	// ミニウィンドウの高さ
 
 	VECTOR m_pos;	// ミニウィンドウの座標
 	VECTOR m_movePos;	// ミニウィンドウの移動座標

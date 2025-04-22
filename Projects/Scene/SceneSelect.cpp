@@ -3,14 +3,18 @@
 #include "SceneRanking.h"
 #include "SceneOption.h"
 #include "SceneGame.h"
+#include "SceneTutorial.h"
 #include "SceneExplanation.h"
 #include "SceneDebug.h"
 #include "../Util/Fade.h"
+#include "../Util/MiniWindow.h"
 #include "EffekseerForDXLib.h"
 
 using namespace MyInputInfo;
 
 namespace {
+
+
 
 	const VECTOR kScenenSelectUIPos[5]{
 			VGet(107.0f,177.0f,0.0f),		// ゲームを始める
@@ -22,7 +26,7 @@ namespace {
 
 	const VECTOR kExampleGraph = VGet(958.0f, 162.0f, 0.0f);	// 例画像座標
 	const VECTOR kExplanatoryText = VGet(950.0f, 708.0f, 0.0f);	// 説明文座標
-	
+
 	const VECTOR kCursorUIPos[5]{		// 選択中カーソルの座標
 			VGet(517.0f,177.0f,0.0f),	// ゲームを始める
 			VGet(386.0f,587.0f,0.0f),	// ランキング
@@ -37,6 +41,11 @@ namespace {
 			VGet(840.0f,708.0f,0.0f),	// 設定
 			VGet(555.0f,895.0f,0.0f),	// 操作説明
 			VGet(840.0f,895.0f,0.0f),	// ゲームを終了する
+	};
+
+	const VECTOR kTutorialCursorUIPos[2]{
+		VGet(738.0f,602.0f,0.0f),			// はい
+		VGet(1149.0f,602.0f,0.0f),			// いいえ
 	};
 
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// 初期化用
@@ -75,6 +84,9 @@ SceneSelect::SceneSelect() :
 	m_cursorUIHandle(-1),
 	m_pressAHandle(-1),
 	m_bgHandle(-1),
+	m_tutorialCheckHandle(-1),
+	m_isTutorialCheck(true),
+	m_isTutorialCursol(false),
 	m_cursolPos(kInitVec),
 	m_pressAPos(kInitVec),
 	m_nextScene(nextScene::GameScene)
@@ -106,6 +118,9 @@ void SceneSelect::Init()
 	m_cursorUIHandle = LoadGraph("Data/Image/SceneSelect/Cursor.png");
 	m_pressAHandle = LoadGraph("Data/Image/SceneSelect/PressA.png");
 	m_bgHandle = LoadGraph("Data/Image/SceneSelect/board2.png");
+	m_tutorialCheckHandle = LoadGraph("Data/Image/SceneSelect/TutorialCheck.png");
+
+	m_pMiniWindow->Init(m_tutorialCheckHandle);
 
 	// 画像・座標のセット
 	m_sceneSelectGraph = m_sceneSelectUIHandle[0];
@@ -138,8 +153,7 @@ std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 		m_isNextSceneFlag = true;
 	}
 
-
-	if (m_isNextSceneFlag&& m_pFade->GatNextSceneFlag())	// 次のシーン
+	if (m_isNextSceneFlag && m_pFade->GatNextSceneFlag())	// 次のシーン
 	{
 		if (m_nextScene == nextScene::TitleScene)
 		{
@@ -147,7 +161,19 @@ std::shared_ptr<SceneBase> SceneSelect::Update(Input& input)
 		}
 		else if (m_nextScene == nextScene::GameScene)
 		{
-			return std::make_shared<SceneGame>();	// ゲームシーンへ行く
+			// チュートリアルをするかの確認
+			TutorialCheck(input);
+
+			if (input.IsTrigger(InputInfo::OK))
+			{
+				if (!m_isTutorialCheck) {
+					return std::make_shared<SceneGame>();	// ゲームシーンへ行く
+				}
+				else if (m_isTutorialCheck)
+				{
+					return std::make_shared<SceneTutorial>();	// チュートリアルシーンへ行く
+				}
+			}
 		}
 		else if (m_nextScene == nextScene::ExplanationScene)
 		{
@@ -226,7 +252,15 @@ void SceneSelect::Draw()
 
 	m_pFade->Draw();
 
+	// チュートリアルを行うかの確認画像を描画する
+	if (m_isNextSceneFlag && m_pFade->GatNextSceneFlag() && m_nextScene == nextScene::GameScene)
+	{
+		m_pMiniWindow->Draw();
+		// カーソル画像
+		DrawGraphF(m_cursolPos.x, m_cursolPos.y, m_cursorUIHandle, true);
+	}
 #ifdef _DEBUG
+	DrawFormatString(0, 500, 0xffffff, "m_isTutorialCheck=%d", m_isTutorialCheck);
 #endif // DEBUG
 }
 
@@ -240,6 +274,7 @@ void SceneSelect::End()
 	DeleteGraph(m_pressAHandle);
 	DeleteGraph(m_cursorUIHandle);
 	DeleteGraph(m_bgHandle);
+	DeleteGraph(m_tutorialCheckHandle);
 
 	for (int i = 0; i < m_sceneSelectUIHandle.size(); i++)
 	{
@@ -375,4 +410,29 @@ void SceneSelect::ChangeCursorInfo(int num)
 	GetGraphSize(m_sceneSelectGraph, &m_selectGraphX, &m_selectGraphY);
 	m_cursolPos = kCursorUIPos[num];
 	m_pressAPos = kPressAUIPos[num];
+}
+
+void SceneSelect::TutorialCheck(Input& input)
+{
+	if (!m_isTutorialCursol) {
+		m_cursolPos = kTutorialCursorUIPos[0];
+		m_isTutorialCursol = true;
+	}
+
+	// チュートリアルをするか選択させる
+	m_pMiniWindow->CallMiiniWindow();
+	
+	if (input.IsTrigger(InputInfo::Right)|| input.IsTrigger(InputInfo::Left))
+	{
+		if (m_cursolPos.x == kTutorialCursorUIPos[0].x)
+		{
+			m_cursolPos = kTutorialCursorUIPos[1];
+			m_isTutorialCheck = false;
+		}
+		else if (m_cursolPos.x == kTutorialCursorUIPos[1].x)
+		{
+			m_cursolPos = kTutorialCursorUIPos[0];
+			m_isTutorialCheck = true;
+		}
+	}
 }
