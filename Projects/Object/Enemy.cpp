@@ -90,7 +90,7 @@ void Enemy::Update()
 	// 攻撃が当たっていたらプレイヤーへ攻撃値を渡す
 	if (m_isAttack && m_isColAttack)
 	{
-		if (!m_pPlayer->GetInvincibleTime()||m_pPlayer->GetHp() >= 0)
+		if (!m_pPlayer->GetInvincibleTime() && m_pPlayer->GetHp() >= 0)
 		{
 			Effect::GetInstance().AddEffect(EffectKind::kEffectKind::kHit, m_col.m_colEnemy.m_rightArm->m_pos);
 			m_pPlayer->OnDamage(m_attack);
