@@ -41,10 +41,10 @@ void Map::Draw()
 
 #ifdef _DEBUG
 	// 各ポイントへ球体を描画
-	DrawSphere3D(m_pointPos.point1, 10.0f, 32, 0x0000ff, 0x0000ff, true);
+	/*DrawSphere3D(m_pointPos.point1, 10.0f, 32, 0x0000ff, 0x0000ff, true);
 	DrawSphere3D(m_pointPos.point2, 10.0f, 32, 0x0000ff, 0x0000ff, true);
 	DrawSphere3D(m_pointPos.point3, 10.0f, 32, 0x0000ff, 0x0000ff, true);
-	DrawSphere3D(m_pointPos.point4, 10.0f, 32, 0x0000ff, 0x0000ff, true);
+	DrawSphere3D(m_pointPos.point4, 10.0f, 32, 0x0000ff, 0x0000ff, true);*/
 #endif // DEBUG	
 }
 

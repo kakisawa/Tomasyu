@@ -267,11 +267,11 @@ void UISceneGame::Draw()
 	//DrawFormatString(0, 0, 0xffffff, "m_playerRemainingBullets_handgun=%d", m_playerRemainingBullets_handgun);
 	//DrawFormatString(0, 20, 0xffffff, "m_playerRemainingBullets_machinegun=%d", m_playerRemainingBullets_machinegun);
 
-	DrawFormatString(0, 500, 0xffffff, "10000の位=%d", m_score.m_tenThousands);
+	/*DrawFormatString(0, 500, 0xffffff, "10000の位=%d", m_score.m_tenThousands);
 	DrawFormatString(0, 520, 0xffffff, "1000の位=%d", m_score.m_thousands);
 	DrawFormatString(0, 540, 0xffffff, "100の位=%d", m_score.m_hundreds);
 	DrawFormatString(0, 560, 0xffffff, "10の位=%d", m_score.m_tens);
-	DrawFormatString(0, 580, 0xffffff, "1の位=%d", m_score.m_one);
+	DrawFormatString(0, 580, 0xffffff, "1の位=%d", m_score.m_one);*/
 #endif // DEBUG
 }
 

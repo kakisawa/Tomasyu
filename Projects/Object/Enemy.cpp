@@ -132,8 +132,8 @@ void Enemy::Draw()
 #ifdef _DEBUG
 	// 体当たり判定
 	m_col.TypeChangeCapsuleDraw(m_col.m_colEnemy.m_body, 0x0000ff, false);
-	// 索敵範囲当たり判定
-	m_col.TypeChangeSphereDraw(m_col.m_colEnemy.m_search, 0x0000ff, false);
+	//// 索敵範囲当たり判定
+	//m_col.TypeChangeSphereDraw(m_col.m_colEnemy.m_search, 0x0000ff, false);
 
 	// 攻撃しているときのみ、腕の当たり判定
 	if (m_status.situation.isAttack) {
@@ -152,9 +152,9 @@ void Enemy::Draw()
 	//DrawFormatString(0, 840, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
 	//DrawFormatString(0, 880, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_move.x=%.2f:z=%.2f", m_move.x, m_move.z);
-	DrawFormatString(0, 900, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
+	/*DrawFormatString(0, 900, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
 	DrawFormatString(0, 920, 0xffffff, "Enemy:m_nextAnimTime=%.2f", m_nextAnimTime);
-	DrawFormatString(0, 940, 0xffffff, "Enemy:m_animNext.totalTime=%.2f", m_animNext.totalTime);
+	DrawFormatString(0, 940, 0xffffff, "Enemy:m_animNext.totalTime=%.2f", m_animNext.totalTime);*/
 	//DrawFormatString(0, 940, 0xffffff, "Enemy:m_isAttackToPlayer=%d", m_isAttackToPlayer);
 	//DrawFormatString(0, 960, 0xffffff, "Enemy:m_isAttack=%d", m_isAttack);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_angle=%.2f", m_angle);
