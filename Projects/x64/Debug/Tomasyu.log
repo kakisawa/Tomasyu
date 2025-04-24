@@ -1,9 +1,0 @@
-﻿  Enemy.cpp
-C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\Object\Enemy.cpp(386,64): warning C4267: '引数': 'size_t' から '_Ty' に変換しました。データが失われているかもしれません。
-          with
-          [
-              _Ty=int
-          ]
-  Map.cpp
-  コードを生成中...
-  Tomasyu.vcxproj -> C:\Users\川﨑美琴\Documents\GitHub\01.PersonalWork\Tomasyu\Projects\x64\Debug\Tomasyu.exe
