@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	// 一部の関数はDxLib_Init()の前に実行する必要がある
 	// Windowモード設定(フルスクリーン=false)
-	ChangeWindowMode(true);
+	ChangeWindowMode(false);
 	// ウインドウ名設定
 	SetMainWindowText(Game::kTitle);
 	// 画面サイズの設定

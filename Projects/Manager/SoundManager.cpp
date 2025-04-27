@@ -9,7 +9,7 @@ namespace {
 	constexpr int kVolumeStepSize = kMaxVolume / kChangeVolumeMaxNum;	// 一回当たりの音量増減値
 
 	// 音量の初期値
-	constexpr int kInitBgmVolume = kVolumeStepSize * 4;	// BGM初期音量
+	constexpr int kInitBgmVolume = kVolumeStepSize * 5;	// BGM初期音量
 	constexpr int kInitSeVolume = kVolumeStepSize * 5;	// SE初期音量
 
 	// 変更後音量保存

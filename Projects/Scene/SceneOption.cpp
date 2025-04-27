@@ -91,6 +91,7 @@ std::shared_ptr<SceneBase> SceneOption::Update(Input& input)
 	if (!m_pFade->GetFadeInFlag() && input.IsTrigger(InputInfo::OK))
 	{
 		m_isNextSceneFlag = true;
+		m_pSound->PlaySE(SoundManager::SE_Type::kButtonSE, DX_PLAYTYPE_BACK);
 	}
 
 	if (m_isNextSceneFlag && m_pFade->GatNextSceneFlag())	// 次のシーン
