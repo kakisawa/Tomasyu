@@ -162,6 +162,8 @@ void Enemy::Draw()
 	//DrawFormatString(0, 940, 0xffffff, "target2.x=%.2f:.z=%.2f", target2.x, target2.z);
 	//DrawFormatString(0, 960, 0xffffff, "target3.x=%.2f:.z=%.2f", target3.x, target3.z);
 	//DrawFormatString(0, 980, 0xffffff, "target4.x=%.2f:.z=%.2f", target4.x, target4.z);
+
+	DrawFormatString(0, 140, 0xffffff, "Enemy:m_attackTimeCount=%d", m_attackTimeCount);
 #endif // DEBUG
 }
 
@@ -216,23 +218,32 @@ void Enemy::ColUpdate()
 	}
 	else if (m_attackKind == 2)
 	{
-		if (m_nextAnimTime <= 28|| m_nextAnimTime >= 55)	return;
+		if (m_nextAnimTime >= 35)	return;
+
+		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+
+
+		/*if (m_nextAnimTime <= 28|| m_nextAnimTime >= 55)	return;
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		if (!m_isColAttack)
 		{
 			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[0], m_pPlayer->GetCol().m_colPlayer.m_body);
-		}
+		}*/
 	}
 	else if (m_attackKind == 3)
 	{
 		if (m_nextAnimTime >= 35)	return;
-
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+
+		/*
+		if (m_nextAnimTime >= 35)	return;
+
+		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);*/
 	}
 	else if (m_attackKind == 4)
 	{
-		if (m_nextAnimTime >= 35)	return;
-		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+	/*	if (m_nextAnimTime >= 35)	return;
+		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);*/
 	}
 }
 
@@ -477,17 +488,33 @@ void Enemy::Attack()
 
 	if (m_isSearchPlayer)
 	{
-		// 攻撃してくるまでの間隔
-		m_attackTimeCount--;
+		bool toPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_hitting, m_pPlayer->GetCol().m_colPlayer.m_body);
+
+		if (!m_status.situation.isAttack && toPlayer)
+		{
+			if (m_attackTimeCount > 40) {
+				m_attackTimeCount = 40;
+			}
+			else {
+				m_attackTimeCount--;
+			}
+		}
+		else 
+		{
+			// 攻撃してくるまでの間隔
+			m_attackTimeCount--;
+		}
 	}
 
 	// 攻撃までのカウントが0になったら攻撃をする
 	if (m_attackTimeCount == 0)
 	{
+		StartJoypadVibration(DX_INPUT_PAD1, 800, 100);		// 敵が攻撃してくる際にバイブレーションを行う
+
 		// ランダムで値を獲得する
 		std::random_device rd;
 		std::mt19937 mt(rd());
-		std::uniform_real_distribution<> rand(1, 4 + 1);
+		std::uniform_real_distribution<> rand(1, 3 + 1);
 		m_attackKind = static_cast<int>(rand(mt));
 
 		m_status.situation.isAttack = true;
@@ -501,19 +528,25 @@ void Enemy::Attack()
 		}
 		else if (m_attackKind == 2)
 		{
-			ChangeAnimNo(EnemyAnim::AttackLeftArm1, m_animSpeed.AttackLeftArm1, false, m_animChangeTime.AttackLeftArm1);
-			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+			ChangeAnimNo(EnemyAnim::AttackRightArm2, m_animSpeed.AttackRightArm2, false, m_animChangeTime.AttackRightArm2);
+			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+
+			//ChangeAnimNo(EnemyAnim::AttackLeftArm1, m_animSpeed.AttackLeftArm1, false, m_animChangeTime.AttackLeftArm1);
+			//m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 		else if (m_attackKind == 3)
 		{
-			ChangeAnimNo(EnemyAnim::AttackRightArm2, m_animSpeed.AttackRightArm2, false, m_animChangeTime.AttackRightArm2);
+			ChangeAnimNo(EnemyAnim::AttackRightArm3, m_animSpeed.AttackRightArm3, false, m_animChangeTime.AttackRightArm3);
 			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
+
+		/*	ChangeAnimNo(EnemyAnim::AttackRightArm2, m_animSpeed.AttackRightArm2, false, m_animChangeTime.AttackRightArm2);
+			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);*/
 		}
 		else if (m_attackKind == 4)
 		{
-			ChangeAnimNo(EnemyAnim::AttackRightArm3, m_animSpeed.AttackRightArm3, false, m_animChangeTime.AttackRightArm3);
+		/*	ChangeAnimNo(EnemyAnim::AttackRightArm3, m_animSpeed.AttackRightArm3, false, m_animChangeTime.AttackRightArm3);
 			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
-		}
+	*/	}
 
 		m_isAttack = true;
 	}

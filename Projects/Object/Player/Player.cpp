@@ -728,7 +728,7 @@ void Player::AttackGun(Input& input)
 		{
 			if (m_pShotMachineGun->GetBulletNum() > 0)
 			{
-				StartJoypadVibration(input.IsPress(InputInfo::Attack), 50, 5);
+				StartJoypadVibration(input.IsPress(InputInfo::Attack), 100, 1);
 			}
 
 			SetModelFramePosition(m_model, kModelRightHandRing3, m_weapon[1], m_weaponSize[1], m_weaponRota[1]);
