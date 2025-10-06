@@ -36,35 +36,39 @@ void Camera::Init()
 	SetCameraNearFar(kCameraNear, kCameraFar);
 }
 
-void Camera::Update()
+void Camera::Update(VECTOR targetPos)
 {
 	// カメラの角度手動入力/更新
 	LeftstickCameraUpdate();
 	RightStickCameraUpdate();
 
+	// 注視点標の設定
+	VECTOR viewPointPos;
+	viewPointPos = targetPos;
+	// 注視点をプレイヤーの座標+高さにする
+	viewPointPos = VAdd(viewPointPos, kTargetHeightPos);
+
+
+
 	// カメラの注視点を設定
 	if (m_pPlayer->GetLockOn())
 	{
-		// プレイヤーの位置取得
-		VECTOR playerPos = m_pPlayer->GetPos();
-
-		// カメラの位置をプレイヤーの後ろに設定
-		VECTOR cameraPos = VAdd(playerPos, kTargetHeightPos);
-
-		// カメラの注視点を更新
-		SetCameraPositionAndTarget_UpVecY(cameraPos, m_targetPos);
+		// ロックオン時のカメラ更新
+		LockOnUpdate(viewPointPos);
 	}
 	else
 	{
-		// 注視点をプレイヤーの座標+高さにする
-		m_targetPos = VAdd(m_pPlayer->GetPos(), kTargetHeightPos);
-
-		// カメラ位置補正
-		FixCameraPos();
-
-		// カメラの情報をライブラリのカメラに反映させる
-		SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
+		// 通常時のカメラ更新
+		NormalUpdate(viewPointPos);
 	}
+
+	
+	// カメラ位置補正
+	FixCameraPos();
+
+	// カメラの情報をライブラリのカメラに反映させる
+	SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
+
 
 	// 	標準ライトのタイプをディレクショナルライトにする
 	ChangeLightTypeDir(kLightDirection);
@@ -93,6 +97,30 @@ void Camera::FixCameraPos()
 
 	// 注視点の座標を足す
 	m_pos = VAdd(m_pos, m_targetPos);
+}
+
+void Camera::NormalUpdate(VECTOR targetPos)
+{
+
+	m_targetPos = targetPos;
+	
+}
+
+void Camera::LockOnUpdate(VECTOR targetPos)
+{
+
+	// カメラ位置補正
+	// 水平方向の回転
+	auto rotY = MGetRotY(m_angleH);
+	// 垂直方向の回転
+	auto rotZ = MGetRotZ(m_angleV);
+
+	// X軸にカメラからプレイヤーまでの距離分伸びたベクトルを垂直方向に回転する(Z軸回転)
+	m_pos = VTransform(VGet(-kDist, 0.0f, 0.0f), rotZ);
+	// 水平方向(Y軸回転)に回転する
+	m_pos = VTransform(m_pos, rotY);
+
+
 }
 
 void Camera::RightStickCameraUpdate()

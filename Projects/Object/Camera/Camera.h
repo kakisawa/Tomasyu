@@ -25,12 +25,25 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(VECTOR targetPos);
 
 	/// <summary>
 	/// カメラ位置補正
 	/// </summary>
 	void FixCameraPos();
+
+	/// <summary>
+	/// 通常時更新
+	/// </summary>
+	void NormalUpdate(VECTOR targetPos);
+
+	/// <summary>
+	/// ロックオン時更新
+	/// </summary>
+	void LockOnUpdate(VECTOR targetPos);
+
+	
+
 
 	/// <summary>
 	/// 右スティックを使用したカメラの更新

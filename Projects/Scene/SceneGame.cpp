@@ -152,7 +152,7 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 				m_pItem->Update();
 				m_pPlayer->Update(input);
 				m_pEnemy->Update();
-				m_pCamera->Update();
+				m_pCamera->Update(m_pEnemy->GetPos());
 				m_pUI->Update();
 				m_pTime->Update();
 
