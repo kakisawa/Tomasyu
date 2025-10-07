@@ -178,7 +178,7 @@ std::shared_ptr<SceneBase> SceneTutorial::Update(Input& input)
 		m_pPlayer->Update(input);
 		m_pEnemy->UpdateTutorial();
 		m_pEnemy->TutorialHp();
-		m_pCamera->Update();
+		m_pCamera->Update(m_pEnemy->GetPos());
 		m_pUI->Update();
 		// エフェクトの更新
 		Effect::GetInstance().Update();

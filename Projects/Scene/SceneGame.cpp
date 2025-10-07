@@ -248,6 +248,7 @@ void SceneGame::Draw()
 	Effect::GetInstance().Draw();	// エフェクト表示
 	m_pUI->Draw();
 	m_pTime->Draw();
+	m_pCamera->DebugDraw();
 	m_pFade->Draw();
 
 	GameClearDraw();

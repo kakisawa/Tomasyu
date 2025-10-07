@@ -28,6 +28,11 @@ public:
 	void Update(VECTOR targetPos);
 
 	/// <summary>
+	/// デバッグ用数値描画
+	/// </summary>
+	void DebugDraw();
+
+	/// <summary>
 	/// カメラ位置補正
 	/// </summary>
 	void FixCameraPos();
@@ -35,12 +40,12 @@ public:
 	/// <summary>
 	/// 通常時更新
 	/// </summary>
-	void NormalUpdate(VECTOR targetPos);
+	void NormalUpdate(VECTOR pos);
 
 	/// <summary>
 	/// ロックオン時更新
 	/// </summary>
-	void LockOnUpdate(VECTOR targetPos);
+	void LockOnUpdate(VECTOR pos);
 
 	
 
