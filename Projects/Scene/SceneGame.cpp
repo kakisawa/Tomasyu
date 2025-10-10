@@ -59,7 +59,7 @@ SceneGame::SceneGame() :
 	m_pPlayer->SetEnemyPointer(m_pEnemy);
 	m_pEnemy->SetPlayer(m_pPlayer);
 
-	m_pCamera = std::make_shared<Camera>(m_pPlayer);
+	m_pCamera = std::make_shared<Camera>(m_pPlayer,m_pEnemy);
 	m_pUI = std::make_shared<UISceneGame>(m_pPlayer, m_pEnemy,m_pScore);
 
 	m_pPlayer->SetCameraPointer(m_pCamera);
@@ -152,7 +152,7 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 				m_pItem->Update();
 				m_pPlayer->Update(input);
 				m_pEnemy->Update();
-				m_pCamera->Update(m_pEnemy->GetPos());
+				m_pCamera->Update();
 				m_pUI->Update();
 				m_pTime->Update();
 
@@ -248,8 +248,9 @@ void SceneGame::Draw()
 	Effect::GetInstance().Draw();	// エフェクト表示
 	m_pUI->Draw();
 	m_pTime->Draw();
-	m_pCamera->DebugDraw();
 	m_pFade->Draw();
+
+	m_pCamera->Draw();
 
 	GameClearDraw();
 	GameOverDraw();

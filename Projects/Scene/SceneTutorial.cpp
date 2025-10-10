@@ -64,7 +64,7 @@ SceneTutorial::SceneTutorial() :
 	m_pPlayer->SetEnemyPointer(m_pEnemy);
 	m_pEnemy->SetPlayer(m_pPlayer);
 
-	m_pCamera = std::make_shared<Camera>(m_pPlayer);
+	m_pCamera = std::make_shared<Camera>(m_pPlayer,m_pEnemy);
 	m_pUI = std::make_shared<UISceneGame>(m_pPlayer, m_pEnemy, m_pScore);
 
 	m_pPlayer->SetCameraPointer(m_pCamera);
@@ -178,7 +178,7 @@ std::shared_ptr<SceneBase> SceneTutorial::Update(Input& input)
 		m_pPlayer->Update(input);
 		m_pEnemy->UpdateTutorial();
 		m_pEnemy->TutorialHp();
-		m_pCamera->Update(m_pEnemy->GetPos());
+		m_pCamera->Update();
 		m_pUI->Update();
 		// エフェクトの更新
 		Effect::GetInstance().Update();

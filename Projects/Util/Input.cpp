@@ -46,12 +46,12 @@ Input::Input()
 	m_commandTable[InputInfo::TargetLockOn] = { {InputType::key,KEY_INPUT_S},
 												{InputType::pad,PAD_INPUT_Z} };	// XBoxのRBボタン
 
-	m_commandTable[InputInfo::Roll] = { {InputType::key,KEY_INPUT_B},
+	m_commandTable[InputInfo::Roll] = { {InputType::key,KEY_INPUT_D},
 											{InputType::pad,PAD_INPUT_A} };		// XBoxのAボタン
 
 
 	// デバッグ用
-	m_commandTable[InputInfo::DebugBack] = { {InputType::key,KEY_INPUT_X},
+	m_commandTable[InputInfo::DebugBack] = { {InputType::key,KEY_INPUT_B},
 											{InputType::pad,PAD_INPUT_L} };		// XBoxのBackボタン
 
 }

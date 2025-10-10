@@ -1,5 +1,6 @@
 ﻿#include "Camera.h"
 #include "../Player/Player.h"
+#include "../Enemy.h"
 #include <cmath>
 #include <algorithm>
 
@@ -21,13 +22,14 @@ namespace {
 	const VECTOR kTargetHeightPos = VGet(0.0f, 70.0f, 0.0f);	// カメラの注視点座標(高さ調整用)
 }
 
-Camera::Camera(std::shared_ptr<Player> pPlayer) :
+Camera::Camera(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy) :
 	m_pos(kInitVec),
 	m_targetPos(kInitVec),
 	m_enemyTargetPos(kInitVec),
 	m_angleH(kInitAngleH),
 	m_angleV(kInitAngleV),
-	m_pPlayer(pPlayer)
+	m_pPlayer(pPlayer),
+	m_pEnemy(pEnemy)
 {
 }
 
@@ -36,93 +38,64 @@ void Camera::Init()
 	SetCameraNearFar(kCameraNear, kCameraFar);
 }
 
-void Camera::Update(VECTOR targetPos)
+void Camera::Update()
 {
 	// カメラの角度手動入力/更新
 	LeftstickCameraUpdate();
 	RightStickCameraUpdate();
 
-	// 注視点の設定
-	// 注視点をプレイヤーの座標+高さにする
-	VECTOR viewPointPos = VAdd(targetPos, kTargetHeightPos);
-	
-	//// カメラの注視点を設定
-	//if (m_pPlayer->GetLockOn())
-	//{
-	//	// ロックオン時のカメラ更新
-	//	LockOnUpdate(viewPointPos);
-	//}
-	//else
-	//{
-	//	// 通常時のカメラ更新
-	//	NormalUpdate(VAdd(m_pPlayer->GetPos(), kTargetHeightPos));
-	//	// カメラ位置補正
-	//	FixCameraPos();
-	//}
-
-	// カメラ位置補正
-	FixCameraPos();
-
 	// カメラの注視点を設定
 	if (m_pPlayer->GetLockOn())
 	{
-		// ロックオン時のカメラ更新
-		LockOnUpdate(viewPointPos);
+		m_pos = VAdd(m_pPlayer->GetPos(), VGet(0.0f, 100.0f, 0.0f));
+
+		// プレイヤーの位置取得
+		m_pos = VAdd(m_pos, m_pPlayer->GetMove());
+
+		// カメラの注視点を更新
+		SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
 	}
 	else
 	{
-		// 通常時のカメラ更新
-		NormalUpdate(VAdd(m_pPlayer->GetPos(), kTargetHeightPos));
+		// 注視点をプレイヤーの座標+高さにする
+		m_targetPos = VAdd(m_pPlayer->GetPos(), kTargetHeightPos);
+
+		// カメラ位置補正
+		FixCameraPos();
+
+		// カメラの情報をライブラリのカメラに反映させる
+		SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
 	}
 
-
-	// カメラの情報をライブラリのカメラに反映させる
-	SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
 	// 	標準ライトのタイプをディレクショナルライトにする
 	ChangeLightTypeDir(kLightDirection);
 }
 
-void Camera::DebugDraw()
+void Camera::Draw()
 {
 #ifdef _DEBUG
 	DrawFormatString(0, 500, 0xffffff, "Camera:m_pos.x/y/z=%.2f/%.2f/%.2f", m_pos.x, m_pos.y, m_pos.z);
-	//DrawFormatString(0, 120, 0xffffff, "Camera:m_targetPos.x/y/z=%.2f/%.2f/%.2f",
-	//	m_targetPos.x, m_targetPos.y, m_targetPos.z);
+	DrawFormatString(0, 520, 0xffffff, "Camera:m_targetPos.x/y/z=%.2f/%.2f/%.2f",
+		m_targetPos.x, m_targetPos.y, m_targetPos.z);
 	DrawFormatString(0, 540, 0xffffff, "Player:m_pos.x/y/z=%.2f/%.2f/%.2f",
 		m_pPlayer->GetPos().x, m_pPlayer->GetPos().y, m_pPlayer->GetPos().z);
-	//DrawFormatString(0, 160, 0xffffff, "m_angleH=%.2f", m_angleH);
-#endif // DEBUG
+#endif
 }
 
 void Camera::FixCameraPos()
 {
-
-	VECTOR cameraPos = VAdd(m_pPlayer->GetPos(), kTargetHeightPos);
-
 	// 水平方向の回転
 	auto rotY = MGetRotY(m_angleH);
 	// 垂直方向の回転
 	auto rotZ = MGetRotZ(m_angleV);
 
-	
 	// X軸にカメラからプレイヤーまでの距離分伸びたベクトルを垂直方向に回転する(Z軸回転)
-	VECTOR camOffset = VTransform(VGet(-kDist, 0.0f, 0.0f), rotZ);
+	m_pos = VTransform(VGet(-kDist, 0.0f, 0.0f), rotZ);
 	// 水平方向(Y軸回転)に回転する
-	camOffset = VTransform(camOffset, rotY);
+	m_pos = VTransform(m_pos, rotY);
 
 	// 注視点の座標を足す
-	m_pos = VAdd(cameraPos, camOffset);
-}
-
-void Camera::NormalUpdate(VECTOR pos)
-{
-	m_targetPos = pos;
-}
-
-void Camera::LockOnUpdate(VECTOR pos)
-{
-	const float smooth =0.15f; // ← 値を小さくするとゆっくり追従
-	m_targetPos = VAdd(m_targetPos, VScale(VSub(pos, m_targetPos), smooth));
+	m_pos = VAdd(m_pos, m_targetPos);
 }
 
 void Camera::RightStickCameraUpdate()

@@ -3,6 +3,7 @@
 #include <memory>
 
 class Player;
+class Enemy;
 class Camera
 {
 public:
@@ -10,7 +11,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="pPlayer">プレイヤー情報</param>
-	Camera(std::shared_ptr<Player> pPlayer);
+	Camera(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy);
 
 	/// <summary>
 	/// デストラクタ
@@ -25,30 +26,17 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update(VECTOR targetPos);
+	void Update();
 
 	/// <summary>
-	/// デバッグ用数値描画
+	/// 描画
 	/// </summary>
-	void DebugDraw();
+	void Draw();
 
 	/// <summary>
 	/// カメラ位置補正
 	/// </summary>
 	void FixCameraPos();
-
-	/// <summary>
-	/// 通常時更新
-	/// </summary>
-	void NormalUpdate(VECTOR pos);
-
-	/// <summary>
-	/// ロックオン時更新
-	/// </summary>
-	void LockOnUpdate(VECTOR pos);
-
-	
-
 
 	/// <summary>
 	/// 右スティックを使用したカメラの更新
@@ -90,4 +78,5 @@ private:
 	VECTOR m_enemyTargetPos;	// ターゲット座標
 
 	std::shared_ptr<Player> m_pPlayer;		// プレイヤーのポインタ
+	std::shared_ptr<Enemy> m_pEnemy;		// エネミーのポインタ
 };
