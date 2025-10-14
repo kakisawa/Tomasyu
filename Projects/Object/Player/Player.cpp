@@ -235,7 +235,7 @@ void Player::Draw()
 	//DrawFormatString(0, 260, 0xffffff, "Player:m_remainingBullets_machinegun=%d", m_remainingBullets_machinegun);
 	DrawFormatString(0, 280, 0xffffff, "Player:m_angle=%.2f", m_angle);
 	//DrawFormatString(0, 300, 0xffffff, "Player:m_move.x/y/z=%.2f/%.2f/%.2f", m_move.x, m_move.y, m_move.z);
-	//DrawFormatString(0, 340, 0xffffff, "Player:m_targetDir.x=%.2f,y=%.2f,z=%.2f,", m_targetDir.x, m_targetDir.y, m_targetDir.z);
+	DrawFormatString(0, 340, 0xffffff, "Player:m_targetDir.x=%.2f,y=%.2f,z=%.2f,", m_targetDir.x, m_targetDir.y, m_targetDir.z);
 	//DrawFormatString(0, 360, 0xffffff, "Player:inputX=%d", m_inputX);
 	//DrawFormatString(0, 380, 0xffffff, "Player:inputY=%d", m_inputY);
 	//DrawFormatString(0, 400, 0xffffff, "Player:item=%d", m_useItem);
@@ -403,22 +403,16 @@ void Player::Gravity()
 
 void Player::Angle()
 {
-	// ロックオン中は向きを変更しない
-	//if (m_isLookOn)	return;
-
 	// プレイヤーの移動方向にモデルの方向を近づける
 	float targetAngle;		// 目標角度
 	float difference;		// 目標角度と現在の角度の差
 
 	if (m_isLookOn) {
 
-		VECTOR playerPos = GetPos();
-		VECTOR targetPos = m_pEnemy->GetPos();
-		VECTOR dirToEnemy = VSub(targetPos, playerPos);
-
+		VECTOR dirToEnemy = VSub(m_pEnemy->GetPos(), GetPos());
 		targetAngle = static_cast<float>(atan2(dirToEnemy.x, dirToEnemy.z));
 	}
-	else {
+	else{
 		targetAngle = static_cast<float>(atan2(m_targetDir.x, m_targetDir.z));
 	}
 
@@ -635,15 +629,9 @@ void Player::LockOn(Input& input)
 		// プレイヤーから敵へのベクトルを計算
 		VECTOR directionToEnemy = VSub(enemyPos, playerPos);
 
-		// ベクトルから角度を計算
-		//float targetAngle = static_cast<float>(atan2(directionToEnemy.x, directionToEnemy.z));
-
-		//// プレイヤーの向きを更新
-		//m_angle = targetAngle;
-		//MV1SetRotationXYZ(m_model, VGet(0.0f, m_angle + DX_PI_F, 0.0f));
-
 		// カメラの注視点を敵の位置に設定
 		m_pCamera->SetTarget(enemyPos);
+		m_targetDir = enemyPos;
 	}
 	else if (input.IsRelease(InputInfo::TargetLockOn))
 	{
