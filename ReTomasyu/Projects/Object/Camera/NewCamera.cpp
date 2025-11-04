@@ -11,7 +11,7 @@ namespace {
 	constexpr float kCameraFar = 10000.0f;		// カメラ最奥クリップ距離
 	constexpr float kDist = 70.0f;				// カメラからプレイヤーまでの距離
 	constexpr float kRightStickAngle = 0.08f;	// 右スティックでカメラを動かす角度
-	constexpr float kLeftStickAngle = 0.01f;	// 左スティックでカメラを動かす角度
+	constexpr float kLeftStickAngle = 0.005f;	// 左スティックでカメラを動かす角度
 	constexpr float kInitAngleH = DX_PI_F;		// カメラの初期平行角度
 	constexpr float kInitAngleV = 0.3f;			// カメラの初期垂直角度
 	constexpr float kMinAngleV = -DX_PI_F * 0.5f + 0.5f;	// 最小の垂直角度
@@ -54,7 +54,7 @@ void NewCamera::Init()
 void NewCamera::Update()
 {
 	// 前の座標を保存する
-	m_prevPos = m_nextPos;
+	m_prevPos = m_pos;
 
 	// プレイヤー位置取得
 	bool isLockOnNow = m_pPlayer->GetLockOn();
@@ -68,25 +68,25 @@ void NewCamera::Update()
 	LeftStickCameraUpdate();
 	UpdateAngle();
 
+	
 	if (isLockOnNow) {	// ロックオン時
-
-
-		//要修正
-		
-		//VECTOR enemyPos=VAdd()
 		// カメラロックオン時の更新
-		LookOnUpdate(m_pEnemy->GetPos());
+		LookOnUpdate(m_pEnemy->GetPos(),viewPointPos);
 	}
 	else {	// 通常時
 		// 通常時更新
+		// プレイヤーの移動方向に応じてカメラY回転を補正
+		AngleToPlayerMove();
 		NormalUpdate(viewPointPos);
 	}
 
 	// 座標の確定
-	UpdatePos();
+	UpdatePos(viewPointPos);
 
 	// カメラの情報を反映させる
-	m_pos = VAdd(VScale(m_prevPos, kPrevCameraFollowSpeed), VScale(m_nextPos, kCameraFollowSpeed));
+	m_pos = VAdd(VScale(m_prevPos, kPrevCameraFollowSpeed),
+		VScale(m_nextPos, kCameraFollowSpeed));
+
 	// 座標設定
 	SetCameraPositionAndTarget_UpVecY(m_pos, m_targetPos);
 	// 標準ライトのタイプをディレクショナルライトにする
@@ -110,40 +110,42 @@ void NewCamera::NormalUpdate(VECTOR target)
 	m_targetPos.z = (m_targetPos.z * kPrevCameraTargetFollowSpeed) + (target.z * kCameraTargetFollowSpeed);
 }
 
-void NewCamera::LookOnUpdate(VECTOR target)
+void NewCamera::LookOnUpdate(VECTOR target, VECTOR playerPos)
 {
+	target.y += 450.0f;
+	playerPos.y += 50.0f;
+
+	VECTOR midPos = VScale(VAdd(playerPos, target), 0.5f);
+
 	// ターゲット座標更新
-	m_targetPos.x = (m_targetPos.x * kPrevCameraTargetFollowSpeed) + (target.x * kCameraTargetFollowSpeed);
-	m_targetPos.y = (m_targetPos.y * kPrevCameraTargetFollowSpeed) + (target.y * kCameraTargetFollowSpeed);
-	m_targetPos.z = (m_targetPos.z * kPrevCameraTargetFollowSpeed) + (target.z * kCameraTargetFollowSpeed);
+	m_targetPos.x = (m_targetPos.x * kPrevCameraTargetFollowSpeed) + (midPos.x * kCameraTargetFollowSpeed);
+	m_targetPos.y = (m_targetPos.y * kPrevCameraTargetFollowSpeed) + (midPos.y * kCameraTargetFollowSpeed);
+	m_targetPos.z = (m_targetPos.z * kPrevCameraTargetFollowSpeed) + (midPos.z * kCameraTargetFollowSpeed);
 
-	// プレイヤーからカメラまでの方向ベクトルを出す
-	VECTOR playerToCameraVec = VNorm(VSub(m_nextPos, m_targetPos));
-	// プレイヤーから敵までの方向ベクトルを出す
-	VECTOR playerToEnemyVec = VNorm(VSub(m_pEnemy->GetPos(), target));
-
-	// ロックオン時のカメラの方向ベクトルを出す
-	VECTOR lookOnCameraVec = VAdd(VScale(playerToCameraVec, kPrevCameraTargetLockOnFollowSpeed), 
-		VScale(playerToEnemyVec, kCameraTargetLockOnFollowSpeed));
-	// カメラを少し傾ける
-	m_angleH = static_cast<float>(atan2(-lookOnCameraVec.z, lookOnCameraVec.x) + kLockOnAngleH);
-
-	// プレイヤーから敵までの角度(垂直方向)を求める
-	float targetAngleV = static_cast<float>(atan2(playerToEnemyVec.y,
-		sqrt(playerToEnemyVec.x * playerToEnemyVec.x + playerToEnemyVec.z * playerToEnemyVec.z)));
-	// 上下方向の角度制限
-	const float minAngleV = -DX_PI_F * 0.2f;
-	const float maxAngleV = DX_PI_F * 0.1f;
-	// m_angleVの補間
-	m_angleV = (m_angleV * kPrevCameraFollowSpeed) + (targetAngleV * kCameraFollowSpeed);
-	// 角度制限の適用
-	m_angleV = std::max(std::min(m_angleV, maxAngleV), minAngleV);
-
-	// カメラの座標を出す
-	VECTOR cameraPos = VAdd(VScale(m_prevPos, kPrevCameraTargetLockOnFollowSpeed),
-		VScale(m_nextPos, kCameraTargetLockOnFollowSpeed));
-	// カメラの座標の設定
-	SetCameraPositionAndTarget_UpVecY(cameraPos, m_targetPos);
+	//// プレイヤーからカメラまでの方向ベクトルを出す
+	//VECTOR playerToCameraVec = VNorm(VSub(m_nextPos, m_targetPos));
+	//// プレイヤーから敵までの方向ベクトルを出す
+	//VECTOR playerToEnemyVec = VNorm(VSub(m_pEnemy->GetPos(), target));
+	//// ロックオン時のカメラの方向ベクトルを出す
+	//VECTOR lookOnCameraVec = VAdd(VScale(playerToCameraVec, kPrevCameraTargetLockOnFollowSpeed),
+	//	VScale(playerToEnemyVec, kCameraTargetLockOnFollowSpeed));
+	//// カメラを少し傾ける
+	//m_angleH = static_cast<float>(atan2(-lookOnCameraVec.z, lookOnCameraVec.x) + kLockOnAngleH);
+	//// プレイヤーから敵までの角度(垂直方向)を求める
+	//float targetAngleV = static_cast<float>(atan2(playerToEnemyVec.y,
+	//	sqrt(playerToEnemyVec.x * playerToEnemyVec.x + playerToEnemyVec.z * playerToEnemyVec.z)));
+	//// 上下方向の角度制限
+	//const float minAngleV = -DX_PI_F * 0.2f;
+	//const float maxAngleV = DX_PI_F * 0.1f;
+	//// m_angleVの補間
+	//m_angleV = (m_angleV * kPrevCameraFollowSpeed) + (targetAngleV * kCameraFollowSpeed);
+	//// 角度制限の適用
+	//m_angleV = std::max(std::min(m_angleV, maxAngleV), minAngleV);
+	//// カメラの座標を出す
+	//VECTOR cameraPos = VAdd(VScale(m_prevPos, kPrevCameraTargetLockOnFollowSpeed),
+	//	VScale(m_nextPos, kCameraTargetLockOnFollowSpeed));
+	//// カメラの座標の設定
+	//SetCameraPositionAndTarget_UpVecY(cameraPos, m_targetPos);
 }
 
 void NewCamera::UpdateAngle()
@@ -201,7 +203,37 @@ void NewCamera::UpdateAngle()
 	}
 }
 
-void NewCamera::UpdatePos()
+void NewCamera::AngleToPlayerMove()
+{
+	// プレイヤーの移動方向ベクトルを取得
+	VECTOR moveVec = m_pPlayer->GetMove();
+
+	// 移動がない場合はスキップ
+	if (VSize(moveVec) < 0.05f) return;
+
+	// （必要ならローカル→ワールド変換）
+	MATRIX rot = MGetRotY(m_pPlayer->GetMove().y);
+	moveVec = VTransform(moveVec, rot);
+
+	// プレイヤーの移動方向から水平角度を算出
+	float moveAngle = atan2f(moveVec.x, moveVec.z);  // DxLib座標系に合わせる
+
+	// 現在のカメラ角度との差を求める
+	float diff = moveAngle - m_angleH;
+
+	// 角度差を -π～π の範囲に正規化
+	if (diff > DX_PI_F) diff -= DX_TWO_PI_F;
+	if (diff < -DX_PI_F) diff += DX_TWO_PI_F;
+
+	// 真横以上の移動時は補正を緩和
+	if (fabs(diff) > DX_PI_F * 0.45f) return;
+
+	// プレイヤー移動方向にカメラを少し追従させる（遅延追従）
+	constexpr float kFollowRate = 0.08f; // 小さいほど滑らか
+	m_angleH += diff * kFollowRate;
+}
+
+void NewCamera::UpdatePos(VECTOR pos)
 {
 	constexpr float kCameraYOffset = 50.0f;
 
@@ -216,7 +248,7 @@ void NewCamera::UpdatePos()
 	それに注視点の座標を足す)*/
 	m_cameraToTargetLength = std::min(m_cameraToTargetLength + 5.0f, kDist);
 
-	m_nextPos = VAdd(VTransform(VTransform(VGet(0.0f, kCameraYOffset, m_cameraToTargetLength), RotX), RotY), m_targetPos);
+	m_nextPos = VAdd(VTransform(VTransform(VGet(0.0f, kCameraYOffset, m_cameraToTargetLength), RotX), RotY), pos);
 }
 
 void NewCamera::LeftStickCameraUpdate()

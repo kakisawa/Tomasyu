@@ -44,7 +44,7 @@ public:
 	/// ロックオン時カメラ更新
 	/// </summary>
 	/// <param name="target">注視点座標</param>
-	void LookOnUpdate(VECTOR target);
+	void LookOnUpdate(VECTOR target,VECTOR playerPos);
 	
 	/// <summary>
 	/// 角度更新
@@ -52,9 +52,14 @@ public:
 	void UpdateAngle();
 
 	/// <summary>
+	/// プレイヤーの角度によってカメラの角度も変更する
+	/// </summary>
+	void AngleToPlayerMove();
+
+	/// <summary>
 	/// 座標の更新
 	/// </summary>
-	void UpdatePos();
+	void UpdatePos(VECTOR pos);
 
 	/// <summary>
 	/// 左スティックを使用したカメラの更新
