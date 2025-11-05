@@ -34,7 +34,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Manager\SceneManager.cpp" />
     <ClCompile Include="Manager\SoundManager.cpp" />
-    <ClCompile Include="Object\Camera\Camera.cpp" />
     <ClCompile Include="Object\Enemy.cpp" />
     <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\Map.cpp" />
@@ -69,7 +68,6 @@
     <ClInclude Include="Util\LoadCsv.h" />
     <ClInclude Include="Manager\SceneManager.h" />
     <ClInclude Include="Manager\SoundManager.h" />
-    <ClInclude Include="Object\Camera\Camera.h" />
     <ClInclude Include="Object\Enemy.h" />
     <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\Map.h" />

@@ -16,7 +16,6 @@ using namespace MyInputInfo;
 namespace
 {
 	const char* kAmingHandlePath = "Data/Image/SceneGame/Aiming.png";	// 照準画像パス
-
 	const char* kPlayerModelFilePath = "Data/Model/PlayerModel.mv1";	// プレイヤーモデルパス
 	const char* kModelRightHandMiddle = "mixamorig:RightHandMiddle4";	// ハンドガン用右手パス
 	const char* kModelRightHandRing3 = "mixamorig:RightHandRing3";		// マシンガン用右手パス

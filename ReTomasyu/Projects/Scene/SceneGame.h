@@ -4,7 +4,6 @@
 class Player;
 class Enemy;
 class Item;
-class Camera;
 class NewCamera;
 class Map;
 class UISceneGame;
@@ -81,12 +80,9 @@ private:
 	int m_timeHour;     // 時間
 	int m_timeMin;      // 分
 
+
     // カメラ
-    std::shared_ptr<Camera> m_pCamera;
-
-    // カメラ(仮)
     std::shared_ptr<NewCamera> m_pNewCamera;
-
     // プレイヤー
     std::shared_ptr<Player> m_pPlayer;
     // 敵

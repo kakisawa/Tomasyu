@@ -75,9 +75,6 @@
     <ClCompile Include="Scene\SceneTitle.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Camera\Camera.cpp">
-      <Filter>ソース ファイル\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\Enemy.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
@@ -172,9 +169,6 @@
     </ClInclude>
     <ClInclude Include="Scene\SceneTitle.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Camera\Camera.h">
-      <Filter>ヘッダー ファイル\Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\Enemy.h">
       <Filter>ヘッダー ファイル\Object</Filter>

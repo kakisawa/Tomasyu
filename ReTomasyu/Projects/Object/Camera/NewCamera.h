@@ -85,10 +85,10 @@ public:
 	const VECTOR& GetTargetPos()	const { return m_targetPos; }
 
 private:
-
 	float m_angleH;	 // 水平角度
 	float m_angleV;	 // 垂直角度
 	float m_cameraToTargetLength;	// カメラからターゲットまでの最小距離
+	float m_cameraSensitivity;		// カメラ感度
 
 	bool m_isLookOn;	// 直前までロックオンをしていたか
 

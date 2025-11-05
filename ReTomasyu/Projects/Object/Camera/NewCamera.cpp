@@ -7,6 +7,8 @@
 
 namespace {
 	constexpr float kCameraHeight = 65.0f;		// カメラの高さ
+	constexpr float kPlayerHeight = 50.0f;		// 通常カメラ注視点のy軸
+	constexpr float kTargetHeight = 450.0f;		// ロックオンカメラ注視点のy軸
 	constexpr float kCameraNear = 1.0f;			// カメラ手前クリップ距離
 	constexpr float kCameraFar = 10000.0f;		// カメラ最奥クリップ距離
 	constexpr float kDist = 70.0f;				// カメラからプレイヤーまでの距離
@@ -16,11 +18,14 @@ namespace {
 	constexpr float kInitAngleV = 0.3f;			// カメラの初期垂直角度
 	constexpr float kMinAngleV = -DX_PI_F * 0.5f + 0.5f;	// 最小の垂直角度
 	constexpr float kMaxAngleV = DX_PI_F * 0.5f - 1.0f;		// 最大の垂直角度
+	constexpr float kRightStickHorizontalRate = 0.00020f;	// 右スティック水平動作を角度変化に変換する比率
+	constexpr float kRightStickVerticalRate = 0.00017f;	// 右スティック垂直動作を角度変化に変換する比率
+	constexpr float kCameraSensitivity = 3.0f;	// カメラ感度
 
 	constexpr float kCameraFollowSpeed = 0.2f;	// カメラが付いてくる速度
 	constexpr float kPrevCameraFollowSpeed = 1.0f - kCameraFollowSpeed;	// カメラの初速度
 	constexpr float kCameraTargetFollowSpeed = 0.2f;	// カメラが注視点を追いかける速度
-	constexpr float kPrevCameraTargetFollowSpeed = 1.0f-kCameraTargetFollowSpeed;	// カメラが注視点を追いかける初速度
+	constexpr float kPrevCameraTargetFollowSpeed = 1.0f - kCameraTargetFollowSpeed;	// カメラが注視点を追いかける初速度
 
 	/*ロックオン時*/
 	constexpr float kLockOnAngleH = -DX_PI_F * 0.5f + 0.1f;										// ロックオン時にカメラを少し傾けるための値
@@ -36,6 +41,7 @@ NewCamera::NewCamera(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEn
 	m_angleH(kInitAngleH),
 	m_angleV(kInitAngleV),
 	m_cameraToTargetLength(0.0f),
+	m_cameraSensitivity(kCameraSensitivity),
 	m_isLookOn(false),
 	m_pos(kInitVec),
 	m_targetPos(kInitVec),
@@ -56,26 +62,22 @@ void NewCamera::Update()
 	// 前の座標を保存する
 	m_prevPos = m_pos;
 
-	// プレイヤー位置取得
-	bool isLockOnNow = m_pPlayer->GetLockOn();
-	VECTOR playerPos = m_pPlayer->GetPos();
-
 	// 注視点座標を設定する(高さは別途足す)
-	VECTOR viewPointPos = playerPos;
+	VECTOR viewPointPos = m_pPlayer->GetPos();
 	viewPointPos.y += kCameraHeight;
 
 	// 角度更新
 	LeftStickCameraUpdate();
 	UpdateAngle();
 
-	
-	if (isLockOnNow) {	// ロックオン時
+	if (m_pPlayer->GetLockOn()) 
+	{
 		// カメラロックオン時の更新
-		LookOnUpdate(m_pEnemy->GetPos(),viewPointPos);
+		LookOnUpdate(m_pEnemy->GetPos(), viewPointPos);
 	}
-	else {	// 通常時
+	else 
+	{
 		// 通常時更新
-		// プレイヤーの移動方向に応じてカメラY回転を補正
 		AngleToPlayerMove();
 		NormalUpdate(viewPointPos);
 	}
@@ -98,6 +100,8 @@ void NewCamera::Draw()
 	DrawFormatString(0, 500, 0xffffff, "Camera:m_pos.x/y/z=%.2f/%.2f/%.2f", m_pos.x, m_pos.y, m_pos.z);
 	DrawFormatString(0, 520, 0xffffff, "Camera:m_targetPos.x/y/z=%.2f/%.2f/%.2f",
 		m_targetPos.x, m_targetPos.y, m_targetPos.z);
+	DrawFormatString(0, 600, 0xffffff, "m_angleH=%.2f", m_angleH);
+	DrawFormatString(0, 620, 0xffffff, "m_angleV=%.2f", m_angleV);
 
 	DrawSphere3D(m_targetPos, 3.0f, 32, 0xff00ff, 0xff00ff, true);
 }
@@ -112,40 +116,17 @@ void NewCamera::NormalUpdate(VECTOR target)
 
 void NewCamera::LookOnUpdate(VECTOR target, VECTOR playerPos)
 {
-	target.y += 450.0f;
-	playerPos.y += 50.0f;
+	// 注視点の高さ調整
+	target.y += kTargetHeight;
+	playerPos.y += kPlayerHeight;
 
+	// ターゲット座標とプレイヤー座標の中間点を出す
 	VECTOR midPos = VScale(VAdd(playerPos, target), 0.5f);
 
 	// ターゲット座標更新
 	m_targetPos.x = (m_targetPos.x * kPrevCameraTargetFollowSpeed) + (midPos.x * kCameraTargetFollowSpeed);
 	m_targetPos.y = (m_targetPos.y * kPrevCameraTargetFollowSpeed) + (midPos.y * kCameraTargetFollowSpeed);
 	m_targetPos.z = (m_targetPos.z * kPrevCameraTargetFollowSpeed) + (midPos.z * kCameraTargetFollowSpeed);
-
-	//// プレイヤーからカメラまでの方向ベクトルを出す
-	//VECTOR playerToCameraVec = VNorm(VSub(m_nextPos, m_targetPos));
-	//// プレイヤーから敵までの方向ベクトルを出す
-	//VECTOR playerToEnemyVec = VNorm(VSub(m_pEnemy->GetPos(), target));
-	//// ロックオン時のカメラの方向ベクトルを出す
-	//VECTOR lookOnCameraVec = VAdd(VScale(playerToCameraVec, kPrevCameraTargetLockOnFollowSpeed),
-	//	VScale(playerToEnemyVec, kCameraTargetLockOnFollowSpeed));
-	//// カメラを少し傾ける
-	//m_angleH = static_cast<float>(atan2(-lookOnCameraVec.z, lookOnCameraVec.x) + kLockOnAngleH);
-	//// プレイヤーから敵までの角度(垂直方向)を求める
-	//float targetAngleV = static_cast<float>(atan2(playerToEnemyVec.y,
-	//	sqrt(playerToEnemyVec.x * playerToEnemyVec.x + playerToEnemyVec.z * playerToEnemyVec.z)));
-	//// 上下方向の角度制限
-	//const float minAngleV = -DX_PI_F * 0.2f;
-	//const float maxAngleV = DX_PI_F * 0.1f;
-	//// m_angleVの補間
-	//m_angleV = (m_angleV * kPrevCameraFollowSpeed) + (targetAngleV * kCameraFollowSpeed);
-	//// 角度制限の適用
-	//m_angleV = std::max(std::min(m_angleV, maxAngleV), minAngleV);
-	//// カメラの座標を出す
-	//VECTOR cameraPos = VAdd(VScale(m_prevPos, kPrevCameraTargetLockOnFollowSpeed),
-	//	VScale(m_nextPos, kCameraTargetLockOnFollowSpeed));
-	//// カメラの座標の設定
-	//SetCameraPositionAndTarget_UpVecY(cameraPos, m_targetPos);
 }
 
 void NewCamera::UpdateAngle()
@@ -156,17 +137,13 @@ void NewCamera::UpdateAngle()
 	// 入力状態初期化
 	rightInput.X = 0;
 	rightInput.Y = 0;
-	// 入力状態初期化
-	leftInput.X = 0;
-	leftInput.Y = 0;
 
 	// 入力状態を取得
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &rightInput);
 
 	// 回転を1～1000から0.001～1の範囲にする
-	// 後でカメラ感度も用意する(一旦3にしておく)
-	float rotX = 0.00020f * rightInput.Rx * 3;
-	float rotY = 0.00017f * rightInput.Ry * 3;
+	float rotX = kRightStickHorizontalRate * rightInput.Rx * m_cameraSensitivity;
+	float rotY =  kRightStickVerticalRate * rightInput.Ry * m_cameraSensitivity;
 
 	// カメラの回転スピードをかける
 	rotX *= kRightStickAngle;
@@ -211,12 +188,8 @@ void NewCamera::AngleToPlayerMove()
 	// 移動がない場合はスキップ
 	if (VSize(moveVec) < 0.05f) return;
 
-	// （必要ならローカル→ワールド変換）
-	MATRIX rot = MGetRotY(m_pPlayer->GetMove().y);
-	moveVec = VTransform(moveVec, rot);
-
 	// プレイヤーの移動方向から水平角度を算出
-	float moveAngle = atan2f(moveVec.x, moveVec.z);  // DxLib座標系に合わせる
+	float moveAngle = atan2f(moveVec.x, moveVec.z);
 
 	// 現在のカメラ角度との差を求める
 	float diff = moveAngle - m_angleH;
@@ -224,6 +197,8 @@ void NewCamera::AngleToPlayerMove()
 	// 角度差を -π～π の範囲に正規化
 	if (diff > DX_PI_F) diff -= DX_TWO_PI_F;
 	if (diff < -DX_PI_F) diff += DX_TWO_PI_F;
+
+	if (moveVec.z < 0.0f) return;
 
 	// 真横以上の移動時は補正を緩和
 	if (fabs(diff) > DX_PI_F * 0.45f) return;
@@ -235,7 +210,7 @@ void NewCamera::AngleToPlayerMove()
 
 void NewCamera::UpdatePos(VECTOR pos)
 {
-	constexpr float kCameraYOffset = 50.0f;
+	constexpr float kCameraYOffset = 50.0f;	// カメラを「プレイヤーの頭上」にセットするための高さ
 
 	// 垂直方向の回転(X軸)
 	MATRIX RotX = MGetRotX(m_angleV);
