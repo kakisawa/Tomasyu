@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
 #include "../Enemy.h"
-#include "../Camera/Camera.h"
+#include "../Camera/NewCamera.h"
 #include "../Shot.h"
 #include "../Util/Score.h"
 #include "../Util/Input.h"
@@ -16,7 +16,6 @@ using namespace MyInputInfo;
 namespace
 {
 	const char* kAmingHandlePath = "Data/Image/SceneGame/Aiming.png";	// 照準画像パス
-
 	const char* kPlayerModelFilePath = "Data/Model/PlayerModel.mv1";	// プレイヤーモデルパス
 	const char* kModelRightHandMiddle = "mixamorig:RightHandMiddle4";	// ハンドガン用右手パス
 	const char* kModelRightHandRing3 = "mixamorig:RightHandRing3";		// マシンガン用右手パス
@@ -57,13 +56,13 @@ namespace
 
 	constexpr float kAimingSize = 100.0f;		// 照準画像のサイズ
 
-	VECTOR kAimingPos = VGet(960.0f, 480.0f, 0.0f);	// 照準座標
+	VECTOR kAimingPos = VGet(960.0f, 530.0f, 0.0f);	// 照準座標
 
 	constexpr float kInitFloat = 0.0f;				// float値初期化
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);	// Vector値初期化値
 }
 
-Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Item> pItem) :
+Player::Player(std::shared_ptr<NewCamera> pCamera, std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Item> pItem) :
 	m_aimingHandle(-1),
 	m_useItem(0),
 	m_getItem(0),
@@ -84,7 +83,7 @@ Player::Player(std::shared_ptr<Camera> pCamera, std::shared_ptr<Enemy> pEnemy, s
 	m_setItem(Item::ItemKind::NoItem),
 	m_useWeapon(WeaponKind::HandGun),
 	m_SetComboknife(Knife::Attack1),
-	m_pCamera(pCamera),
+	m_pNewCamera(pCamera),
 	m_pEnemy(pEnemy)
 {
 	// データの読み込みを行う
@@ -165,7 +164,6 @@ void Player::Update(Input& input)
 	GetItem();
 
 	// 更新処理
-	Gravity();
 	Move();
 	UseItem(input);
 	Angle();
@@ -229,13 +227,13 @@ void Player::Draw()
 #ifdef _DEBUG
 	//DrawFormatString(0, 60, 0xffffff, "Playe:HP=%d", m_hp);
 	//DrawFormatString(0, 200, 0xffffff, "Playe:m_stamina=%.2f", m_stamina);
-	//DrawFormatString(0, 300, 0xffffff, "Player:m_pos.x=%.2f:z=%.2f", m_pos.x,m_pos.z);
+	DrawFormatString(0, 300, 0xffffff, "Player:m_pos.x=%.2f:z=%.2f", m_pos.x,m_pos.z);
 	//DrawFormatString(0, 220, 0xffffff, "Player:m_attack=%d", m_attack);
 	//DrawFormatString(0, 240, 0xffffff, "Player:m_remainingBullets_handgun=%d", m_remainingBullets_handgun);
 	//DrawFormatString(0, 260, 0xffffff, "Player:m_remainingBullets_machinegun=%d", m_remainingBullets_machinegun);
-	DrawFormatString(0, 280, 0xffffff, "Player:m_angle=%.2f", m_angle);
+	//DrawFormatString(0, 280, 0xffffff, "Player:m_angle=%.2f", m_angle);
 	//DrawFormatString(0, 300, 0xffffff, "Player:m_move.x/y/z=%.2f/%.2f/%.2f", m_move.x, m_move.y, m_move.z);
-	DrawFormatString(0, 340, 0xffffff, "Player:m_targetDir.x=%.2f,y=%.2f,z=%.2f,", m_targetDir.x, m_targetDir.y, m_targetDir.z);
+	//DrawFormatString(0, 340, 0xffffff, "Player:m_targetDir.x=%.2f,y=%.2f,z=%.2f,", m_targetDir.x, m_targetDir.y, m_targetDir.z);
 	//DrawFormatString(0, 360, 0xffffff, "Player:inputX=%d", m_inputX);
 	//DrawFormatString(0, 380, 0xffffff, "Player:inputY=%d", m_inputY);
 	//DrawFormatString(0, 400, 0xffffff, "Player:item=%d", m_useItem);
@@ -246,8 +244,8 @@ void Player::Draw()
 	//DrawFormatString(0, 500, 0xffffff, "Player:m_useItem[1]=%d", m_item[1]);
 	//DrawFormatString(0, 520, 0xffffff, "Player:m_useItem[2]=%d", m_item[2]);
 	//DrawFormatString(0, 540, 0xffffff, "Player:m_useWeapon=%d", m_useWeapon);
-	/*DrawFormatString(0, 560, 0xffffff, "Player:m_animNext.totalTime=%.2f", m_animNext.totalTime);
-	DrawFormatString(0, 580, 0xffffff, "Player:m_nextAnimTime=%.2f", m_nextAnimTime);*/
+	//DrawFormatString(0, 560, 0xffffff, "Player:m_animNext.totalTime=%.2f", m_animNext.totalTime);
+	//DrawFormatString(0, 580, 0xffffff, "Player:m_nextAnimTime=%.2f", m_nextAnimTime);
 	//DrawFormatString(0, 640, 0xffffff, "Player:m_status.situation.isKnifeAttack=%d", m_status.situation.isKnifeAttack);
 	//DrawFormatString(0, 660, 0xffffff, "Player:m_isEnemy=%d", m_isEnemy);
 	//DrawFormatString(0, 680, 0xffffff, "Player:m_isAttackToEnemy=%d", m_isAttackToEnemy);
@@ -335,12 +333,13 @@ void Player::Move()
 	if (isNotMove)	return;
 
 	// カメラの向きベクトルを取得
-	VECTOR cameraForwardVec = VSub(m_pCamera->GetTarget(), m_pCamera->GetPosition());
+	VECTOR cameraForwardVec = VSub(m_pNewCamera->GetTargetPos(), m_pNewCamera->GetPos());
 	cameraForwardVec.y = 0.0f; // 水平成分のみ考慮する
 	cameraForwardVec = VNorm(cameraForwardVec); // 正規化
 
 	// カメラの右方向ベクトルを取得（forwardベクトルとY軸上ベクトルの外積で算出）
-	VECTOR cameraRightVec = VCross(cameraForwardVec, VGet(0.0f, 1.0f, 0.0f));
+	VECTOR cameraRightVec = VCross( VGet(0.0f, 1.0f, 0.0f), cameraForwardVec);
+	cameraRightVec = VNorm(cameraRightVec);
 
 	// 入力の初期化
 	m_move = kInitVec;
@@ -350,54 +349,45 @@ void Player::Move()
 	GetJoypadAnalogInput(&m_inputX, &m_inputY, DX_INPUT_KEY_PAD1);
 
 	// カメラ基準でプレイヤーの移動ベクトルを設定
-	m_move = VScale(cameraForwardVec, static_cast<float>(-m_inputY));  // 前後移動
-	m_move = VAdd(m_move, VScale(cameraRightVec, static_cast<float>(-m_inputX)));  // 左右移動
+
+	m_move = VAdd(VScale(cameraForwardVec, static_cast<float>(-m_inputY)),
+		VScale(cameraRightVec, static_cast<float>(m_inputX)));
+	m_pos.y = 0.0f;
 
 	// 正規化と移動速度の適用
-	if (VSize(m_move) > 0.0f)
+	if (VSize(m_move) > 0.001f)
 	{
 		m_move = VNorm(m_move); // 正規化
 		m_targetDir = m_move;  // 目標方向を保存
 		m_move = VScale(m_move, m_chara.walkSpeed); // 移動速度を適用
+
+		// 移動処理の更新
+		MoveUpdate();
 	}
+	else
+	{
+		m_status.situation.isMoving = false;
+	}
+
 	// 設置アニメーションを再生していないときは移動する
 	m_pos = VAdd(m_pos, m_move);
-
-	m_pos.y = m_pos.y + m_gravity;
-
-	// 移動処理の更新
-	MoveUpdate();
 }
 
 void Player::MoveUpdate()
 {
-	// 移動値を入れる
-	float movingSpeed = std::max(m_move.x, m_move.z);
+	m_status.situation.isMoving = true;
 
-	// プレイヤーの移動状態を初期化する
-	m_status.situation.isMoving = false;
+	// === プレイヤーの向きを移動方向へ回転 ===
+	// 現在のY角度を算出
+	float targetAngle = atan2f(m_targetDir.x, m_targetDir.z); // ← 左手座標系用
+	// （右手座標系なら逆順：atan2f(-x, z)）
 
-	// 移動値があった場合
-	if (movingSpeed != 0.0f)
+	// アニメーション切り替え
+	if (!m_status.situation.isUseItem && !m_status.situation.isGunAttack &&
+		!m_status.situation.isKnifeAttack && !m_status.situation.isRoll &&
+		!m_status.situation.isDamageReceived)
 	{
-		// プレイヤーの移動状態をtrueにする
-		m_status.situation.isMoving = true;
-
-		// プレイヤーが罠設置状態でないとき、走るアニメーションを入れる
-		if (!m_status.situation.isUseItem && !m_status.situation.isGunAttack && !m_status.situation.isKnifeAttack && !m_status.situation.isRoll
-			&& !m_status.situation.isDamageReceived)
-		{
-			ChangeAnimNo(PlayerAnim::Run, m_animSpeed.Run, true, m_animChangeTime.Idle);
-		}
-	}
-}
-
-void Player::Gravity()
-{
-	// 地面に埋まったり宙に浮かないようにする
-	if (m_pos.y > 0.0f|| m_pos.y < 0.0f) 
-	{
-		m_gravity = 0.0f;
+		ChangeAnimNo(PlayerAnim::Run, m_animSpeed.Run, true, m_animChangeTime.Idle);
 	}
 }
 
@@ -409,8 +399,8 @@ void Player::Angle()
 
 	if (m_isLookOn) {
 
-		VECTOR dirToEnemy = VSub(m_pEnemy->GetPos(), GetPos());
-		targetAngle = static_cast<float>(atan2(dirToEnemy.x, dirToEnemy.z));
+		m_targetDir = VSub(m_pEnemy->GetPos(), GetPos());
+		targetAngle = static_cast<float>(atan2(m_targetDir.x, m_targetDir.z));
 	}
 	else{
 		targetAngle = static_cast<float>(atan2(m_targetDir.x, m_targetDir.z));
@@ -630,7 +620,7 @@ void Player::LockOn(Input& input)
 		VECTOR directionToEnemy = VSub(enemyPos, playerPos);
 
 		// カメラの注視点を敵の位置に設定
-		m_pCamera->SetTarget(enemyPos);
+		m_pNewCamera->SetTargetPos(enemyPos);
 		m_targetDir = enemyPos;
 	}
 	else if (input.IsRelease(InputInfo::TargetLockOn))

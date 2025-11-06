@@ -4,7 +4,7 @@
 class Player;
 class Enemy;
 class Item;
-class Camera;
+class NewCamera;
 class Map;
 class UISceneGame;
 class Fade;
@@ -110,7 +110,7 @@ private:
     }m_nextScene;
 
     // カメラ
-    std::shared_ptr<Camera> m_pCamera;
+    std::shared_ptr<NewCamera> m_pCamera;
     // プレイヤー
     std::shared_ptr<Player> m_pPlayer;
     // 敵

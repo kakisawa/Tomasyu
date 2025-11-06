@@ -4,7 +4,7 @@
 #include"../Object/Player/Player.h"
 #include "../Object/Enemy.h"
 #include "../Object/Item.h"
-#include "../Object/Camera/Camera.h"
+#include "../Object/Camera/NewCamera.h"
 #include "../Object/Map.h"
 #include "../UI/UISceneGame.h"
 #include "../Manager/Effect.h"
@@ -64,10 +64,10 @@ SceneTutorial::SceneTutorial() :
 	m_pPlayer->SetEnemyPointer(m_pEnemy);
 	m_pEnemy->SetPlayer(m_pPlayer);
 
-	m_pCamera = std::make_shared<Camera>(m_pPlayer,m_pEnemy);
+	m_pCamera = std::make_shared<NewCamera>(m_pPlayer,m_pEnemy);
 	m_pUI = std::make_shared<UISceneGame>(m_pPlayer, m_pEnemy, m_pScore);
 
-	m_pPlayer->SetCameraPointer(m_pCamera);
+	m_pPlayer->SetCameraPointer_New(m_pCamera);
 	m_pItem = std::make_shared<Item>(m_pPlayer, 3);
 }
 

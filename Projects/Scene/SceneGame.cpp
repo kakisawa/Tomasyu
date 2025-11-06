@@ -4,7 +4,6 @@
 #include "../Object/Player/Player.h"
 #include "../Object/Enemy.h"
 #include "../Object/Item.h"
-#include "../Object/Camera/Camera.h"
 #include "../Object/Map.h"
 #include "../UI/UISceneGame.h"
 #include "../Manager/Effect.h"
@@ -15,6 +14,8 @@
 #include "../Util/MiniWindow.h"
 #include "DxLib.h"
 #include <ctime>
+
+#include "../Object/Camera/NewCamera.h"
 
 using namespace MyInputInfo;
 
@@ -58,18 +59,18 @@ SceneGame::SceneGame() :
 	// PlayerとEnemyの相手ポインタを設定する
 	m_pPlayer->SetEnemyPointer(m_pEnemy);
 	m_pEnemy->SetPlayer(m_pPlayer);
-
-	m_pCamera = std::make_shared<Camera>(m_pPlayer,m_pEnemy);
 	m_pUI = std::make_shared<UISceneGame>(m_pPlayer, m_pEnemy,m_pScore);
+	m_pNewCamera = std::make_shared<NewCamera>(m_pPlayer, m_pEnemy);
 
-	m_pPlayer->SetCameraPointer(m_pCamera);
+	m_pPlayer->SetCameraPointer_New(m_pNewCamera);
 	m_pItem = std::make_shared<Item>(m_pPlayer, 3);
+
+	
 }
 
 void SceneGame::Init()
 {
 	m_pItem->Init();
-	m_pCamera->Init();
 	m_pPlayer->Init(m_pScore);
 	m_pEnemy->Init();
 	m_pMap->Init();
@@ -77,6 +78,9 @@ void SceneGame::Init()
 	m_pTime->Init();
 	m_pSound->InitBGM();
 	m_pScore->Init(m_pTime);
+	
+	// 仮カメラ
+	m_pNewCamera->Init();
 
 	// サウンドの初期化・読み込み
 	m_pSound->LoadBGM(SoundManager::BGM_Type::kGameBGM);
@@ -152,9 +156,11 @@ std::shared_ptr<SceneBase> SceneGame::Update(Input& input)
 				m_pItem->Update();
 				m_pPlayer->Update(input);
 				m_pEnemy->Update();
-				m_pCamera->Update();
 				m_pUI->Update();
 				m_pTime->Update();
+
+				// 仮カメラ
+				m_pNewCamera->Update();
 
 				// エフェクトの更新
 				Effect::GetInstance().Update();
@@ -249,8 +255,7 @@ void SceneGame::Draw()
 	m_pUI->Draw();
 	m_pTime->Draw();
 	m_pFade->Draw();
-
-	m_pCamera->Draw();
+	m_pNewCamera->Draw();
 
 	GameClearDraw();
 	GameOverDraw();

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Object\Camera\NewCamera.cpp" />
     <ClCompile Include="Scene\SceneTutorial.cpp" />
     <ClCompile Include="Util\MiniWindow.cpp" />
     <ClCompile Include="Object\Camera\TitleCamera.cpp" />
@@ -33,7 +34,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Manager\SceneManager.cpp" />
     <ClCompile Include="Manager\SoundManager.cpp" />
-    <ClCompile Include="Object\Camera\Camera.cpp" />
     <ClCompile Include="Object\Enemy.cpp" />
     <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\Map.cpp" />
@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Object\Camera\NewCamera.h" />
     <ClInclude Include="Scene\SceneTutorial.h" />
     <ClInclude Include="Util\MiniWindow.h" />
     <ClInclude Include="Object\Camera\TitleCamera.h" />
@@ -67,7 +68,6 @@
     <ClInclude Include="Util\LoadCsv.h" />
     <ClInclude Include="Manager\SceneManager.h" />
     <ClInclude Include="Manager\SoundManager.h" />
-    <ClInclude Include="Object\Camera\Camera.h" />
     <ClInclude Include="Object\Enemy.h" />
     <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\Map.h" />

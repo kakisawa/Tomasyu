@@ -113,7 +113,6 @@ public:
 	/// <returns>座標</returns>
 	VECTOR GetPos() const { return m_pos; }
 
-
 	/// <summary>
 	/// 移動量渡し
 	/// </summary>
@@ -138,7 +137,6 @@ protected:
 	int m_attack;			// 攻撃力
 
 	float m_angle;			// プレイヤー向き角度
-	float m_gravity;		// 重力
 	float m_nextAnimTime;	// 新しいアニメーションの再生時間
 
 	bool m_isAttack;			// 攻撃をしたかの判定

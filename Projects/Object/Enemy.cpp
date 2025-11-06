@@ -9,8 +9,8 @@
 #include <algorithm>
 
 namespace {
-	constexpr int kAttackHandArm = 30;						// 右腕攻撃力
-	constexpr int kAttackMachineArm = 30;					// 左腕攻撃力
+	constexpr int kAttackHandArm = 20;						// 右腕攻撃力
+	constexpr int kAttackMachineArm = 20;					// 左腕攻撃力
 	constexpr int kNextAttackTime = 100;					// 次の攻撃をするまでのカウント
 
 	constexpr int kAttackKind1TimeUnder = 30;
@@ -19,7 +19,7 @@ namespace {
 
 	const VECTOR kInitVec = VGet(0.0f, 0.0f, 0.0f);			// Vector値初期価値
 	const VECTOR kBodyColUpPos = VGet(0.0f, 70.0f, 0.0f);	// 体当たり判定頂点
-	
+
 	// モデルパス
 	const char* kPlayerModelFilePath = "Data/Model/EnemyModel.mv1";
 	// 各攻撃パーツの部位パス
@@ -70,7 +70,7 @@ void Enemy::Init()
 	m_attack = kAttackHandArm;	// 攻撃力を入れる
 
 	// アニメーションの設定
-	SetAnimation(static_cast<int>(EnemyAnim::Idle), m_animSpeed.Idle, true, false);	
+	SetAnimation(static_cast<int>(EnemyAnim::Idle), m_animSpeed.Idle, true, false);
 }
 
 void Enemy::Update()
@@ -144,6 +144,7 @@ void Enemy::Draw()
 		m_col.TypeChangeCapsuleDraw(m_col.m_colEnemy.m_leftArm[1], 0x00ff00, false);
 	}
 
+	//DrawFormatString(0, 500, 0xffffff, "Enemy:m_targetDir=%.2f:%.2f:%.2f", m_targetDir.x, m_targetDir.y, m_targetDir.z);
 	//DrawFormatString(0, 140, 0xffffff, "Enemy:HP=%d", m_hp);
 	//DrawFormatString(0, 700, 0xffffff, "Enemy:m_isCheckPlayer=%d", m_isSearchPlayer);
 	//DrawFormatString(0, 780, 0xffffff, "Enemy:m_pos.x=%.2f:z=%.2f", m_pos.x, m_pos.z);
@@ -152,9 +153,9 @@ void Enemy::Draw()
 	//DrawFormatString(0, 840, 0xffffff, "Enemy:m_isNextTargetPosSearch=%d", m_isNextTargetPosSearch);
 	//DrawFormatString(0, 880, 0xffffff, "Enemy:m_targetPos.x=%.2f:z=%.2f", m_targetPos.x, m_targetPos.z);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_move.x=%.2f:z=%.2f", m_move.x, m_move.z);
-	/*DrawFormatString(0, 900, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
-	DrawFormatString(0, 920, 0xffffff, "Enemy:m_nextAnimTime=%.2f", m_nextAnimTime);
-	DrawFormatString(0, 940, 0xffffff, "Enemy:m_animNext.totalTime=%.2f", m_animNext.totalTime);*/
+	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_animNext.animNo=%d", m_animNext.animNo);
+	//DrawFormatString(0, 920, 0xffffff, "Enemy:m_nextAnimTime=%.2f", m_nextAnimTime);
+	//DrawFormatString(0, 940, 0xffffff, "Enemy:m_animNext.totalTime=%.2f", m_animNext.totalTime);
 	//DrawFormatString(0, 940, 0xffffff, "Enemy:m_isAttackToPlayer=%d", m_isAttackToPlayer);
 	//DrawFormatString(0, 960, 0xffffff, "Enemy:m_isAttack=%d", m_isAttack);
 	//DrawFormatString(0, 900, 0xffffff, "Enemy:m_angle=%.2f", m_angle);
@@ -202,7 +203,7 @@ void Enemy::ColUpdate()
 	m_col.TypeChangeSphereUpdate(m_col.m_colEnemy.m_search, m_pos, m_chara.searchRad);
 
 	// 接触範囲当たり判定更新
-	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_hitting, m_pos, m_colPos, 30.0f);
+	m_col.TypeChangeCapsuleUpdate(m_col.m_colEnemy.m_hitting, m_pos, m_colPos, m_chara.bodyColRad + 3.0f);
 
 	// プレイヤーの当たり判定獲得
 	Collision playerCol = m_pPlayer->GetCol();
@@ -221,29 +222,11 @@ void Enemy::ColUpdate()
 		if (m_nextAnimTime >= 35)	return;
 
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
-
-
-		/*if (m_nextAnimTime <= 28|| m_nextAnimTime >= 55)	return;
-		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
-		if (!m_isColAttack)
-		{
-			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[0], m_pPlayer->GetCol().m_colPlayer.m_body);
-		}*/
 	}
 	else if (m_attackKind == 3)
 	{
 		if (m_nextAnimTime >= 35)	return;
 		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
-
-		/*
-		if (m_nextAnimTime >= 35)	return;
-
-		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);*/
-	}
-	else if (m_attackKind == 4)
-	{
-	/*	if (m_nextAnimTime >= 35)	return;
-		m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);*/
 	}
 }
 
@@ -256,7 +239,7 @@ void Enemy::Move()
 
 	// プレイヤーにぶつかっているかどうか
 	bool toPlayer = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_hitting, m_pPlayer->GetCol().m_colPlayer.m_body);
-	
+
 	if (!toPlayer)
 	{
 		if (m_isSearchPlayer)
@@ -322,7 +305,7 @@ void Enemy::Move()
 		}
 	}
 	m_pos = VAdd(m_pos, m_move);
-	
+
 	// 移動処理の更新
 	MoveUpdate();
 }
@@ -376,7 +359,7 @@ void Enemy::SearchNearPosition()
 
 		float result = positiveValues.empty() ? 0 : *std::min_element(positiveValues.begin(), positiveValues.end());
 
-		 // 最小値を持つターゲットポイントをリストに追加
+		// 最小値を持つターゲットポイントをリストに追加
 		std::vector<VECTOR> minTargets;
 		if (result == target1_1) {
 			minTargets.push_back(m_pMap->GetPointPos().point1);
@@ -408,15 +391,19 @@ void Enemy::SearchNearPosition()
 
 void Enemy::Angle()
 {
+	// 死んだら処理しない
+	if (m_status.situation.isDeath) return;
+
+	// 攻撃中でないときは常にプレイヤー方向を計算
+	VECTOR playerPos = m_pPlayer->GetPos();
+	VECTOR toPlayer = VSub(playerPos, m_pos);
+	m_targetDir = VNorm(toPlayer);  // 常に最新のプレイヤー方向を保存
+
 	// プレイヤーの移動方向にモデルの方向を近づける
-	float targetAngle;		// 目標角度
-	float difference;		// 目標角度と現在の角度の差
-
 	// 目標の方向ベクトルから角度値を算出する
-	targetAngle = static_cast<float>(atan2(m_targetDir.x, m_targetDir.z));
-
+	float targetAngle = static_cast<float>(atan2(m_targetDir.x, m_targetDir.z));	// 目標角度
 	// 目標の角度と現在の角度との差を割り出す
-	difference = targetAngle - m_angle;
+	float difference = targetAngle - m_angle;	// 目標角度と現在の角度の差
 
 	// 差の角度が180度以上になっていたら修正する
 	if (difference < -DX_PI_F)
@@ -428,7 +415,7 @@ void Enemy::Angle()
 		difference -= DX_TWO_PI_F;
 	}
 
-	// 角度の差が0に近づける
+	// 角度の差を0に近づける
 	if (difference > 0.0f)
 	{
 		// 差がプラスの場合は引く
@@ -438,8 +425,7 @@ void Enemy::Angle()
 			difference = 0.0f;
 		}
 	}
-	else
-	{
+	else {
 		// 差がマイナスの場合は足す
 		difference += m_chara.rotaSpeed;
 		if (difference > 0.0f)
@@ -499,7 +485,7 @@ void Enemy::Attack()
 				m_attackTimeCount--;
 			}
 		}
-		else 
+		else
 		{
 			// 攻撃してくるまでの間隔
 			m_attackTimeCount--;
@@ -530,24 +516,12 @@ void Enemy::Attack()
 		{
 			ChangeAnimNo(EnemyAnim::AttackRightArm2, m_animSpeed.AttackRightArm2, false, m_animChangeTime.AttackRightArm2);
 			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
-
-			//ChangeAnimNo(EnemyAnim::AttackLeftArm1, m_animSpeed.AttackLeftArm1, false, m_animChangeTime.AttackLeftArm1);
-			//m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_leftArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
 		}
 		else if (m_attackKind == 3)
 		{
 			ChangeAnimNo(EnemyAnim::AttackRightArm3, m_animSpeed.AttackRightArm3, false, m_animChangeTime.AttackRightArm3);
 			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
-
-		/*	ChangeAnimNo(EnemyAnim::AttackRightArm2, m_animSpeed.AttackRightArm2, false, m_animChangeTime.AttackRightArm2);
-			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);*/
 		}
-		else if (m_attackKind == 4)
-		{
-		/*	ChangeAnimNo(EnemyAnim::AttackRightArm3, m_animSpeed.AttackRightArm3, false, m_animChangeTime.AttackRightArm3);
-			m_isColAttack = m_col.IsTypeChageCupsuleCollision(m_col.m_colEnemy.m_rightArm[1], m_pPlayer->GetCol().m_colPlayer.m_body);
-	*/	}
-
 		m_isAttack = true;
 	}
 
@@ -587,7 +561,7 @@ void Enemy::Death()
 void Enemy::ChangeAnimNo(const EnemyAnim anim, const float animSpeed, const bool isAnimLoop, const int changeTime)
 {
 	m_status.animNo = static_cast<int>(anim);
-	m_status.animSpeed = animSpeed; 
+	m_status.animSpeed = animSpeed;
 	m_status.isLoop = isAnimLoop;
 	ChangeAnimation(m_status.animNo, animSpeed, m_status.isLoop, false, changeTime);
 }

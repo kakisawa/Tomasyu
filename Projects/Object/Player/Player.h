@@ -8,7 +8,7 @@
 
 class Enemy;
 class Shot;
-class Camera;
+class NewCamera;
 class Input;
 class Score;
 class Player : 
@@ -157,7 +157,7 @@ public:
 	/// <param name="pCamera">カメラ情報</param>
 	/// <param name="pEnemy">敵情報</param>
 	/// <param name="pItem">アイテム情報</param>
-	Player(std::shared_ptr<Camera> pCamera ,std::shared_ptr<Enemy> pEnemy,std::shared_ptr<Item> pItem);
+	Player(std::shared_ptr<NewCamera> pCamera ,std::shared_ptr<Enemy> pEnemy,std::shared_ptr<Item> pItem);
 
 	/// <summary>
 	/// デストラクタ
@@ -207,11 +207,6 @@ public:
 	/// 移動処理更新
 	/// </summary>
 	void MoveUpdate();
-
-	/// <summary>
-	/// 重力処理
-	/// </summary>
-	void Gravity();
 
 	/// <summary>
 	/// 回転処理
@@ -346,7 +341,7 @@ public:
 	/// Cameraポインタを設定する
 	/// </summary>
 	/// <param name="pCamera">カメラ情報</param>
-	void SetCameraPointer(std::shared_ptr<Camera> pCamera) { m_pCamera = pCamera; }
+	void SetCameraPointer_New(std::shared_ptr<NewCamera> pCamera) { m_pNewCamera = pCamera; }
 
 	/// <summary>
 	/// スタミナの値を渡す
@@ -437,7 +432,7 @@ private:
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Shot> m_pShotHandGun;
 	std::shared_ptr<Shot> m_pShotMachineGun;
-	std::shared_ptr<Camera> m_pCamera;
+	std::shared_ptr<NewCamera> m_pNewCamera;
 
 	std::shared_ptr<Score> m_pScore;
 

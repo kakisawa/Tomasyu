@@ -1,4 +1,5 @@
-﻿  SceneTutorial.cpp
+﻿  NewCamera.cpp
+  SceneTutorial.cpp
   MiniWindow.cpp
   TitleCamera.cpp
   TitlePlayer.cpp
@@ -12,24 +13,23 @@
   Main.cpp
   SceneManager.cpp
   SoundManager.cpp
-  Camera.cpp
   Enemy.cpp
-C:\Users\Owner\Documents\GitHub\01,PersonalProduction\Tomasyu\Projects\Object\Enemy.cpp(397,61): warning C4267: '引数': 'size_t' から '_Ty' に変換しました。データが失われているかもしれません。
-C:\Users\Owner\Documents\GitHub\01,PersonalProduction\Tomasyu\Projects\Object\Enemy.cpp(397,61): warning C4267:         with
-C:\Users\Owner\Documents\GitHub\01,PersonalProduction\Tomasyu\Projects\Object\Enemy.cpp(397,61): warning C4267:         [
-C:\Users\Owner\Documents\GitHub\01,PersonalProduction\Tomasyu\Projects\Object\Enemy.cpp(397,61): warning C4267:             _Ty=int
-C:\Users\Owner\Documents\GitHub\01,PersonalProduction\Tomasyu\Projects\Object\Enemy.cpp(397,61): warning C4267:         ]
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(380,61): warning C4267: '引数': 'size_t' から '_Ty' に変換しました。データが失われているかもしれません。
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(380,61): warning C4267:         with
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(380,61): warning C4267:         [
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(380,61): warning C4267:             _Ty=int
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(380,61): warning C4267:         ]
   Item.cpp
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xutility(406,82): warning C4244: '引数': 'const float' から 'int' への変換です。データが失われる可能性があります。
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(255,82): warning C4244: '引数': 'const float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル 'Object/Item.cpp' をコンパイルしています)
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xutility(406,82):
-      テンプレートインスタンス化コンテキスト (最初に最も古いもの) は
-          C:\Users\Owner\Documents\GitHub\01,PersonalProduction\Tomasyu\Projects\Object\Item.cpp(71,29):
-          コンパイル対象の関数 テンプレート インスタンス化 'std::shared_ptr<IsTime> std::make_shared<IsTime,const float&>(const float &)' のリファレンスを確認してください
-          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(2906,46):
-          コンパイル対象の関数 テンプレート インスタンス化 'std::_Ref_count_obj2<IsTime>::_Ref_count_obj2<const float&>(const float &)' のリファレンスを確認してください
-          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\memory(2095,18):
-          コンパイル対象の関数 テンプレート インスタンス化 'void std::_Construct_in_place<_Ty,const float&>(_Ty &,const float &) noexcept(false)' のリファレンスを確認してください
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(255,82):
+  テンプレートインスタンス化コンテキスト (最初に最も古いもの) は
+  	C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Item.cpp(71,29):
+  	コンパイル対象の関数 テンプレート インスタンス化 'std::shared_ptr<IsTime> std::make_shared<IsTime,const float&>(const float &)' のリファレンスを確認してください
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(2738,46):
+  	コンパイル対象の関数 テンプレート インスタンス化 'std::_Ref_count_obj2<IsTime>::_Ref_count_obj2<const float&>(const float &)' のリファレンスを確認してください
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(2062,18):
+  	コンパイル対象の関数 テンプレート インスタンス化 'void std::_Construct_in_place<_Ty,const float&>(_Ty &,const float &) noexcept(false)' のリファレンスを確認してください
           with
           [
               _Ty=IsTime
@@ -53,6 +53,6 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.3443
   UISceneGame.cpp
   コード生成しています。
   Previous IPDB not found, fall back to full compilation.
-  All 3410 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 3403 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   コード生成が終了しました。
-  Tomasyu.vcxproj -> C:\Users\Owner\Documents\GitHub\01,PersonalProduction\Tomasyu\Projects\x64\Release\Tomasyu.exe
+  Tomasyu.vcxproj -> C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\x64\Release\Tomasyu.exe

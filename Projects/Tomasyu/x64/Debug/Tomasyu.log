@@ -1,2 +1,7 @@
-﻿  Camera.cpp
-  Tomasyu.vcxproj -> C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\Projects\x64\Debug\Tomasyu.exe
+﻿  Enemy.cpp
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(383,61): warning C4267: '引数': 'size_t' から '_Ty' に変換しました。データが失われているかもしれません。
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(383,61): warning C4267:         with
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(383,61): warning C4267:         [
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(383,61): warning C4267:             _Ty=int
+C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\Object\Enemy.cpp(383,61): warning C4267:         ]
+  Tomasyu.vcxproj -> C:\Users\川﨑美琴\Documents\GitHub\01.PersonalProduction\Tomasyu\ReTomasyu\Projects\x64\Debug\Tomasyu.exe
